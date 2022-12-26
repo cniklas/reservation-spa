@@ -1,5 +1,39 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { ref, watch, onMounted } from 'vue'
+import { useRoute, useRouter, RouterLink, RouterView } from 'vue-router'
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
+
+const route = useRoute()
+const router = useRouter()
+
+const logout = () => {
+	try {
+		const auth = getAuth()
+		signOut(auth)
+	} catch (error) {
+		console.log(error)
+	}
+}
+
+const isLoggedIn = ref(false)
+watch(isLoggedIn, val => {
+	if (!val && route.name === 'add') {
+		router.push('/')
+		return
+	}
+
+	if (val && route.name === 'login') {
+		router.push(route.query.redirectTo ?? '/')
+		return
+	}
+})
+
+onMounted(async () => {
+	const auth = getAuth()
+	onAuthStateChanged(auth, user => {
+		isLoggedIn.value = !!user
+	})
+})
 </script>
 
 <template>
@@ -10,7 +44,8 @@ import { RouterLink, RouterView } from 'vue-router'
 			<RouterLink to="/">Home</RouterLink>
 			<RouterLink to="/liste">Liste</RouterLink>
 			<RouterLink to="/add">Add</RouterLink>
-			<RouterLink to="/login">Login</RouterLink>
+			<RouterLink v-if="!isLoggedIn" to="/login">Login</RouterLink>
+			<button v-else type="button" @click="logout">Logout</button>
 		</nav>
 	</header>
 
