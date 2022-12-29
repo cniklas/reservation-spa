@@ -5,10 +5,10 @@ import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 
 const route = useRoute()
 const router = useRouter()
+const auth = getAuth()
 
 const logout = () => {
 	try {
-		const auth = getAuth()
 		signOut(auth)
 	} catch (error) {
 		console.log(error)
@@ -28,8 +28,7 @@ watch(isLoggedIn, val => {
 	}
 })
 
-onMounted(async () => {
-	const auth = getAuth()
+onMounted(() => {
 	onAuthStateChanged(auth, user => {
 		isLoggedIn.value = !!user
 	})
@@ -43,7 +42,7 @@ onMounted(async () => {
 		<nav>
 			<RouterLink to="/">Home</RouterLink>
 			<RouterLink to="/liste">Liste</RouterLink>
-			<RouterLink to="/add">Add</RouterLink>
+			<RouterLink v-if="isLoggedIn" to="/add">Add</RouterLink>
 			<RouterLink v-if="!isLoggedIn" to="/login">Login</RouterLink>
 			<button v-else type="button" @click="logout">Logout</button>
 		</nav>
