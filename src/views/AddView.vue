@@ -22,7 +22,7 @@ const form = reactive({
 	seats: 8,
 })
 
-const _getNextIndex = () => Math.max(tables.value.map(item => item.index)) + 1
+const _getNextIndex = () => Math.max(...tables.value.map(item => item.index)) + 1
 
 const onSubmit = async () => {
 	// if (!state.hasAuthenticated) return
