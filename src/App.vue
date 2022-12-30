@@ -1,11 +1,16 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue'
 import { useRoute, useRouter, RouterLink, RouterView } from 'vue-router'
+import { useFirestore, useCollection } from 'vuefire'
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
+import { collection } from 'firebase/firestore'
 
 const route = useRoute()
 const router = useRouter()
 const auth = getAuth()
+
+const db = useFirestore()
+const tables = useCollection(collection(db, 'tables'))
 
 const logout = () => {
 	try {
@@ -48,5 +53,5 @@ onMounted(() => {
 		</nav>
 	</header>
 
-	<RouterView />
+	<RouterView :tables="tables" />
 </template>

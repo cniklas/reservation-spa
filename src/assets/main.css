@@ -1,0 +1,24 @@
+html {
+	font-family: system-ui;
+}
+
+button,
+input,
+select,
+textarea {
+	font-family: inherit;
+	font-size: 100%;
+	font-weight: inherit;
+	line-height: inherit;
+	color: inherit;
+}
+
+nav {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+table {
+	table-layout: fixed;
+}

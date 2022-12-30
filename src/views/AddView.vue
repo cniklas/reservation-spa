@@ -26,6 +26,7 @@ const _getNextIndex = () => Math.max(...tables.value.map(item => item.index)) + 
 
 const onSubmit = async () => {
 	// if (!state.hasAuthenticated) return
+	if (!form.name.length) return
 
 	if (!isSubmitLocked.value) {
 		beforeSubmit()
@@ -58,6 +59,7 @@ const onSubmit = async () => {
 <template>
 	<main>
 		<h1>Add</h1>
+
 		<form novalidate @submit.prevent="onSubmit">
 			<div>
 				<label for="name">Name</label>
@@ -83,7 +85,7 @@ const onSubmit = async () => {
 				<label for="active">verfügbar</label>
 				<input v-model="form.active" type="checkbox" id="active" />
 			</div>
-			<div><button type="submit" :disabled="isSubmitLocked">Speichern</button></div>
+			<div><button type="submit" :disabled="!form.name.length || isSubmitLocked">Speichern</button></div>
 		</form>
 	</main>
 </template>
