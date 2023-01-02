@@ -3,7 +3,7 @@ import { reactive, toRaw } from 'vue'
 import { useRouter } from 'vue-router'
 import { useFirestore, useCollection } from 'vuefire'
 import { collection, addDoc, Timestamp } from 'firebase/firestore'
-import { useErrorHandling } from '../use/errorHandling'
+import { useErrorHandling } from '@/use/errorHandling'
 
 const router = useRouter()
 const db = useFirestore()

@@ -3,14 +3,14 @@ import { ref, watch, onMounted } from 'vue'
 import { useRoute, useRouter, RouterLink, RouterView } from 'vue-router'
 import { useFirestore, useCollection } from 'vuefire'
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
-import { collection } from 'firebase/firestore'
+import { collection, query, orderBy } from 'firebase/firestore'
 
 const route = useRoute()
 const router = useRouter()
 const auth = getAuth()
 
 const db = useFirestore()
-const tables = useCollection(collection(db, 'tables'))
+const tables = useCollection(query(collection(db, 'tables'), orderBy('index')))
 
 const logout = () => {
 	try {
