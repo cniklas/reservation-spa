@@ -18,14 +18,16 @@ const user = useCurrentUser()
 const selectedTable = ref(null)
 const onEditTable = id => {
 	if (selectedTable.value) return
-	selectedTable.value = props.tables.find(item => item.id === id)
+
+	selectedTable.value = props.tables.find(item => item.id === id) ?? null
 }
 const onClose = () => {
 	selectedTable.value = null
 }
 
 const occupancy = computed(() => {
-	if (selectedTable.value === null) return []
+	if (!selectedTable.value) return []
+
 	const _occupancy = []
 	let n = 0
 	while (n < selectedTable.value.seats) {
