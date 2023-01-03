@@ -10,11 +10,12 @@ const db = useFirestore()
 const tables = useCollection(collection(db, 'tables'))
 const { isSubmitLocked, beforeSubmit } = useErrorHandling()
 
-const blockMap = new Map([
-	[1, 'Linker Block'],
-	[2, 'Mittelblock'],
-	[3, 'Rechter Block'],
-])
+defineProps({
+	blocks: {
+		type: Map,
+		default: () => new Map(),
+	},
+})
 const form = reactive({
 	active: true,
 	block_id: 1,
@@ -71,7 +72,7 @@ const onSubmit = async () => {
 			</div>
 			<div>
 				<div>Block</div>
-				<template v-for="[key, block] of blockMap" :key="`block-${key}`">
+				<template v-for="[key, block] of blocks" :key="`block-${key}`">
 					<input
 						v-model.number="form.block_id"
 						type="radio"

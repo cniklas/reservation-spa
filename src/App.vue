@@ -11,6 +11,11 @@ const auth = getAuth()
 
 const db = useFirestore()
 const tables = useCollection(query(collection(db, 'tables'), orderBy('index')))
+const blocks = new Map([
+	[1, 'Linker Block'],
+	[2, 'Mittelblock'],
+	[3, 'Rechter Block'],
+])
 
 const logout = () => {
 	try {
@@ -53,5 +58,5 @@ onMounted(() => {
 		</nav>
 	</header>
 
-	<RouterView :tables="tables" />
+	<RouterView :tables="tables" :blocks="blocks" />
 </template>

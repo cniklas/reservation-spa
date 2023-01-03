@@ -13,6 +13,10 @@ textarea {
 	color: inherit;
 }
 
+button:not(:disabled) {
+	cursor: pointer;
+}
+
 nav {
 	display: flex;
 	align-items: center;
