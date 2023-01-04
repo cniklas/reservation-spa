@@ -1,5 +1,5 @@
-<script setup>
-import { ref, watch, onMounted } from 'vue'
+<script setup lang="ts">
+import { ref, watch, onMounted, type Ref } from 'vue'
 import { useRoute, useRouter, RouterLink, RouterView } from 'vue-router'
 import { useFirestore, useCollection } from 'vuefire'
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
@@ -9,15 +9,15 @@ const route = useRoute()
 const router = useRouter()
 const auth = getAuth()
 
-const db = useFirestore()
-const tables = useCollection(query(collection(db, 'tables'), orderBy('index')))
-const blocks = new Map([
+const blocks: Map<number, string> = new Map([
 	[1, 'Linker Block'],
 	[2, 'Mittelblock'],
 	[3, 'Rechter Block'],
 ])
+const db = useFirestore()
+const tables = useCollection(query(collection(db, 'tables'), orderBy('index')))
 
-const logout = () => {
+const logout = (): void => {
 	try {
 		signOut(auth)
 	} catch (error) {
@@ -25,7 +25,7 @@ const logout = () => {
 	}
 }
 
-const isLoggedIn = ref(false)
+const isLoggedIn: Ref<boolean> = ref(false)
 watch(isLoggedIn, val => {
 	if (!val && route.name === 'add') {
 		router.push('/')
@@ -33,7 +33,7 @@ watch(isLoggedIn, val => {
 	}
 
 	if (val && route.name === 'login') {
-		router.push(route.query.redirectTo ?? '/')
+		router.push(route.query.redirectTo ? (route.query.redirectTo as string) : '/')
 		return
 	}
 })
@@ -58,5 +58,5 @@ onMounted(() => {
 		</nav>
 	</header>
 
-	<RouterView :tables="tables" :blocks="blocks" />
+	<RouterView :blocks="blocks" :tables="tables" />
 </template>

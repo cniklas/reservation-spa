@@ -1,14 +1,39 @@
-<script setup>
-import { computed } from 'vue'
+<script setup lang="ts">
+import { computed, type ComputedRef } from 'vue'
 
-const props = defineProps({
-	tables: {
-		type: Array,
-		default: () => [],
-	},
-})
+// 🚩 TODO export
+type Timestamp = {
+	seconds: number
+	nanoseconds: number
+}
+type TableDoc = {
+	[index: string]: boolean | number | string | Timestamp
+	active: boolean
+	block_id: number
+	id: string
+	index: number
+	name: string
+	modified: Timestamp
+	seat_1: string
+	seat_2: string
+	seat_3: string
+	seat_4: string
+	seat_5: string
+	seat_6: string
+	seat_7: string
+	seat_8: string
+	seats: number
+}
+type Name = {
+	name: string
+	table: string
+}
 
-const _sortByName = (a, b) => {
+const props = defineProps<{
+	tables: TableDoc[]
+}>()
+
+const _sortByName = (a: Name, b: Name): 1 | -1 | 0 => {
 	const nameA = a.name.toLowerCase()
 	const nameB = b.name.toLowerCase()
 	if (nameA < nameB) return -1
@@ -16,17 +41,17 @@ const _sortByName = (a, b) => {
 	return 0
 }
 
-const names = computed(() => {
-	const _names = []
+const names: ComputedRef<Name[]> = computed(() => {
+	const _names: Name[] = []
 	props.tables.forEach(table => {
 		let n = 0
 		while (n < table.seats) {
 			const key = `seat_${++n}`
-			if (!table[key].length) continue
+			if (!(table[key] as string).length) continue
 
-			const name = table[key].split(' ')
+			const name = (table[key] as string).split(' ')
 			_names.push({
-				name: name.length > 1 ? `${name.at(-1)}, ${name.slice(0, -1).join(' ')}` : name.at(0),
+				name: name.length > 1 ? `${name.at(-1)}, ${name.slice(0, -1).join(' ')}` : name.at(0) ?? '',
 				table: table.name,
 			})
 		}

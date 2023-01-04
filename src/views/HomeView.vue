@@ -1,38 +1,56 @@
-<script setup>
-import { ref, computed } from 'vue'
+<script setup lang="ts">
+import { ref, computed, type Ref, type ComputedRef } from 'vue'
 import { useCurrentUser } from 'vuefire'
 
-const props = defineProps({
-	tables: {
-		type: Array,
-		default: () => [],
-	},
-	blocks: {
-		type: Map,
-		default: () => new Map(),
-	},
-})
+// 🚩 TODO export
+type Timestamp = {
+	seconds: number
+	nanoseconds: number
+}
+type TableDoc = {
+	[index: string]: boolean | number | string | Timestamp
+	active: boolean
+	block_id: number
+	id: string
+	index: number
+	name: string
+	modified: Timestamp
+	seat_1: string
+	seat_2: string
+	seat_3: string
+	seat_4: string
+	seat_5: string
+	seat_6: string
+	seat_7: string
+	seat_8: string
+	seats: number
+}
+
+const props = defineProps<{
+	blocks: Map<number, string>
+	tables: TableDoc[]
+}>()
 
 const user = useCurrentUser()
 
-const selectedTable = ref(null)
-const onEditTable = id => {
+const selectedTable: Ref<TableDoc | null> = ref(null)
+const onEditTable = (id: string): void => {
 	if (selectedTable.value) return
 
 	selectedTable.value = props.tables.find(item => item.id === id) ?? null
 }
-const onClose = () => {
+const onClose = (): void => {
 	selectedTable.value = null
 }
 
-const occupancy = computed(() => {
+const occupancy: ComputedRef<string[]> = computed(() => {
 	if (!selectedTable.value) return []
 
-	const _occupancy = []
+	const _occupancy: string[] = []
 	let n = 0
 	while (n < selectedTable.value.seats) {
 		const key = `seat_${++n}`
-		/* if (selectedTable.value[key].length) */ _occupancy.push(selectedTable.value[key])
+		/* if (selectedTable.value[key].length) */ _occupancy.push(selectedTable.value[key] as string)
 	}
 	return _occupancy
 })

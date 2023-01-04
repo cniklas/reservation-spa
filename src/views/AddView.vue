@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { reactive, toRaw } from 'vue'
 import { useRouter } from 'vue-router'
 import { useFirestore, useCollection } from 'vuefire'
@@ -10,12 +10,9 @@ const db = useFirestore()
 const tables = useCollection(collection(db, 'tables'))
 const { isSubmitLocked, beforeSubmit } = useErrorHandling()
 
-defineProps({
-	blocks: {
-		type: Map,
-		default: () => new Map(),
-	},
-})
+defineProps<{
+	blocks: Map<number, string>
+}>()
 const form = reactive({
 	active: true,
 	block_id: 1,
@@ -23,9 +20,9 @@ const form = reactive({
 	seats: 8,
 })
 
-const _getNextIndex = () => Math.max(...tables.value.map(item => item.index)) + 1
+const _getNextIndex = (): number => Math.max(...tables.value.map(item => item.index)) + 1
 
-const onSubmit = async () => {
+const onSubmit = async (): Promise<void> => {
 	// if (!state.hasAuthenticated) return
 	if (!form.name.length) return
 

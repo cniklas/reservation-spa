@@ -1,14 +1,14 @@
-<script setup>
-import { ref } from 'vue'
+<script setup lang="ts">
+import { ref, type Ref } from 'vue'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { useErrorHandling } from '@/use/errorHandling'
 
 const { isSubmitLocked, isEmpty, beforeSubmit, handleAuthError } = useErrorHandling()
 
-const email = ref('')
-const password = ref('')
+const email: Ref<string> = ref('')
+const password: Ref<string> = ref('')
 
-const onSubmit = async () => {
+const onSubmit = async (): Promise<void> => {
 	if (isEmpty(email, password)) return
 
 	if (!isSubmitLocked.value) {
