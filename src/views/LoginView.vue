@@ -3,7 +3,7 @@ import { ref, type Ref } from 'vue'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { useErrorHandling } from '@/use/errorHandling'
 
-const { isSubmitLocked, isEmpty, beforeSubmit, handleAuthError } = useErrorHandling()
+const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError } = useErrorHandling()
 
 const email: Ref<string> = ref('')
 const password: Ref<string> = ref('')
@@ -18,7 +18,7 @@ const onSubmit = async (): Promise<void> => {
 			const auth = getAuth()
 			/* const { user } = */ await signInWithEmailAndPassword(auth, email.value, password.value)
 		} catch (error) {
-			handleAuthError(error)
+			handleSubmitError(error)
 		}
 	}
 }

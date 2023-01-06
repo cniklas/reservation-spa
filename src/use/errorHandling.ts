@@ -16,9 +16,9 @@ const beforeSubmit = (): void => {
 	// errorCode.value = null
 }
 
-// eslint-disable-next-line no-unused-vars
-const handleAuthError = (error: any): void => {
+const handleSubmitError = (error: any): void => {
 	// TODO error handling
+	console.log(error)
 	isSubmitLocked.value = false
 }
 
@@ -28,6 +28,6 @@ export const useErrorHandling = () => ({
 	isSubmitLocked,
 	isEmpty,
 	beforeSubmit,
-	handleAuthError,
+	handleSubmitError,
 	resetErrorState,
 })

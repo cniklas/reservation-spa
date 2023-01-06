@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import { reactive, toRaw } from 'vue'
 import { useRouter } from 'vue-router'
-import { useFirestore, useCollection } from 'vuefire'
+import { useFirestore } from 'vuefire'
 import { collection, addDoc, Timestamp } from 'firebase/firestore'
+import type { TableDoc } from '@/types/TableDoc.type'
 import { useErrorHandling } from '@/use/errorHandling'
 
 const router = useRouter()
 const db = useFirestore()
-const tables = useCollection(collection(db, 'tables'))
-const { isSubmitLocked, beforeSubmit } = useErrorHandling()
+const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError } = useErrorHandling()
 
-defineProps<{
+const props = defineProps<{
 	blocks: Map<number, string>
+	tables: TableDoc[]
 }>()
+const _getNextIndex = (): number => Math.max(...props.tables.map(item => item.index)) + 1
+
 const form = reactive({
 	active: true,
 	block_id: 1,
@@ -20,11 +23,9 @@ const form = reactive({
 	seats: 8,
 })
 
-const _getNextIndex = (): number => Math.max(...tables.value.map(item => item.index)) + 1
-
 const onSubmit = async (): Promise<void> => {
 	// if (!state.hasAuthenticated) return
-	if (!form.name.length) return
+	if (isEmpty(form.name)) return
 
 	if (!isSubmitLocked.value) {
 		beforeSubmit()
@@ -48,7 +49,7 @@ const onSubmit = async (): Promise<void> => {
 			/* const { id } = */ await addDoc(collection(db, 'tables'), formData)
 			router.push({ name: 'home' })
 		} catch (error) {
-			console.log(error)
+			handleSubmitError(error)
 		}
 	}
 }
@@ -83,7 +84,7 @@ const onSubmit = async (): Promise<void> => {
 				<label for="active">verfügbar</label>
 				<input v-model="form.active" type="checkbox" id="active" />
 			</div>
-			<div><button type="submit" :disabled="!form.name.length || isSubmitLocked">Speichern</button></div>
+			<div><button type="submit" :disabled="isEmpty(form.name) || isSubmitLocked">Speichern</button></div>
 		</form>
 	</main>
 </template>

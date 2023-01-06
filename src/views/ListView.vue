@@ -1,29 +1,7 @@
 <script setup lang="ts">
 import { computed, type ComputedRef } from 'vue'
+import type { TableDoc } from '@/types/TableDoc.type'
 
-// 🚩 TODO export
-type Timestamp = {
-	seconds: number
-	nanoseconds: number
-}
-type TableDoc = {
-	[index: string]: boolean | number | string | Timestamp
-	active: boolean
-	block_id: number
-	id: string
-	index: number
-	name: string
-	modified: Timestamp
-	seat_1: string
-	seat_2: string
-	seat_3: string
-	seat_4: string
-	seat_5: string
-	seat_6: string
-	seat_7: string
-	seat_8: string
-	seats: number
-}
 type Name = {
 	name: string
 	table: string
