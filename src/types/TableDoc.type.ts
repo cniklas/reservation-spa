@@ -4,12 +4,13 @@ type Timestamp = {
 }
 
 export type TableDoc = {
-	[index: string]: boolean | number | string | Timestamp
+	[index: string]: boolean | number | string | undefined | Timestamp
 	active: boolean
 	block_id: number
 	id: string
 	index: number
 	name: string
+	locked_until?: number
 	modified: Timestamp
 	seat_1: string
 	seat_2: string

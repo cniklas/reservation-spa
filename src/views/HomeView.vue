@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, type Ref, type ComputedRef } from 'vue'
-import { useCurrentUser } from 'vuefire'
+import { useCurrentUser, useFirestore } from 'vuefire'
+import { doc, updateDoc, deleteField } from 'firebase/firestore'
 import type { TableDoc } from '@/types/TableDoc.type'
 
 const props = defineProps<{
@@ -9,15 +10,26 @@ const props = defineProps<{
 }>()
 
 const user = useCurrentUser()
+const db = useFirestore()
+
+// plus 5 minutes
+const _setLockedUntil = () => new Date().getTime() + 5 * 60 * 1000
 
 const selectedTable: Ref<TableDoc | null> = ref(null)
-const onEditTable = (id: string): void => {
+const onEditTable = async (id: string): Promise<void> => {
 	if (selectedTable.value) return
 
+	const tableRef = doc(db, 'tables', id)
+	await updateDoc(tableRef, { locked_until: _setLockedUntil() })
 	selectedTable.value = props.tables.find(item => item.id === id) ?? null
 }
-const onClose = (): void => {
+
+const onClose = async (id: string): Promise<void> => {
+	if (!selectedTable.value) return
+
 	selectedTable.value = null
+	const tableRef = doc(db, 'tables', id)
+	await updateDoc(tableRef, { locked_until: deleteField() })
 }
 
 const occupancy: ComputedRef<string[]> = computed(() => {
@@ -42,15 +54,16 @@ const occupancy: ComputedRef<string[]> = computed(() => {
 				<template v-if="!user && !table.active">
 					{{ table.name }}
 				</template>
-				<button v-else type="button" :disabled="!!selectedTable" @click="onEditTable(table.id)">
+				<button v-else type="button" :disabled="!!selectedTable || !!table.locked_until" @click="onEditTable(table.id)">
 					{{ table.name }}
+					<template v-if="table.locked_until">🔒</template>
 				</button>
 			</li>
 		</ul>
 	</main>
 
 	<section v-if="selectedTable">
-		<button type="button" @click="onClose">close</button>
+		<button type="button" @click="onClose(selectedTable!.id)">close</button>
 		<h2>{{ selectedTable.name }}</h2>
 
 		<dl>
