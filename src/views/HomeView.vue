@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, computed, type Ref, type ComputedRef } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, type Ref, type ComputedRef } from 'vue'
 import { useCurrentUser, useFirestore } from 'vuefire'
 import { doc, updateDoc, deleteField } from 'firebase/firestore'
+// import { isSafari } from '@firebase/util'
 import type { TableDoc } from '@/types/TableDoc.type'
 
 const props = defineProps<{
@@ -12,8 +13,9 @@ const props = defineProps<{
 const user = useCurrentUser()
 const db = useFirestore()
 
-// plus 5 minutes
-const _setLockedUntil = () => new Date().getTime() + 5 * 60 * 1000
+const OFFSET: number = 5 * 60 * 1000
+let _timeout: number | undefined
+const _setLockedUntil = (): number => new Date().getTime() + OFFSET
 
 const selectedTable: Ref<TableDoc | null> = ref(null)
 const onEditTable = async (id: string): Promise<void> => {
@@ -22,12 +24,25 @@ const onEditTable = async (id: string): Promise<void> => {
 	const tableRef = doc(db, 'tables', id)
 	await updateDoc(tableRef, { locked_until: _setLockedUntil() })
 	selectedTable.value = props.tables.find(item => item.id === id) ?? null
+	_timeout = window.setTimeout(onClose, OFFSET)
 }
 
-const onClose = async (id: string): Promise<void> => {
+const onClose = (): void => {
 	if (!selectedTable.value) return
 
+	clearTimeout(_timeout)
+	const id = selectedTable.value.id
 	selectedTable.value = null
+	_unlockTable(id)
+}
+
+const onUnlock = (id: string): void => {
+	if (!user) return
+
+	_unlockTable(id)
+}
+
+const _unlockTable = async (id: string): Promise<void> => {
 	const tableRef = doc(db, 'tables', id)
 	await updateDoc(tableRef, { locked_until: deleteField() })
 }
@@ -43,6 +58,15 @@ const occupancy: ComputedRef<string[]> = computed(() => {
 	}
 	return _occupancy
 })
+
+onMounted(() => {
+	// 🔺 especially on mobile, the `beforeunload` event is not reliably fired
+	// https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event#usage_notes
+	window.addEventListener('beforeunload', onClose)
+})
+onBeforeUnmount(() => {
+	onClose()
+})
 </script>
 
 <template>
@@ -54,16 +78,31 @@ const occupancy: ComputedRef<string[]> = computed(() => {
 				<template v-if="!user && !table.active">
 					{{ table.name }}
 				</template>
-				<button v-else type="button" :disabled="!!selectedTable || !!table.locked_until" @click="onEditTable(table.id)">
-					{{ table.name }}
-					<template v-if="table.locked_until">🔒</template>
-				</button>
+				<template v-else>
+					<button type="button" :disabled="!!selectedTable || !!table.locked_until" @click="onEditTable(table.id)">
+						{{ table.name }}
+						<template v-if="table.locked_until">🔒</template>
+					</button>
+					<template v-if="user && table.locked_until">
+						<small>{{
+							new Date(table.locked_until).toLocaleDateString('de-DE', {
+								// year: 'numeric',
+								month: '2-digit',
+								day: '2-digit',
+								hour: 'numeric',
+								minute: 'numeric',
+								second: 'numeric',
+							})
+						}}</small>
+						<button type="button" @click="onUnlock(table.id)">🔑</button>
+					</template>
+				</template>
 			</li>
 		</ul>
 	</main>
 
 	<section v-if="selectedTable">
-		<button type="button" @click="onClose(selectedTable!.id)">close</button>
+		<button type="button" @click="onClose">close</button>
 		<h2>{{ selectedTable.name }}</h2>
 
 		<dl>
