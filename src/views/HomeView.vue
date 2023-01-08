@@ -4,6 +4,8 @@ import { useCurrentUser, useFirestore } from 'vuefire'
 import { doc, updateDoc, deleteField } from 'firebase/firestore'
 // import { isSafari } from '@firebase/util'
 import type { TableDoc } from '@/types/TableDoc.type'
+import TableForm from '@/components/TableForm.vue'
+import { formatTimestamp } from '@/use/helper'
 
 const props = defineProps<{
 	blocks: Map<number, string>
@@ -75,25 +77,15 @@ onBeforeUnmount(() => {
 
 		<ul>
 			<li v-for="table in tables" :key="table.id">
-				<template v-if="!user && !table.active">
-					{{ table.name }}
-				</template>
+				({{ table.index }})
+				<template v-if="!user && !table.active">{{ table.name }}</template>
 				<template v-else>
 					<button type="button" :disabled="!!selectedTable || !!table.locked_until" @click="onEditTable(table.id)">
 						{{ table.name }}
 						<template v-if="table.locked_until">🔒</template>
 					</button>
 					<template v-if="user && table.locked_until">
-						<small>{{
-							new Date(table.locked_until).toLocaleDateString('de-DE', {
-								// year: 'numeric',
-								month: '2-digit',
-								day: '2-digit',
-								hour: 'numeric',
-								minute: 'numeric',
-								second: 'numeric',
-							})
-						}}</small>
+						<code>{{ formatTimestamp(table.locked_until) }}</code>
 						<button type="button" @click="onUnlock(table.id)">🔑</button>
 					</template>
 				</template>
@@ -101,7 +93,8 @@ onBeforeUnmount(() => {
 		</ul>
 	</main>
 
-	<section v-if="selectedTable">
+	<TableForm v-if="selectedTable" :blocks="blocks" :table-data="selectedTable" @cancel="onClose" />
+	<!-- <section v-if="selectedTable">
 		<button type="button" @click="onClose">close</button>
 		<h2>{{ selectedTable.name }}</h2>
 
@@ -132,5 +125,5 @@ onBeforeUnmount(() => {
 		<ol v-if="occupancy.length">
 			<li v-for="(name, i) in occupancy" :key="`seat-${i}`">{{ name }}</li>
 		</ol>
-	</section>
+	</section> -->
 </template>
