@@ -5,7 +5,7 @@ import { doc, updateDoc, deleteField } from 'firebase/firestore'
 // import { isSafari } from '@firebase/util'
 import type { TableDoc } from '@/types/TableDoc.type'
 import TableForm from '@/components/TableForm.vue'
-import { formatTimestamp } from '@/use/helper'
+import { formatDateTime, formatTime } from '@/use/helper'
 
 const props = defineProps<{
 	blocks: Map<number, string>
@@ -36,6 +36,13 @@ const onClose = (): void => {
 	const id = selectedTable.value.id
 	selectedTable.value = null
 	_unlockTable(id)
+}
+
+const onSaved = (): void => {
+	if (!selectedTable.value) return
+
+	clearTimeout(_timeout)
+	selectedTable.value = null
 }
 
 const onUnlock = (id: string): void => {
@@ -84,8 +91,11 @@ onBeforeUnmount(() => {
 						{{ table.name }}
 						<template v-if="table.locked_until">🔒</template>
 					</button>
+					//
+					<span>{{ formatDateTime(table.modified.seconds * 1000) }}</span>
+					//
 					<template v-if="user && table.locked_until">
-						<code>{{ formatTimestamp(table.locked_until) }}</code>
+						<code>{{ formatTime(table.locked_until) }}</code>
 						<button type="button" @click="onUnlock(table.id)">🔑</button>
 					</template>
 				</template>
@@ -93,37 +103,15 @@ onBeforeUnmount(() => {
 		</ul>
 	</main>
 
-	<TableForm v-if="selectedTable" :blocks="blocks" :table-data="selectedTable" @cancel="onClose" />
-	<!-- <section v-if="selectedTable">
-		<button type="button" @click="onClose">close</button>
-		<h2>{{ selectedTable.name }}</h2>
-
-		<dl>
-			<dt>Index</dt>
-			<dd>{{ selectedTable.index }}</dd>
-			<dt>Block</dt>
-			<dd>{{ blocks.get(selectedTable.block_id) }}</dd>
-			<dt>aktiv</dt>
-			<dd>{{ selectedTable.active }}</dd>
-			<dt>Sitzplätze</dt>
-			<dd>{{ selectedTable.seats }}</dd>
-			<dt>zuletzt geändert</dt>
-			<dd>
-				{{
-					new Date(selectedTable.modified.seconds * 1000).toLocaleDateString('de-DE', {
-						year: 'numeric',
-						month: '2-digit',
-						day: '2-digit',
-						hour: 'numeric',
-						minute: 'numeric',
-						second: 'numeric',
-					})
-				}}
-			</dd>
-		</dl>
-
-		<ol v-if="occupancy.length">
-			<li v-for="(name, i) in occupancy" :key="`seat-${i}`">{{ name }}</li>
-		</ol>
-	</section> -->
+	<TableForm
+		v-if="selectedTable"
+		:blocks="blocks"
+		:table-data="selectedTable"
+		:is-logged-in="!!user"
+		@cancel="onClose"
+		@saved="onSaved"
+	/>
+	<!-- <ol v-if="selectedTable && occupancy.length">
+		<li v-for="(name, i) in occupancy" :key="`seat-${i}`">{{ name }}</li>
+	</ol> -->
 </template>

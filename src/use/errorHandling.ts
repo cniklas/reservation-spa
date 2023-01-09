@@ -3,10 +3,13 @@ import { ref, unref, type Ref } from 'vue'
 const errorCode: Ref<number | null> = ref(null)
 const errorMessage: Ref<string> = ref('')
 const isSubmitLocked: Ref<boolean> = ref(false)
+const unlockSubmit = (): void => {
+	isSubmitLocked.value = false
+}
 const resetErrorState = (): void => {
 	errorCode.value = null
 	errorMessage.value = ''
-	isSubmitLocked.value = false
+	unlockSubmit()
 }
 
 const isEmpty = (...args: any[]): boolean => args.some(val => !unref(val).length)
@@ -19,13 +22,14 @@ const beforeSubmit = (): void => {
 const handleSubmitError = (error: any): void => {
 	// TODO error handling
 	console.log(error)
-	isSubmitLocked.value = false
+	unlockSubmit()
 }
 
 export const useErrorHandling = () => ({
 	errorCode,
 	errorMessage,
 	isSubmitLocked,
+	unlockSubmit,
 	isEmpty,
 	beforeSubmit,
 	handleSubmitError,

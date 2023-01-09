@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, toRaw } from 'vue'
+import { reactive, watch, toRaw } from 'vue'
 import { useRouter } from 'vue-router'
 import { useFirestore } from 'vuefire'
 import { collection, addDoc, Timestamp } from 'firebase/firestore'
@@ -23,6 +23,14 @@ const form = reactive({
 	seats: 8,
 })
 
+watch(
+	() => form.seats,
+	val => {
+		if (val < 1) form.seats = 1
+		else if (val > 8) form.seats = 8
+	}
+)
+
 const onSubmit = async (): Promise<void> => {
 	// if (!state.hasAuthenticated) return
 	if (isEmpty(form.name)) return
@@ -43,10 +51,9 @@ const onSubmit = async (): Promise<void> => {
 				seat_6: '',
 				seat_7: '',
 				seat_8: '',
-				seats: form.seats || 0,
 			}
 
-			/* const { id } = */ await addDoc(collection(db, 'tables'), formData)
+			await addDoc(collection(db, 'tables'), formData)
 			router.push({ name: 'home' })
 		} catch (error) {
 			handleSubmitError(error)
@@ -66,7 +73,7 @@ const onSubmit = async (): Promise<void> => {
 			</div>
 			<div>
 				<label for="seats">Anzahl Sitzplätze</label>
-				<input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="0" max="8" />
+				<input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="1" max="8" />
 			</div>
 			<div>
 				<div>Block</div>
