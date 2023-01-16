@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, watch, toRaw } from 'vue'
 import { useFirestore } from 'vuefire'
-import { doc, updateDoc, deleteField, Timestamp } from 'firebase/firestore'
+import { doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
 import type { TableDoc } from '@/types/TableDoc.type'
 import { formatTime } from '@/use/helper'
 import { useErrorHandling } from '@/use/errorHandling'
@@ -35,12 +35,16 @@ const onSubmit = async (): Promise<void> => {
 			const formData = {
 				...toRaw(form),
 				locked_until: deleteField(),
-				modified: Timestamp.fromDate(new Date()),
+				modified: serverTimestamp(),
 			}
 
 			const diff = props.tableData.seats - formData.seats
 			if (diff > 0) {
 				// clear names
+				let n = props.tableData.seats
+				while (n > formData.seats) {
+					formData[`seat_${n--}`] = ''
+				}
 			}
 
 			const tableRef = doc(db, 'tables', props.tableData.id)

@@ -2,7 +2,7 @@
 import { reactive, watch, toRaw } from 'vue'
 import { useRouter } from 'vue-router'
 import { useFirestore } from 'vuefire'
-import { collection, addDoc, Timestamp } from 'firebase/firestore'
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import type { TableDoc } from '@/types/TableDoc.type'
 import { useErrorHandling } from '@/use/errorHandling'
 
@@ -42,7 +42,7 @@ const onSubmit = async (): Promise<void> => {
 			const formData = {
 				...toRaw(form),
 				index: _getNextIndex(),
-				modified: Timestamp.fromDate(new Date()),
+				modified: serverTimestamp(),
 				seat_1: '',
 				seat_2: '',
 				seat_3: '',
