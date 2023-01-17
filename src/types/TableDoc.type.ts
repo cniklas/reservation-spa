@@ -10,7 +10,7 @@ export type TableDoc = {
 	id: string
 	index: number
 	name: string
-	locked_until?: number
+	locked_at?: Timestamp
 	modified: Timestamp
 	seat_1: string
 	seat_2: string

@@ -34,7 +34,7 @@ const onSubmit = async (): Promise<void> => {
 		try {
 			const formData = {
 				...toRaw(form),
-				locked_until: deleteField(),
+				locked_at: deleteField(),
 				modified: serverTimestamp(),
 			}
 
@@ -69,8 +69,8 @@ const cancel = (): void => {
 		<button type="button" @click="cancel">close</button>
 		<h2>{{ tableData.name }}</h2>
 		<div>
-			locked until:
-			<code>{{ formatTime(tableData.locked_until) }}</code>
+			locked at:
+			<code>{{ formatTime(tableData.locked_at!.seconds * 1000) }}</code>
 		</div>
 
 		<form novalidate @submit.prevent="onSubmit">

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, type Ref, type ComputedRef } from 'vue'
-import { useCurrentUser, useFirestore } from 'vuefire'
-import { doc, updateDoc, deleteField } from 'firebase/firestore'
+import { ref, computed, watch, onMounted, onBeforeUnmount, type Ref, type ComputedRef, type WatchStopHandle } from 'vue'
+import { useCurrentUser, useFirestore, useDocument } from 'vuefire'
+import { collection, doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
 // import { isSafari } from '@firebase/util'
 import type { TableDoc } from '@/types/TableDoc.type'
 import TableForm from '@/components/TableForm.vue'
@@ -17,7 +17,6 @@ const db = useFirestore()
 
 /**
  * TODOs
- * (1) `locked_until` muss über die Serverzeit von Firebase gesetzt werden, sonst gibt es keine eindeutige zeitl. Referenz
  * (2) auch die Freischaltung der Seite muss über eine externe Referenz kommen
  * (3) wenn der Admin einen Tisch freigibt, sollte sich das geöffnete Formular beim Client schließen
  */
@@ -42,11 +41,18 @@ const _fetchTime = async () => {
 }
 
 const selectedTable: Ref<TableDoc | null> = ref(null)
+let selectedTableDoc: any
+let unWatchSelectedTableDoc: WatchStopHandle | undefined
 const onEditTable = async (id: string): Promise<void> => {
 	if (selectedTable.value) return
 
+	selectedTableDoc = useDocument(doc(collection(db, 'tables'), id))
+	unWatchSelectedTableDoc = watch(selectedTableDoc, (tableDoc: any) => {
+		console.log(tableDoc.locked_at)
+	})
+
 	const tableRef = doc(db, 'tables', id)
-	await updateDoc(tableRef, { locked_until: _setLockedUntil() })
+	await updateDoc(tableRef, { locked_at: serverTimestamp() })
 	selectedTable.value = props.tables.find(item => item.id === id) ?? null
 	_timeout = window.setTimeout(onClose, OFFSET)
 }
@@ -55,16 +61,9 @@ const onClose = (): void => {
 	if (!selectedTable.value) return
 
 	clearTimeout(_timeout)
-	const id = selectedTable.value.id
+	unWatchSelectedTableDoc?.()
 	selectedTable.value = null
-	_unlockTable(id)
-}
-
-const onSaved = (): void => {
-	if (!selectedTable.value) return
-
-	clearTimeout(_timeout)
-	selectedTable.value = null
+	selectedTableDoc = undefined
 }
 
 const onUnlock = (id: string): void => {
@@ -75,7 +74,7 @@ const onUnlock = (id: string): void => {
 
 const _unlockTable = async (id: string): Promise<void> => {
 	const tableRef = doc(db, 'tables', id)
-	await updateDoc(tableRef, { locked_until: deleteField() })
+	await updateDoc(tableRef, { locked_at: deleteField() })
 }
 
 const occupancy: ComputedRef<string[]> = computed(() => {
@@ -112,25 +111,25 @@ onBeforeUnmount(() => {
 				({{ table.index }})
 				<template v-if="!user && !table.active">{{ table.name }}</template>
 				<template v-else>
-					<button type="button" :disabled="!!selectedTable || !!table.locked_until" @click="onEditTable(table.id)">
+					<button type="button" :disabled="!!selectedTable || !!table.locked_at" @click="onEditTable(table.id)">
 						{{ table.name }}
-						<template v-if="table.locked_until">🔒</template>
+						<template v-if="table.locked_at">🔒</template>
 					</button>
 					<!-- <span>{{ formatDateTime(table.modified.seconds * 1000) }}</span> -->
-					<template v-if="table.locked_until">
+					<template v-if="table.locked_at">
 						<button v-if="user" type="button" @click="onUnlock(table.id)">🔑</button>
-						<code
+						<!-- <code
 							>{{ new Date(table.locked_until).getSeconds() }}.{{
 								new Date(table.locked_until).getMilliseconds()
 							}}</code
-						>
-						<template v-if="selectedTable?.id === table.id && selectedTable.locked_until">
+						> -->
+						<template v-if="selectedTable?.id === table.id && selectedTable.locked">
 							|
-							<code
+							<!-- <code
 								>{{ new Date(selectedTable.locked_until).getSeconds() }}.{{
 									new Date(selectedTable.locked_until).getMilliseconds()
 								}}</code
-							>
+							> -->
 						</template>
 					</template>
 				</template>
@@ -138,13 +137,15 @@ onBeforeUnmount(() => {
 		</ul>
 	</main>
 
+	<pre>{{ selectedTableDoc?.locked_at }}</pre>
+
 	<TableForm
 		v-if="selectedTable"
 		:blocks="blocks"
 		:table-data="selectedTable"
 		:is-logged-in="!!user"
-		@cancel="onClose"
-		@saved="onSaved"
+		@cancel="_unlockTable(selectedTable!.id), onClose()"
+		@saved="onClose"
 	/>
 	<!-- <ol v-if="selectedTable && occupancy.length">
 		<li v-for="(name, i) in occupancy" :key="`seat-${i}`">{{ name }}</li>
