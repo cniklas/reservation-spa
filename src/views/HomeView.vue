@@ -14,6 +14,7 @@ const props = defineProps<{
 
 const user = useCurrentUser()
 const db = useFirestore()
+const uuid = ref(`_${Math.random().toString(36).substring(2, 10)}`)
 
 /**
  * TODOs
@@ -47,17 +48,31 @@ const onEditTable = async (id: string): Promise<void> => {
 	if (selectedTable.value) return
 
 	selectedTableDoc = useDocument(doc(collection(db, 'tables'), id))
-	unWatchSelectedTableDoc = watch(selectedTableDoc, (tableDoc: any) => {
-		console.log(tableDoc.locked_at)
-	})
+	unWatchSelectedTableDoc = watch(
+		() => selectedTableDoc?.value?.locked_by,
+		(lockedBy: string | undefined) => {
+			if (lockedBy && lockedBy !== uuid.value) {
+				// 🔺 TODO toast message
+				console.warn('Conclict')
+				cleanUp()
+			}
+		}
+	)
 
 	const tableRef = doc(db, 'tables', id)
-	await updateDoc(tableRef, { locked_at: serverTimestamp() })
+	await updateDoc(tableRef, { locked_by: uuid.value, locked_at: serverTimestamp() })
 	selectedTable.value = props.tables.find(item => item.id === id) ?? null
 	_timeout = window.setTimeout(onClose, OFFSET)
 }
 
 const onClose = (): void => {
+	if (!selectedTable.value) return
+
+	_unlockTable(selectedTable.value.id)
+	cleanUp()
+}
+
+const cleanUp = (): void => {
 	if (!selectedTable.value) return
 
 	clearTimeout(_timeout)
@@ -74,7 +89,7 @@ const onUnlock = (id: string): void => {
 
 const _unlockTable = async (id: string): Promise<void> => {
 	const tableRef = doc(db, 'tables', id)
-	await updateDoc(tableRef, { locked_at: deleteField() })
+	await updateDoc(tableRef, { locked_by: deleteField(), locked_at: deleteField() })
 }
 
 const occupancy: ComputedRef<string[]> = computed(() => {
@@ -103,6 +118,7 @@ onBeforeUnmount(() => {
 <template>
 	<main>
 		<h1>Übersicht</h1>
+		<div>uuid: {{ uuid }}</div>
 		<div>Client Time: {{ clientTime }}</div>
 		<div>Server Time: {{ serverTime }}</div>
 
@@ -137,6 +153,7 @@ onBeforeUnmount(() => {
 		</ul>
 	</main>
 
+	<pre>{{ selectedTableDoc?.locked_by }}</pre>
 	<pre>{{ selectedTableDoc?.locked_at }}</pre>
 
 	<TableForm
@@ -144,8 +161,8 @@ onBeforeUnmount(() => {
 		:blocks="blocks"
 		:table-data="selectedTable"
 		:is-logged-in="!!user"
-		@cancel="_unlockTable(selectedTable!.id), onClose()"
-		@saved="onClose"
+		@cancel="onClose"
+		@saved="cleanUp"
 	/>
 	<!-- <ol v-if="selectedTable && occupancy.length">
 		<li v-for="(name, i) in occupancy" :key="`seat-${i}`">{{ name }}</li>

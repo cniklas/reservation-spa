@@ -34,6 +34,7 @@ const onSubmit = async (): Promise<void> => {
 		try {
 			const formData = {
 				...toRaw(form),
+				locked_by: deleteField(),
 				locked_at: deleteField(),
 				modified: serverTimestamp(),
 			}
