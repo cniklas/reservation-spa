@@ -43,6 +43,7 @@ const onSubmit = async (): Promise<void> => {
 				// clear names
 				let n = props.tableData.seats
 				while (n > formData.seats) {
+					// @ts-ignore
 					formData[`seat_${n--}`] = ''
 				}
 			}
