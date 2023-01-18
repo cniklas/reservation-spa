@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onBeforeUnmount, type Ref, type ComputedRef, type WatchStopHandle } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount, type Ref, type ComputedRef } from 'vue'
+import { onBeforeRouteLeave } from 'vue-router'
 import { useCurrentUser, useFirestore, useDocument } from 'vuefire'
 import { collection, doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
 // import { isSafari } from '@firebase/util'
-import type { TableDoc } from '@/types/TableDoc.type'
+import type { TableDoc, LockedTableDoc } from '@/types/TableDoc.type'
 import TableForm from '@/components/TableForm.vue'
 import { formatDateTime, formatTime } from '@/use/helper'
 
-const props = defineProps<{
+defineProps<{
 	blocks: Map<number, string>
 	tables: TableDoc[]
 }>()
@@ -16,15 +17,14 @@ const user = useCurrentUser()
 const db = useFirestore()
 const uuid = ref(`_${Math.random().toString(36).substring(2, 10)}`)
 
-/**
- * TODOs
- * (2) auch die Freischaltung der Seite muss über eine externe Referenz kommen
- * (3) wenn der Admin einen Tisch freigibt, sollte sich das geöffnete Formular beim Client schließen
- */
+const dialogEl: Ref<HTMLDialogElement | null> = ref(null)
+const dialogMessage = ref('')
+
 const OFFSET: number = 5 * 60 * 1000
 let _timeout: number | undefined
 const _setLockedUntil = (): number => new Date().getTime() + OFFSET
 
+// 🔺 TODO Freischaltung der Seite zum Zeitpunkt x muss über eine externe Referenz kommen
 const clientTime = ref('')
 const serverTime = ref('')
 const _fetchTime = async () => {
@@ -41,46 +41,47 @@ const _fetchTime = async () => {
 	}
 }
 
-const selectedTable: Ref<TableDoc | null> = ref(null)
-let selectedTableDoc: any
-let unWatchSelectedTableDoc: WatchStopHandle | undefined
+const FAUX_ID = 'nope'
+const tableDocId: Ref<string> = ref(FAUX_ID)
+const _tableDoc = computed(() => doc(collection(db, 'tables'), tableDocId.value))
+// will always be in sync with the data source
+const selectedTable = useDocument(_tableDoc) as unknown as Ref<LockedTableDoc | null>
+
 const onEditTable = async (id: string): Promise<void> => {
 	if (selectedTable.value) return
 
-	selectedTableDoc = useDocument(doc(collection(db, 'tables'), id))
-	unWatchSelectedTableDoc = watch(
-		() => selectedTableDoc?.value?.locked_by,
-		(lockedBy: string | undefined) => {
-			if (lockedBy && lockedBy !== uuid.value) {
-				// 🔺 TODO toast message
-				console.warn('Conclict')
-				cleanUp()
-			}
-		}
-	)
-
+	tableDocId.value = id
 	const tableRef = doc(db, 'tables', id)
 	await updateDoc(tableRef, { locked_by: uuid.value, locked_at: serverTimestamp() })
-	selectedTable.value = props.tables.find(item => item.id === id) ?? null
-	_timeout = window.setTimeout(onClose, OFFSET)
+	_timeout = window.setTimeout(closeForm, OFFSET)
 }
+watch(
+	() => selectedTable.value?.locked_by,
+	(lockedBy: string | undefined) => {
+		if (lockedBy && lockedBy !== uuid.value) {
+			console.warn('Conflict')
+			cleanUp()
+			dialogMessage.value = 'Conflict'
+			dialogEl.value?.showModal()
+		}
+	}
+)
 
-const onClose = (): void => {
+const closeForm = (): void => {
 	if (!selectedTable.value) return
 
-	_unlockTable(selectedTable.value.id)
 	cleanUp()
+	_unlockTable(selectedTable.value.id)
 }
 
 const cleanUp = (): void => {
 	if (!selectedTable.value) return
 
 	clearTimeout(_timeout)
-	unWatchSelectedTableDoc?.()
-	selectedTable.value = null
-	selectedTableDoc = undefined
+	tableDocId.value = FAUX_ID
 }
 
+// 🔺 TODO wenn der Admin einen Tisch freigibt, muss das geöffnete Formular beim Client geschlossen werden
 const onUnlock = (id: string): void => {
 	if (!user) return
 
@@ -92,26 +93,29 @@ const _unlockTable = async (id: string): Promise<void> => {
 	await updateDoc(tableRef, { locked_by: deleteField(), locked_at: deleteField() })
 }
 
-const occupancy: ComputedRef<string[]> = computed(() => {
-	if (!selectedTable.value) return []
+// const occupancy: ComputedRef<string[]> = computed(() => {
+// 	if (!selectedTable.value) return []
 
-	const _occupancy: string[] = []
-	let n = 0
-	while (n < selectedTable.value.seats) {
-		const key = `seat_${++n}`
-		/* if (selectedTable.value[key].length) */ _occupancy.push(selectedTable.value[key] as string)
-	}
-	return _occupancy
-})
+// 	const _occupancy: string[] = []
+// 	let n = 0
+// 	while (n < selectedTable.value.seats) {
+// 		const key = `seat_${++n}`
+// 		/* if (selectedTable.value[key].length) */ _occupancy.push(selectedTable.value[key] as string)
+// 	}
+// 	return _occupancy
+// })
 
 onMounted(() => {
 	_fetchTime()
 	// 🔺 especially on mobile, the `beforeunload` event is not reliably fired
 	// https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event#usage_notes
-	window.addEventListener('beforeunload', onClose)
+	window.addEventListener('beforeunload', closeForm)
 })
 onBeforeUnmount(() => {
-	onClose()
+	closeForm()
+})
+onBeforeRouteLeave(() => {
+	closeForm()
 })
 </script>
 
@@ -134,37 +138,38 @@ onBeforeUnmount(() => {
 					<!-- <span>{{ formatDateTime(table.modified.seconds * 1000) }}</span> -->
 					<template v-if="table.locked_at">
 						<button v-if="user" type="button" @click="onUnlock(table.id)">🔑</button>
-						<!-- <code
-							>{{ new Date(table.locked_until).getSeconds() }}.{{
-								new Date(table.locked_until).getMilliseconds()
-							}}</code
-						> -->
-						<template v-if="selectedTable?.id === table.id && selectedTable.locked">
+						<!-- <code>{{ new Date(table.locked_at).getSeconds() }}.{{ new Date(table.locked_at).getMilliseconds() }}</code> -->
+						<!-- <template v-if="selectedTable?.id === table.id && selectedTable.locked_at">
 							|
-							<!-- <code
-								>{{ new Date(selectedTable.locked_until).getSeconds() }}.{{
-									new Date(selectedTable.locked_until).getMilliseconds()
-								}}</code
-							> -->
-						</template>
+							<code>
+								{{ new Date(selectedTable.locked_at).getSeconds() }}.{{
+									new Date(selectedTable.locked_at).getMilliseconds()
+								}}
+							</code>
+						</template> -->
 					</template>
 				</template>
 			</li>
 		</ul>
 	</main>
 
-	<pre>{{ selectedTableDoc?.locked_by }}</pre>
-	<pre>{{ selectedTableDoc?.locked_at }}</pre>
+	<pre>{{ selectedTable?.locked_by }}</pre>
+	<pre>{{ selectedTable?.locked_at }}</pre>
 
 	<TableForm
 		v-if="selectedTable"
 		:blocks="blocks"
-		:table-data="selectedTable"
+		:table-doc="selectedTable"
 		:is-logged-in="!!user"
-		@cancel="onClose"
+		@cancel="closeForm"
 		@saved="cleanUp"
 	/>
 	<!-- <ol v-if="selectedTable && occupancy.length">
 		<li v-for="(name, i) in occupancy" :key="`seat-${i}`">{{ name }}</li>
 	</ol> -->
+
+	<dialog ref="dialogEl">
+		<div>{{ dialogMessage }}</div>
+		<button type="button" @click="dialogEl?.close()">close</button>
+	</dialog>
 </template>

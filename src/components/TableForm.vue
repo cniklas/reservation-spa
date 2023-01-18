@@ -2,7 +2,7 @@
 import { reactive, watch, toRaw } from 'vue'
 import { useFirestore } from 'vuefire'
 import { doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
-import type { TableDoc } from '@/types/TableDoc.type'
+import type { LockedTableDoc } from '@/types/TableDoc.type'
 import { formatTime } from '@/use/helper'
 import { useErrorHandling } from '@/use/errorHandling'
 
@@ -12,10 +12,10 @@ const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, unlockSubmit }
 const emit = defineEmits(['cancel', 'saved'])
 const props = defineProps<{
 	blocks: Map<number, string>
-	tableData: TableDoc
+	tableDoc: LockedTableDoc
 	isLoggedIn: boolean
 }>()
-const form = reactive({ ...props.tableData })
+const form = reactive({ ...props.tableDoc })
 
 watch(
 	() => form.seats,
@@ -32,24 +32,26 @@ const onSubmit = async (): Promise<void> => {
 		beforeSubmit()
 
 		try {
-			const formData = {
+			const formData: LockedTableDoc = {
 				...toRaw(form),
+				// @ts-ignore
 				locked_by: deleteField(),
+				// @ts-ignore
 				locked_at: deleteField(),
+				// @ts-ignore
 				modified: serverTimestamp(),
 			}
 
-			const diff = props.tableData.seats - formData.seats
+			const diff = props.tableDoc.seats - formData.seats
 			if (diff > 0) {
 				// clear names
-				let n = props.tableData.seats
+				let n = props.tableDoc.seats
 				while (n > formData.seats) {
-					// @ts-ignore
 					formData[`seat_${n--}`] = ''
 				}
 			}
 
-			const tableRef = doc(db, 'tables', props.tableData.id)
+			const tableRef = doc(db, 'tables', props.tableDoc.id)
 			await updateDoc(tableRef, formData)
 			emit('saved')
 		} catch (error) {
@@ -68,10 +70,13 @@ const cancel = (): void => {
 <template>
 	<section>
 		<button type="button" @click="cancel">close</button>
-		<h2>{{ tableData.name }}</h2>
-		<div>
+		<h2>{{ tableDoc.name }}</h2>
+		<div v-if="tableDoc.locked_at?.seconds">
 			locked at:
-			<code>{{ formatTime(tableData.locked_at!.seconds * 1000) }}</code>
+			<code v-if="tableDoc.locked_at.nanoseconds">
+				{{ formatTime(tableDoc.locked_at.seconds * 1000 + tableDoc.locked_at.nanoseconds / 1000000) }}
+			</code>
+			<code v-else>{{ formatTime(tableDoc.locked_at.seconds * 1000) }}</code>
 		</div>
 
 		<form novalidate @submit.prevent="onSubmit">
