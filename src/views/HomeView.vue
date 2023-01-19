@@ -4,7 +4,7 @@ import { onBeforeRouteLeave } from 'vue-router'
 import { useCurrentUser, useFirestore, useDocument } from 'vuefire'
 import { collection, doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
 // import { isSafari } from '@firebase/util'
-import type { TableDoc, LockedTableDoc } from '@/types/TableDoc.type'
+import type { TableDoc } from '@/types/TableDoc.type'
 import TableForm from '@/components/TableForm.vue'
 import { formatDateTime, formatTime } from '@/use/helper'
 
@@ -22,7 +22,7 @@ const dialogMessage = ref('')
 
 const OFFSET: number = 5 * 60 * 1000
 let _timeout: number | undefined
-const _setLockedUntil = (): number => new Date().getTime() + OFFSET
+// const _setLockedUntil = (): number => new Date().getTime() + OFFSET
 
 // 🔺 TODO Freischaltung der Seite zum Zeitpunkt x muss über eine externe Referenz kommen
 const clientTime = ref('')
@@ -43,9 +43,13 @@ const _fetchTime = async () => {
 
 const FAUX_ID = 'nope'
 const tableDocId: Ref<string> = ref(FAUX_ID)
+const isTableDocIdValid: ComputedRef<boolean> = computed(() => tableDocId.value !== FAUX_ID)
 const _tableDoc = computed(() => doc(collection(db, 'tables'), tableDocId.value))
 // will always be in sync with the data source
-const selectedTable = useDocument(_tableDoc) as unknown as Ref<LockedTableDoc | null>
+const selectedTable = useDocument(_tableDoc) as unknown as Ref<TableDoc | null>
+const isFormOpen: ComputedRef<boolean> = computed(() => isTableDocIdValid.value && !!selectedTable.value)
+
+const isSaving: Ref<boolean> = ref(false)
 
 const onEditTable = async (id: string): Promise<void> => {
 	if (selectedTable.value) return
@@ -58,10 +62,19 @@ const onEditTable = async (id: string): Promise<void> => {
 watch(
 	() => selectedTable.value?.locked_by,
 	(lockedBy: string | undefined) => {
+		// another user owned the table at the same moment
 		if (lockedBy && lockedBy !== uuid.value) {
 			console.warn('Conflict')
 			cleanUp()
 			dialogMessage.value = 'Conflict'
+			dialogEl.value?.showModal()
+			return
+		}
+
+		// if table is unlocked by admin user the open form needs to be closed
+		if (!lockedBy && isTableDocIdValid.value && !isSaving.value) {
+			cleanUp()
+			dialogMessage.value = 'Unlocked by admin user'
 			dialogEl.value?.showModal()
 		}
 	}
@@ -79,9 +92,9 @@ const cleanUp = (): void => {
 
 	clearTimeout(_timeout)
 	tableDocId.value = FAUX_ID
+	isSaving.value = false
 }
 
-// 🔺 TODO wenn der Admin einen Tisch freigibt, muss das geöffnete Formular beim Client geschlossen werden
 const onUnlock = (id: string): void => {
 	if (!user) return
 
@@ -131,13 +144,13 @@ onBeforeRouteLeave(() => {
 				({{ table.index }})
 				<template v-if="!user && !table.active">{{ table.name }}</template>
 				<template v-else>
-					<button type="button" :disabled="!!selectedTable || !!table.locked_at" @click="onEditTable(table.id)">
+					<button type="button" :disabled="isFormOpen || !!table.locked_at" @click="onEditTable(table.id)">
 						{{ table.name }}
 						<template v-if="table.locked_at">🔒</template>
 					</button>
 					<!-- <span>{{ formatDateTime(table.modified.seconds * 1000) }}</span> -->
 					<template v-if="table.locked_at">
-						<button v-if="user" type="button" @click="onUnlock(table.id)">🔑</button>
+						<button v-if="user && table.locked_by !== uuid" type="button" @click="onUnlock(table.id)">🔑</button>
 						<!-- <code>{{ new Date(table.locked_at).getSeconds() }}.{{ new Date(table.locked_at).getMilliseconds() }}</code> -->
 						<!-- <template v-if="selectedTable?.id === table.id && selectedTable.locked_at">
 							|
@@ -153,15 +166,13 @@ onBeforeRouteLeave(() => {
 		</ul>
 	</main>
 
-	<pre>{{ selectedTable?.locked_by }}</pre>
-	<pre>{{ selectedTable?.locked_at }}</pre>
-
 	<TableForm
-		v-if="selectedTable"
+		v-if="isTableDocIdValid && !!selectedTable"
 		:blocks="blocks"
 		:table-doc="selectedTable"
 		:is-logged-in="!!user"
 		@cancel="closeForm"
+		@saving="isSaving = true"
 		@saved="cleanUp"
 	/>
 	<!-- <ol v-if="selectedTable && occupancy.length">

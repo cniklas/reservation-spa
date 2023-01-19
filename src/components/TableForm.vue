@@ -1,18 +1,22 @@
 <script setup lang="ts">
-import { reactive, watch, toRaw } from 'vue'
+import { reactive, computed, watch, toRaw, type ComputedRef } from 'vue'
 import { useFirestore } from 'vuefire'
 import { doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
-import type { LockedTableDoc } from '@/types/TableDoc.type'
+import type { TableDoc } from '@/types/TableDoc.type'
 import { formatTime } from '@/use/helper'
 import { useErrorHandling } from '@/use/errorHandling'
 
 const db = useFirestore()
 const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, unlockSubmit } = useErrorHandling()
 
-const emit = defineEmits(['cancel', 'saved'])
+const emit = defineEmits<{
+	(event: 'cancel'): void
+	(event: 'saving'): void
+	(event: 'saved'): void
+}>()
 const props = defineProps<{
 	blocks: Map<number, string>
-	tableDoc: LockedTableDoc
+	tableDoc: TableDoc
 	isLoggedIn: boolean
 }>()
 const form = reactive({ ...props.tableDoc })
@@ -32,7 +36,7 @@ const onSubmit = async (): Promise<void> => {
 		beforeSubmit()
 
 		try {
-			const formData: LockedTableDoc = {
+			const formData: TableDoc = {
 				...toRaw(form),
 				// @ts-ignore
 				locked_by: deleteField(),
@@ -51,6 +55,7 @@ const onSubmit = async (): Promise<void> => {
 				}
 			}
 
+			emit('saving')
 			const tableRef = doc(db, 'tables', props.tableDoc.id)
 			await updateDoc(tableRef, formData)
 			emit('saved')
@@ -62,6 +67,14 @@ const onSubmit = async (): Promise<void> => {
 	}
 }
 
+const lockedAtFormatted: ComputedRef<string> = computed(() => {
+	if (!props.tableDoc.locked_at) return ''
+
+	return props.tableDoc.locked_at.nanoseconds
+		? formatTime(props.tableDoc.locked_at.seconds * 1000 + props.tableDoc.locked_at.nanoseconds / 1000000)
+		: formatTime(props.tableDoc.locked_at.seconds * 1000)
+})
+
 const cancel = (): void => {
 	emit('cancel')
 }
@@ -71,12 +84,10 @@ const cancel = (): void => {
 	<section>
 		<button type="button" @click="cancel">close</button>
 		<h2>{{ tableDoc.name }}</h2>
-		<div v-if="tableDoc.locked_at?.seconds">
-			locked at:
-			<code v-if="tableDoc.locked_at.nanoseconds">
-				{{ formatTime(tableDoc.locked_at.seconds * 1000 + tableDoc.locked_at.nanoseconds / 1000000) }}
-			</code>
-			<code v-else>{{ formatTime(tableDoc.locked_at.seconds * 1000) }}</code>
+
+		<div v-if="tableDoc.locked_by">locked by: {{ tableDoc.locked_by }}</div>
+		<div v-if="tableDoc.locked_at">
+			locked at: {{ lockedAtFormatted }} // <code>{{ tableDoc.locked_at }}</code>
 		</div>
 
 		<form novalidate @submit.prevent="onSubmit">
