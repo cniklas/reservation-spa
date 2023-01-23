@@ -135,7 +135,6 @@ onBeforeRouteLeave(() => {
 <template>
 	<main>
 		<h1>Übersicht</h1>
-		<div>uuid: {{ uuid }}</div>
 		<div>Client Time: {{ clientTime }}</div>
 		<div>Server Time: {{ serverTime }}</div>
 
@@ -169,6 +168,7 @@ onBeforeRouteLeave(() => {
 	<TableForm
 		v-if="isTableDocIdValid && !!selectedTable"
 		:blocks="blocks"
+		:tables="tables"
 		:table-doc="selectedTable"
 		:is-logged-in="!!user"
 		@cancel="closeForm"

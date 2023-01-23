@@ -1,4 +1,7 @@
-import { ref, unref, type Ref, reactive } from 'vue'
+import { ref, unref, reactive, type Ref } from 'vue'
+import { compareTwoStrings } from 'string-similarity'
+
+const SIMILARITY_LIMIT = 0.64
 
 const errorCode: Ref<number | null> = ref(null)
 const errorMessage: Ref<string> = ref('')
@@ -55,14 +58,14 @@ const errorsList: Map<string, string> = reactive(new Map())
 // 		errorsList.delete(key)
 // 	}
 // }
-const validateName = (key: string, val: string): void => {
-	if (!val.length) {
+const validateName = (key: string, name: string, reservations: string[]): void => {
+	if (!name.length) {
 		errorsList.delete(key)
 		return
 	}
 
 	// there must be at least one space character
-	if (val.match(/ /g) === null) {
+	if (name.match(/ /g) === null) {
 		errorsList.set(key, 'Bitte Vor- und Nachnamen eintragen')
 		return
 	} else {
@@ -70,6 +73,12 @@ const validateName = (key: string, val: string): void => {
 	}
 
 	// 🔺 TODO auf Doubletten prüfen
+	reservations.forEach(entry => {
+		const similarity: number = compareTwoStrings(name, entry)
+		if (similarity >= SIMILARITY_LIMIT) {
+			console.log(`${name} vs. ${entry}:\n${similarity}`)
+		}
+	})
 }
 const resetValidation = () => {
 	errorsList.clear()

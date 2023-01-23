@@ -25,23 +25,41 @@ const emit = defineEmits<{
 }>()
 const props = defineProps<{
 	blocks: Map<number, string>
+	tables: TableDoc[]
 	tableDoc: TableDoc
 	isLoggedIn: boolean
 }>()
-const form = reactive({ ...props.tableDoc })
 
+const form = reactive({ ...props.tableDoc })
 watch(
 	() => form.seats,
 	val => {
 		if (val < 1) form.seats = 1
 		else if (val > 8) form.seats = 8
+		// 🔺 TODO bereits HIER die Felder leeren, nicht erst in Zeile 80
+		// 🔺 TODO dann auch `touchedSeats` sowie `errorsList` aktualisieren
 	}
 )
 
-const touchedNames: Ref<Set<string>> = ref(new Set())
+const reservations: ComputedRef<string[]> = computed(() => {
+	const _reservations: string[] = []
+	props.tables
+		.filter(item => item.id !== props.tableDoc.id)
+		.forEach(table => {
+			let n = 0
+			while (n < table.seats) {
+				const key = `seat_${++n}`
+				if (!(table[key] as string).length) continue
+				_reservations.push(table[key] as string)
+			}
+		})
+
+	return _reservations
+})
+const touchedSeats: Ref<Set<string>> = ref(new Set())
 const onChange = (key: string) => {
-	touchedNames.value.add(key)
-	validateName(key, form[key] as string)
+	touchedSeats.value.add(key)
+	validateName(key, form[key] as string, reservations.value)
 }
 
 const onSubmit = async (): Promise<void> => {
@@ -71,8 +89,8 @@ const onSubmit = async (): Promise<void> => {
 			}
 
 			// validate
-			touchedNames.value.forEach(key => {
-				validateName(key, formData[key] as string)
+			touchedSeats.value.forEach(key => {
+				validateName(key, formData[key] as string, reservations.value)
 			})
 			if (errorsList.size) return
 
