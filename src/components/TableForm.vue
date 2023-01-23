@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, computed, watch, toRaw, type ComputedRef } from 'vue'
+import { ref, reactive, computed, watch, toRaw, type Ref, type ComputedRef } from 'vue'
 import { useFirestore } from 'vuefire'
 import { doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
 import type { TableDoc } from '@/types/TableDoc.type'
@@ -7,8 +7,16 @@ import { formatTime } from '@/use/helper'
 import { useErrorHandling } from '@/use/errorHandling'
 
 const db = useFirestore()
-const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, unlockSubmit, errorsList, validateName } =
-	useErrorHandling()
+const {
+	isSubmitLocked,
+	isEmpty,
+	beforeSubmit,
+	handleSubmitError,
+	unlockSubmit,
+	errorsList,
+	validateName,
+	resetValidation,
+} = useErrorHandling()
 
 const emit = defineEmits<{
 	(event: 'cancel'): void
@@ -29,6 +37,12 @@ watch(
 		else if (val > 8) form.seats = 8
 	}
 )
+
+const touchedNames: Ref<Set<string>> = ref(new Set())
+const onChange = (key: string) => {
+	touchedNames.value.add(key)
+	validateName(key, form[key] as string)
+}
 
 const onSubmit = async (): Promise<void> => {
 	if (isEmpty(form.name)) return
@@ -57,11 +71,9 @@ const onSubmit = async (): Promise<void> => {
 			}
 
 			// validate
-			let n = 0
-			while (n < props.tableDoc.seats) {
-				const key = `seat_${++n}`
+			touchedNames.value.forEach(key => {
 				validateName(key, formData[key] as string)
-			}
+			})
 			if (errorsList.size) return
 
 			emit('saving')
@@ -86,6 +98,7 @@ const lockedAtFormatted: ComputedRef<string> = computed(() => {
 
 const cancel = (): void => {
 	emit('cancel')
+	resetValidation()
 }
 </script>
 
@@ -128,13 +141,14 @@ const cancel = (): void => {
 			</template>
 			<div v-for="n in form.seats" :key="`seat-${n}`">
 				<label :for="`seat_${n}`">Sitzplatz {{ n }}</label>
+				<!-- @change="validateName(`seat_${n}`, ($event.target as HTMLInputElement).value)" -->
 				<input
 					v-model.trim="form[`seat_${n}`]"
 					type="text"
 					:id="`seat_${n}`"
 					autocomplete="off"
 					placeholder="Vor- und Nachname"
-					@change="validateName(`seat_${n}`, ($event.target as HTMLInputElement).value)"
+					@change="onChange(`seat_${n}`)"
 				/>
 				<div style="color: red">
 					{{ errorsList.get(`seat_${n}`) }}
