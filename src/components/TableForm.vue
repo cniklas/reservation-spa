@@ -31,13 +31,24 @@ const props = defineProps<{
 }>()
 
 const form = reactive({ ...props.tableDoc })
+const touchedSeats: Ref<Set<string>> = ref(new Set())
 watch(
 	() => form.seats,
 	val => {
 		if (val < 1) form.seats = 1
 		else if (val > 8) form.seats = 8
-		// 🔺 TODO bereits HIER die Felder leeren, nicht erst in Zeile 80
-		// 🔺 TODO dann auch `touchedSeats` sowie `errorsList` aktualisieren
+
+		// clear names and error messages
+		const diff = props.tableDoc.seats - form.seats
+		if (diff > 0) {
+			let n = props.tableDoc.seats
+			while (n > form.seats) {
+				const key = `seat_${n--}`
+				form[key] = ''
+				touchedSeats.value.delete(key)
+				errorsList.delete(key)
+			}
+		}
 	}
 )
 
@@ -56,7 +67,7 @@ const reservations: ComputedRef<string[]> = computed(() => {
 
 	return _reservations
 })
-const touchedSeats: Ref<Set<string>> = ref(new Set())
+
 const onChange = (key: string) => {
 	touchedSeats.value.add(key)
 	validateName(key, form[key] as string, reservations.value)
@@ -77,15 +88,6 @@ const onSubmit = async (): Promise<void> => {
 				locked_at: deleteField(),
 				// @ts-ignore
 				modified: serverTimestamp(),
-			}
-
-			const diff = props.tableDoc.seats - formData.seats
-			if (diff > 0) {
-				// clear names
-				let n = props.tableDoc.seats
-				while (n > formData.seats) {
-					formData[`seat_${n--}`] = ''
-				}
 			}
 
 			// validate
