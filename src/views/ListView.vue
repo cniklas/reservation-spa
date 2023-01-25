@@ -1,17 +1,13 @@
 <script setup lang="ts">
 import { computed, type ComputedRef } from 'vue'
 import type { TableDoc } from '@/types/TableDoc.type'
-
-type Name = {
-	name: string
-	table: string
-}
+import type { Reservation } from '@/types/Reservation.type'
 
 const props = defineProps<{
 	tables: TableDoc[]
 }>()
 
-const _sortByName = (a: Name, b: Name): 1 | -1 | 0 => {
+const _sortByName = (a: Reservation, b: Reservation): 1 | -1 | 0 => {
 	const nameA = a.name.toLowerCase()
 	const nameB = b.name.toLowerCase()
 	if (nameA < nameB) return -1
@@ -19,8 +15,8 @@ const _sortByName = (a: Name, b: Name): 1 | -1 | 0 => {
 	return 0
 }
 
-const reservations: ComputedRef<Name[]> = computed(() => {
-	const _reservations: Name[] = []
+const reservations: ComputedRef<Reservation[]> = computed(() => {
+	const _reservations: Reservation[] = []
 	props.tables.forEach(table => {
 		let n = 0
 		while (n < table.seats) {

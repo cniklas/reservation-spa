@@ -3,6 +3,7 @@ import { ref, reactive, computed, watch, toRaw, type Ref, type ComputedRef } fro
 import { useFirestore } from 'vuefire'
 import { doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
 import type { TableDoc } from '@/types/TableDoc.type'
+import type { Reservation } from '@/types/Reservation.type'
 import { formatTime } from '@/use/helper'
 import { useErrorHandling } from '@/use/errorHandling'
 
@@ -52,8 +53,8 @@ watch(
 	}
 )
 
-const reservations: ComputedRef<string[]> = computed(() => {
-	const _reservations: string[] = []
+const reservations: ComputedRef<Reservation[]> = computed(() => {
+	const _reservations: Reservation[] = []
 	props.tables
 		.filter(item => item.id !== props.tableDoc.id)
 		.forEach(table => {
@@ -61,7 +62,11 @@ const reservations: ComputedRef<string[]> = computed(() => {
 			while (n < table.seats) {
 				const key = `seat_${++n}`
 				if (!(table[key] as string).length) continue
-				_reservations.push(table[key] as string)
+
+				_reservations.push({
+					name: table[key] as string,
+					table: table.name,
+				})
 			}
 		})
 

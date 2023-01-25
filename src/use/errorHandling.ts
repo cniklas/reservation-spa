@@ -1,5 +1,6 @@
 import { ref, unref, reactive, type Ref } from 'vue'
 import { compareTwoStrings } from 'string-similarity'
+import type { Reservation } from '@/types/Reservation.type'
 
 const SIMILARITY_LIMIT = 0.64
 
@@ -37,28 +38,11 @@ const errorsList: Map<string, string> = reactive(new Map())
 // 		errorsList.delete(key)
 // 	}
 // }
-// const validateField = (key: string, element: HTMLInputElement | null): void => {
-// 	if (!(element?.checkValidity() ?? true)) {
-// 		let validationMessage = 'Der angegebene Wert ist ungültig'
+const resetValidation = () => {
+	errorsList.clear()
+}
 
-// 		switch (true) {
-// 			case ['cell_group_members', 'excused', 'unexcused'].includes(key):
-// 				validationMessage = `Bitte trage eine Zahl zwischen ${element.min} und ${element.max} ein`
-// 				break
-// 			case ['visitors', 'guests', 'missionaries'].includes(key):
-// 				validationMessage = `Der angegebene Wert darf nicht größer sein als ${element.max}`
-// 				break
-// 			case ['overall_impression', 'touched', 'vision'].includes(key):
-// 				validationMessage = 'Bitte auswählen'
-// 				break
-// 		}
-
-// 		errorsList.set(key, validationMessage)
-// 	} else {
-// 		errorsList.delete(key)
-// 	}
-// }
-const validateName = (key: string, name: string, reservations: string[]): void => {
+const validateName = (key: string, name: string, reservations: Reservation[]): void => {
 	if (!name.length) {
 		errorsList.delete(key)
 		return
@@ -68,22 +52,23 @@ const validateName = (key: string, name: string, reservations: string[]): void =
 	if (name.match(/ /g) === null) {
 		errorsList.set(key, 'Bitte Vor- und Nachnamen eintragen')
 		return
-	} else {
-		errorsList.delete(key)
 	}
 
-	// 🔺 TODO auf Doubletten prüfen
-	reservations.forEach(entry => {
-		const similarity: number = compareTwoStrings(name, entry)
+	errorsList.delete(key)
+
+	reservations.forEach((entry: Reservation) => {
+		const similarity: number = compareTwoStrings(name, entry.name)
 		if (similarity >= SIMILARITY_LIMIT) {
-			console.log(`${name} vs. ${entry}:\n${similarity}`)
+			// console.log(`${name} vs. ${entry.name}:\n${similarity}`)
+			let prependix = ''
+			if (errorsList.has(key)) prependix = `${errorsList.get(key)};`
+			errorsList.set(key, `${prependix}${entry.name} an ${entry.table}`)
 		}
 	})
 }
-const resetValidation = () => {
-	errorsList.clear()
-}
 
+// 🔺 TODO in Composable umwandeln, s. modal.js
+// Dann sind errors kein state mehr und müssen auch nicht zurückgesetzt werden
 export const useErrorHandling = () => ({
 	errorCode,
 	errorMessage,

@@ -2,8 +2,8 @@
 import { ref, watch, onMounted, type Ref } from 'vue'
 import { useRoute, useRouter, RouterLink, RouterView } from 'vue-router'
 import { useFirestore, useCollection } from 'vuefire'
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 import { collection, query, orderBy } from 'firebase/firestore'
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 
 const route = useRoute()
 const router = useRouter()
