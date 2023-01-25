@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, watch, toRaw } from 'vue'
+import { reactive, toRaw } from 'vue'
 import { useRouter } from 'vue-router'
 import { useFirestore } from 'vuefire'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
@@ -23,13 +23,12 @@ const form = reactive({
 	seats: 8,
 })
 
-watch(
-	() => form.seats,
-	val => {
-		if (val < 1) form.seats = 1
-		else if (val > 8) form.seats = 8
-	}
-)
+const decrease = (): void => {
+	if (form.seats > 1) form.seats--
+}
+const increase = (): void => {
+	if (form.seats < 8) form.seats++
+}
 
 const onSubmit = async (): Promise<void> => {
 	// if (!state.hasAuthenticated) return
@@ -73,7 +72,10 @@ const onSubmit = async (): Promise<void> => {
 			</div>
 			<div>
 				<label for="seats">Anzahl Sitzplätze</label>
-				<input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="1" max="8" />
+				<!-- <input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="1" max="8" /> -->
+				{{ form.seats }}
+				<button type="button" :disabled="form.seats === 1" @click="decrease">-</button>
+				<button type="button" :disabled="form.seats === 8" @click="increase">+</button>
 			</div>
 			<div>
 				<div>Block</div>

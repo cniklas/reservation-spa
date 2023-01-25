@@ -33,11 +33,17 @@ const props = defineProps<{
 
 const form = reactive({ ...props.tableDoc })
 const touchedSeats: Ref<Set<string>> = ref(new Set())
+const decrease = (): void => {
+	if (form.seats > 1) form.seats--
+}
+const increase = (): void => {
+	if (form.seats < 8) form.seats++
+}
 watch(
 	() => form.seats,
-	val => {
-		if (val < 1) form.seats = 1
-		else if (val > 8) form.seats = 8
+	() => {
+		// if (val < 1) form.seats = 1
+		// else if (val > 8) form.seats = 8
 
 		// clear names and error messages
 		const diff = props.tableDoc.seats - form.seats
@@ -132,7 +138,6 @@ const cancel = (): void => {
 		<button type="button" @click="cancel">close</button>
 		<h2>{{ tableDoc.name }}</h2>
 
-		<div v-if="tableDoc.locked_by">locked by: {{ tableDoc.locked_by }}</div>
 		<div v-if="tableDoc.locked_at">
 			locked at: {{ lockedAtFormatted }} // <code>{{ tableDoc.locked_at }}</code>
 		</div>
@@ -145,7 +150,10 @@ const cancel = (): void => {
 				</div>
 				<div>
 					<label for="seats">Anzahl Sitzplätze</label>
-					<input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="1" max="8" />
+					<!-- <input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="1" max="8" /> -->
+					{{ form.seats }}
+					<button type="button" :disabled="form.seats === 1" @click="decrease">-</button>
+					<button type="button" :disabled="form.seats === 8" @click="increase">+</button>
 				</div>
 				<div>
 					<div>Block</div>

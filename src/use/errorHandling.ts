@@ -38,7 +38,7 @@ const errorsList: Map<string, string> = reactive(new Map())
 // 		errorsList.delete(key)
 // 	}
 // }
-const resetValidation = () => {
+const resetValidation = (): void => {
 	errorsList.clear()
 }
 
