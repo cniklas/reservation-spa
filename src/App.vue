@@ -9,6 +9,13 @@ const route = useRoute()
 const router = useRouter()
 const auth = getAuth()
 
+// @ts-ignore
+// eslint-disable-next-line
+const version: string = __APP_VERSION__
+// @ts-ignore
+// eslint-disable-next-line
+const buildTime: string = `${new Date(__BUILD_TIME__).toLocaleDateString('de-DE', { hour: 'numeric', minute: 'numeric' })} Uhr`
+
 const blocks: Map<number, string> = new Map([
 	[1, 'Linker Block'],
 	[2, 'Mittelblock'],
@@ -59,4 +66,11 @@ onMounted(() => {
 	</header>
 
 	<RouterView :blocks="blocks" :tables="tables" />
+
+	<footer>
+		<details>
+			<summary>{{ version }}</summary>
+			<div>{{ buildTime }}</div>
+		</details>
+	</footer>
 </template>
