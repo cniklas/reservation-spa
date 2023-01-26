@@ -8,16 +8,8 @@ import { formatTime } from '@/use/helper'
 import { useErrorHandling } from '@/use/errorHandling'
 
 const db = useFirestore()
-const {
-	isSubmitLocked,
-	isEmpty,
-	beforeSubmit,
-	handleSubmitError,
-	unlockSubmit,
-	errorsList,
-	validateName,
-	resetValidation,
-} = useErrorHandling()
+const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, unlockSubmit, errorsList, validateName } =
+	useErrorHandling()
 
 const emit = defineEmits<{
 	(event: 'cancel'): void
@@ -130,7 +122,6 @@ const lockedAtFormatted: ComputedRef<string> = computed(() => {
 
 const cancel = (): void => {
 	emit('cancel')
-	resetValidation()
 }
 </script>
 
