@@ -79,9 +79,10 @@ const reservations: ComputedRef<Reservation[]> = computed(() => {
 	return _reservations
 })
 
-const onChange = (key: string) => {
+const onChange = (key: string, el: HTMLInputElement) => {
 	touchedSeats.value.add(key)
 	validateName(key, form[key] as string, reservations.value)
+	el.setCustomValidity(errorsList.has(key) ? 'Eingabe ungültig' : '')
 }
 
 const onSubmit = async (): Promise<void> => {
@@ -174,14 +175,13 @@ const cancel = (): void => {
 			</template>
 			<div v-for="n in form.seats" :key="`seat-${n}`">
 				<label :for="`seat_${n}`">Sitzplatz {{ n }}</label>
-				<!-- @change="validateName(`seat_${n}`, ($event.target as HTMLInputElement).value)" -->
 				<input
 					v-model.trim="form[`seat_${n}`]"
 					type="text"
 					:id="`seat_${n}`"
 					autocomplete="off"
 					placeholder="Vor- und Nachname"
-					@change="onChange(`seat_${n}`)"
+					@change="onChange(`seat_${n}`, $event.target as HTMLInputElement)"
 				/>
 				<div style="color: red">
 					{{ errorsList.get(`seat_${n}`) }}

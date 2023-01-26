@@ -13,6 +13,12 @@ textarea {
 	color: inherit;
 }
 
+input:invalid,
+select:invalid,
+textarea:invalid {
+	border-color: deeppink;
+}
+
 button:not(:disabled) {
 	cursor: pointer;
 }
