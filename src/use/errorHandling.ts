@@ -30,40 +30,38 @@ export const useErrorHandling = () => {
 		unlockSubmit()
 	}
 
-	const errorsList: Map<string, string> = reactive(new Map())
+	const validationErrors: Map<string, string | string[]> = reactive(new Map())
 	// const addError = (key: string, message: string): void => {
-	// 	errorsList.set(key, message)
+	// 	validationErrors.set(key, message)
 	// }
 	// const removeError = (key: string, element: HTMLInputElement | null): void => {
-	// 	if (errorsList.has(key) && (element?.checkValidity() ?? true)) {
-	// 		errorsList.delete(key)
+	// 	if (validationErrors.has(key) && (element?.checkValidity() ?? true)) {
+	// 		validationErrors.delete(key)
 	// 	}
 	// }
 	// const resetValidation = (): void => {
-	// 	errorsList.clear()
+	// 	validationErrors.clear()
 	// }
 
 	const validateName = (key: string, name: string, reservations: Reservation[]): void => {
 		if (!name.length) {
-			errorsList.delete(key)
+			validationErrors.delete(key)
 			return
 		}
 
 		// there must be at least one space character
 		if (name.match(/ /g) === null) {
-			errorsList.set(key, 'Bitte Vor- und Nachnamen eintragen')
+			validationErrors.set(key, 'Bitte trage Vor- und Nachnamen ein')
 			return
 		}
 
-		errorsList.delete(key)
+		validationErrors.delete(key)
 
 		reservations.forEach((entry: Reservation) => {
 			const similarity: number = compareTwoStrings(name.toLowerCase(), entry.name.toLowerCase())
 			if (similarity >= SIMILARITY_LIMIT) {
 				// console.log(`${name} vs. ${entry.name}:\n${similarity}`)
-				let prependix = ''
-				if (errorsList.has(key)) prependix = `${errorsList.get(key)};`
-				errorsList.set(key, `${prependix}${entry.name} an ${entry.table}`)
+				validationErrors.set(key, [...(validationErrors.get(key) ?? []), `${entry.name} an ${entry.table}`])
 			}
 		})
 	}
@@ -77,7 +75,7 @@ export const useErrorHandling = () => {
 		beforeSubmit,
 		handleSubmitError,
 		// resetErrorState,
-		errorsList,
+		validationErrors,
 		validateName,
 		// resetValidation,
 	}

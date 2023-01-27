@@ -16,7 +16,7 @@ textarea {
 input:invalid,
 select:invalid,
 textarea:invalid {
-	border-color: deeppink;
+	border-color: red;
 }
 
 button:not(:disabled) {

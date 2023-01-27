@@ -8,7 +8,7 @@ import { formatTime } from '@/use/helper'
 import { useErrorHandling } from '@/use/errorHandling'
 
 const db = useFirestore()
-const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, unlockSubmit, errorsList, validateName } =
+const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, unlockSubmit, validationErrors, validateName } =
 	useErrorHandling()
 
 const emit = defineEmits<{
@@ -45,7 +45,7 @@ watch(
 				const key = `seat_${n--}`
 				form[key] = ''
 				touchedSeats.value.delete(key)
-				errorsList.delete(key)
+				validationErrors.delete(key)
 			}
 		}
 	}
@@ -74,7 +74,7 @@ const reservations: ComputedRef<Reservation[]> = computed(() => {
 const onChange = (key: string, el: HTMLInputElement) => {
 	touchedSeats.value.add(key)
 	validateName(key, form[key] as string, reservations.value)
-	el.setCustomValidity(errorsList.has(key) ? 'Eingabe ungültig' : '')
+	el.setCustomValidity(validationErrors.has(key) ? 'Eingabe ungültig' : '')
 }
 
 const onSubmit = async (): Promise<void> => {
@@ -98,7 +98,7 @@ const onSubmit = async (): Promise<void> => {
 			touchedSeats.value.forEach(key => {
 				validateName(key, formData[key] as string, reservations.value)
 			})
-			if (errorsList.size) return
+			if (validationErrors.size) return
 
 			emit('saving')
 			const tableRef = doc(db, 'tables', props.tableDoc.id)
@@ -164,19 +164,31 @@ const cancel = (): void => {
 					<input v-model="form.active" type="checkbox" id="active" />
 				</div>
 			</template>
-			<div v-for="n in form.seats" :key="`seat-${n}`">
-				<label :for="`seat_${n}`">Sitzplatz {{ n }}</label>
-				<input
-					v-model.trim="form[`seat_${n}`]"
-					type="text"
-					:id="`seat_${n}`"
-					autocomplete="off"
-					placeholder="Vor- und Nachname"
-					@change="onChange(`seat_${n}`, $event.target as HTMLInputElement)"
-				/>
-				<div style="color: red">
-					{{ errorsList.get(`seat_${n}`) }}
-				</div>
+			<div>
+				<div>Sitzplätze</div>
+				<ol>
+					<li v-for="n in form.seats" :key="`seat-${n}`">
+						<!-- <label :for="`seat_${n}`">Sitzplatz {{ n }}</label> -->
+						<input
+							v-model.trim="form[`seat_${n}`]"
+							type="text"
+							:id="`seat_${n}`"
+							autocomplete="off"
+							placeholder="Vor- und Nachname"
+							@change="onChange(`seat_${n}`, $event.target as HTMLInputElement)"
+						/>
+						<template v-if="validationErrors.has(`seat_${n}`)">
+							<template v-if="Array.isArray(validationErrors.get(`seat_${n}`))">
+								<div style="color: red">Ist diese Person identisch mit</div>
+								<ul class="comma-separated">
+									<li v-for="(hit, i) in validationErrors.get(`seat_${n}`)" :key="`${n}-${i}`">{{ hit }}</li>
+								</ul>
+								<button type="button">nein</button>
+							</template>
+							<div v-else style="color: red">{{ validationErrors.get(`seat_${n}`) }}</div>
+						</template>
+					</li>
+				</ol>
 			</div>
 			<div>
 				<button type="submit" :disabled="isEmpty(form.name) || isSubmitLocked">Speichern</button>
@@ -185,3 +197,25 @@ const cancel = (): void => {
 		</form>
 	</section>
 </template>
+
+<style lang="postcss">
+.comma-separated {
+	display: flex;
+	list-style: none;
+	margin: unset;
+	padding: unset;
+
+	& > :not(:last-child)::after {
+		content: ', ';
+		white-space: pre-wrap;
+	}
+
+	& > :nth-last-child(2)::after {
+		content: ' oder ';
+	}
+
+	& > :last-child::after {
+		content: '?';
+	}
+}
+</style>
