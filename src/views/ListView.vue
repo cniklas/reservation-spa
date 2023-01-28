@@ -7,12 +7,8 @@ const props = defineProps<{
 	tables: TableDoc[]
 }>()
 
-const _sortByName = (a: Reservation, b: Reservation): 1 | -1 | 0 => {
-	const nameA = a.name.toLowerCase()
-	const nameB = b.name.toLowerCase()
-	if (nameA < nameB) return -1
-	if (nameA > nameB) return 1
-	return 0
+const _sortByName = (a: Reservation, b: Reservation): number => {
+	return a.name.localeCompare(b.name, 'de')
 }
 
 const reservations: ComputedRef<Reservation[]> = computed(() => {
@@ -41,11 +37,20 @@ const reservations: ComputedRef<Reservation[]> = computed(() => {
 		<h1>Namensliste</h1>
 
 		<table>
-			<tr v-for="(entry, i) in reservations" :key="i">
-				<td>{{ i + 1 }}</td>
-				<td>{{ entry.name }}</td>
-				<td>{{ entry.table }}</td>
-			</tr>
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Name</th>
+					<th>Tisch</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="(entry, i) in reservations" :key="i">
+					<td>{{ i + 1 }}</td>
+					<td>{{ entry.name }}</td>
+					<td>{{ entry.table }}</td>
+				</tr>
+			</tbody>
 		</table>
 	</main>
 </template>
