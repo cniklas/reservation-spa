@@ -45,7 +45,7 @@ watch(
 				const key = `seat_${n--}`
 				form[key] = ''
 				touchedSeats.value.delete(key)
-				validationErrors.delete(key)
+				validationErrors.value.delete(key)
 			}
 		}
 	}
@@ -74,7 +74,17 @@ const reservations: ComputedRef<Reservation[]> = computed(() => {
 const onChange = (key: string, el: HTMLInputElement) => {
 	touchedSeats.value.add(key)
 	validateName(key, form[key] as string, reservations.value)
-	el.setCustomValidity(validationErrors.has(key) ? 'Eingabe ungültig' : '')
+	el.setCustomValidity(validationErrors.value.has(key) ? 'Eingabe ungültig' : '')
+}
+
+const resetValidation = (key: string): void => {
+	touchedSeats.value.delete(key)
+	validationErrors.value.delete(key)
+	;(document.querySelector(`#${key}`) as HTMLInputElement).setCustomValidity('')
+}
+const resetValue = (key: string): void => {
+	form[key] = ''
+	resetValidation(key)
 }
 
 const onSubmit = async (): Promise<void> => {
@@ -98,7 +108,7 @@ const onSubmit = async (): Promise<void> => {
 			touchedSeats.value.forEach(key => {
 				validateName(key, formData[key] as string, reservations.value)
 			})
-			if (validationErrors.size) return
+			if (validationErrors.value.size) return
 
 			emit('saving')
 			const tableRef = doc(db, 'tables', props.tableDoc.id)
@@ -128,7 +138,7 @@ const cancel = (): void => {
 <template>
 	<section>
 		<button type="button" @click="cancel">close</button>
-		<h2>{{ tableDoc.name }}</h2>
+		<h2>Tisch {{ form.name }}</h2>
 
 		<div v-if="tableDoc.locked_at">
 			locked at: {{ lockedAtFormatted }} // <code>{{ tableDoc.locked_at }}</code>
@@ -138,7 +148,7 @@ const cancel = (): void => {
 			<template v-if="isLoggedIn">
 				<div>
 					<label for="name">Name</label>
-					<input v-model.trim="form.name" type="text" id="name" autocomplete="off" required />
+					<input v-model.trim="form.name" type="text" id="name" autocomplete="off" maxlength="16" required />
 				</div>
 				<div>
 					<label for="seats">Anzahl Sitzplätze</label>
@@ -150,13 +160,8 @@ const cancel = (): void => {
 				<div>
 					<div>Block</div>
 					<template v-for="[key, block] of blocks" :key="`block-${key}`">
-						<input
-							v-model.number="form.block_id"
-							type="radio"
-							:id="`block_id_${key}`"
-							name="block_id"
-							:value="key"
-						/><label :for="`block_id_${key}`">{{ block }}</label>
+						<input v-model.number="form.block_id" type="radio" :id="`block_id_${key}`" name="block_id" :value="key" />
+						<label :for="`block_id_${key}`">{{ block }}</label>
 					</template>
 				</div>
 				<div>
@@ -174,6 +179,7 @@ const cancel = (): void => {
 							type="text"
 							:id="`seat_${n}`"
 							autocomplete="off"
+							maxlength="36"
 							placeholder="Vor- und Nachname"
 							@change="onChange(`seat_${n}`, $event.target as HTMLInputElement)"
 						/>
@@ -183,7 +189,8 @@ const cancel = (): void => {
 								<ul class="comma-separated">
 									<li v-for="(hit, i) in validationErrors.get(`seat_${n}`)" :key="`${n}-${i}`">{{ hit }}</li>
 								</ul>
-								<button type="button">nein</button>
+								<button type="button" @click="resetValidation(`seat_${n}`)">nein</button>
+								<button type="button" @click="resetValue(`seat_${n}`)">ja</button>
 							</template>
 							<div v-else style="color: red">{{ validationErrors.get(`seat_${n}`) }}</div>
 						</template>

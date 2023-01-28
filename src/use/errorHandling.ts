@@ -30,7 +30,7 @@ export const useErrorHandling = () => {
 		unlockSubmit()
 	}
 
-	const validationErrors: Map<string, string | string[]> = reactive(new Map())
+	const validationErrors: Ref<Map<string, string | string[]>> = ref(new Map())
 	// const addError = (key: string, message: string): void => {
 	// 	validationErrors.set(key, message)
 	// }
@@ -45,23 +45,26 @@ export const useErrorHandling = () => {
 
 	const validateName = (key: string, name: string, reservations: Reservation[]): void => {
 		if (!name.length) {
-			validationErrors.delete(key)
+			validationErrors.value.delete(key)
 			return
 		}
 
 		// there must be at least one space character
 		if (name.match(/ /g) === null) {
-			validationErrors.set(key, 'Bitte trage Vor- und Nachnamen ein')
+			validationErrors.value.set(key, 'Bitte trage Vor- und Nachnamen ein')
 			return
 		}
 
-		validationErrors.delete(key)
+		validationErrors.value.delete(key)
 
 		reservations.forEach((entry: Reservation) => {
 			const similarity: number = compareTwoStrings(name.toLowerCase(), entry.name.toLowerCase())
+			// console.log(`${name} vs. ${entry.name}:\n${similarity}`)
 			if (similarity >= SIMILARITY_LIMIT) {
-				// console.log(`${name} vs. ${entry.name}:\n${similarity}`)
-				validationErrors.set(key, [...(validationErrors.get(key) ?? []), `${entry.name} an ${entry.table}`])
+				validationErrors.value.set(key, [
+					...(validationErrors.value.get(key) ?? []),
+					`${entry.name} an Tisch ${entry.table}`,
+				])
 			}
 		})
 	}
