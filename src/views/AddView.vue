@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, toRaw } from 'vue'
+import { reactive, watch, toRaw } from 'vue'
 import { useRouter } from 'vue-router'
 import { useFirestore } from 'vuefire'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
@@ -23,12 +23,13 @@ const form = reactive({
 	seats: 8,
 })
 
-const decrease = (): void => {
-	if (form.seats > 1) form.seats--
-}
-const increase = (): void => {
-	if (form.seats < 8) form.seats++
-}
+watch(
+	() => form.seats,
+	val => {
+		if (val < 1) form.seats = 1
+		else if (val > 8) form.seats = 8
+	}
+)
 
 const onSubmit = async (): Promise<void> => {
 	// if (!state.hasAuthenticated) return
@@ -38,6 +39,7 @@ const onSubmit = async (): Promise<void> => {
 		beforeSubmit()
 
 		try {
+			// 🔺 TODO name mus unique sein
 			const formData = {
 				...toRaw(form),
 				index: _getNextIndex(),
@@ -68,26 +70,18 @@ const onSubmit = async (): Promise<void> => {
 		<form novalidate @submit.prevent="onSubmit">
 			<div>
 				<label for="name">Name</label>
-				<input v-model.trim="form.name" type="text" id="name" autocomplete="off" required />
-			</div>
-			<div>
-				<label for="seats">Anzahl Sitzplätze</label>
-				<!-- <input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="1" max="8" /> -->
-				{{ form.seats }}
-				<button type="button" :disabled="form.seats === 1" @click="decrease">-</button>
-				<button type="button" :disabled="form.seats === 8" @click="increase">+</button>
+				<input v-model.trim="form.name" type="text" id="name" autocomplete="off" maxlength="16" required />
 			</div>
 			<div>
 				<div>Block</div>
 				<template v-for="[key, block] of blocks" :key="`block-${key}`">
-					<input
-						v-model.number="form.block_id"
-						type="radio"
-						:id="`block_id_${key}`"
-						name="block_id"
-						:value="key"
-					/><label :for="`block_id_${key}`">{{ block }}</label>
+					<input v-model.number="form.block_id" type="radio" :id="`block_id_${key}`" name="block_id" :value="key" />
+					<label :for="`block_id_${key}`">{{ block }}</label>
 				</template>
+			</div>
+			<div>
+				<label for="seats">Anzahl Sitzplätze</label>
+				<input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="1" max="8" />
 			</div>
 			<div>
 				<label for="active">verfügbar</label>
