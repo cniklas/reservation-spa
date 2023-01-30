@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onBeforeUnmount, type Ref, type ComputedRef } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick, type Ref, type ComputedRef } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 import { useCurrentUser, useFirestore, useDocument } from 'vuefire'
 import { collection, doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
 // import { isSafari } from '@firebase/util'
 import type { TableDoc } from '@/types/TableDoc.type'
 import TableForm from '@/components/TableForm.vue'
+import TableGroup from '@/components/TableGroup.vue'
 import { formatDateTime, formatTime } from '@/use/helper'
 
-defineProps<{
+const props = defineProps<{
 	blocks: Map<number, string>
 	tables: TableDoc[]
 }>()
@@ -19,6 +20,10 @@ const uuid = ref(`_${Math.random().toString(36).substring(2, 10)}`)
 
 const dialogEl: Ref<HTMLDialogElement | null> = ref(null)
 const dialogMessage = ref('')
+
+const leftBlock: ComputedRef<TableDoc[]> = computed(() => props.tables.filter(item => item.block_id === 1))
+const middleBlock: ComputedRef<TableDoc[]> = computed(() => props.tables.filter(item => item.block_id === 2))
+const rightBlock: ComputedRef<TableDoc[]> = computed(() => props.tables.filter(item => item.block_id === 3))
 
 const OFFSET: number = 5 * 60 * 1000
 let _timeout: number | undefined
@@ -58,6 +63,10 @@ const onEditTable = async (id: string): Promise<void> => {
 	const tableRef = doc(db, 'tables', id)
 	await updateDoc(tableRef, { locked_by: uuid.value, locked_at: serverTimestamp() })
 	_timeout = window.setTimeout(closeForm, OFFSET)
+
+	// 🔺 TODO remove when final layout has been set up
+	await nextTick()
+	document.querySelector('#table-form')?.scrollIntoView({ behavior: 'smooth' })
 }
 watch(
 	() => selectedTable.value?.locked_by,
@@ -95,7 +104,7 @@ const cleanUp = (): void => {
 	isSaving.value = false
 }
 
-const onUnlock = (id: string): void => {
+const onUnlockTable = (id: string): void => {
 	if (!user) return
 
 	_unlockTable(id)
@@ -105,18 +114,6 @@ const _unlockTable = async (id: string): Promise<void> => {
 	const tableRef = doc(db, 'tables', id)
 	await updateDoc(tableRef, { locked_by: deleteField(), locked_at: deleteField() })
 }
-
-// const occupancy: ComputedRef<string[]> = computed(() => {
-// 	if (!selectedTable.value) return []
-
-// 	const _occupancy: string[] = []
-// 	let n = 0
-// 	while (n < selectedTable.value.seats) {
-// 		const key = `seat_${++n}`
-// 		/* if (selectedTable.value[key].length) */ _occupancy.push(selectedTable.value[key] as string)
-// 	}
-// 	return _occupancy
-// })
 
 onMounted(() => {
 	_fetchTime()
@@ -138,35 +135,37 @@ onBeforeRouteLeave(() => {
 		<div>Client Time: {{ clientTime }}</div>
 		<div>Server Time: {{ serverTime }}</div>
 
-		<ul>
-			<li v-for="table in tables" :key="table.id">
-				({{ table.index }})
-				<template v-if="!user && !table.active">{{ table.name }}</template>
-				<template v-else>
-					<button type="button" :disabled="isFormOpen || !!table.locked_at" @click="onEditTable(table.id)">
-						{{ table.name }}
-						<template v-if="table.locked_at">🔒</template>
-					</button>
-					<!-- <span>{{ formatDateTime(table.modified.seconds * 1000) }}</span> -->
-					<template v-if="table.locked_at">
-						<button v-if="user && table.locked_by !== uuid" type="button" @click="onUnlock(table.id)">🔑</button>
-						<!-- <code>{{ new Date(table.locked_at).getSeconds() }}.{{ new Date(table.locked_at).getMilliseconds() }}</code> -->
-						<!-- <template v-if="selectedTable?.id === table.id && selectedTable.locked_at">
-							|
-							<code>
-								{{ new Date(selectedTable.locked_at).getSeconds() }}.{{
-									new Date(selectedTable.locked_at).getMilliseconds()
-								}}
-							</code>
-						</template> -->
-					</template>
-				</template>
-			</li>
-		</ul>
+		<div style="display: grid; grid-template-columns: repeat(3, 1fr)">
+			<TableGroup
+				:tables="leftBlock"
+				:uuid="uuid"
+				:is-logged-in="!!user"
+				:is-form-open="isFormOpen"
+				@edit="onEditTable"
+				@unlock="onUnlockTable"
+			/>
+			<TableGroup
+				:tables="middleBlock"
+				:uuid="uuid"
+				:is-logged-in="!!user"
+				:is-form-open="isFormOpen"
+				@edit="onEditTable"
+				@unlock="onUnlockTable"
+			/>
+			<TableGroup
+				:tables="rightBlock"
+				:uuid="uuid"
+				:is-logged-in="!!user"
+				:is-form-open="isFormOpen"
+				@edit="onEditTable"
+				@unlock="onUnlockTable"
+			/>
+		</div>
 	</main>
 
 	<TableForm
 		v-if="isTableDocIdValid && !!selectedTable"
+		id="table-form"
 		:blocks="blocks"
 		:tables="tables"
 		:table-doc="selectedTable"
@@ -175,9 +174,6 @@ onBeforeRouteLeave(() => {
 		@saving="isSaving = true"
 		@saved="cleanUp"
 	/>
-	<!-- <ol v-if="selectedTable && occupancy.length">
-		<li v-for="(name, i) in occupancy" :key="`seat-${i}`">{{ name }}</li>
-	</ol> -->
 
 	<dialog ref="dialogEl">
 		<div>{{ dialogMessage }}</div>
