@@ -3181,10 +3181,10 @@ vue@^3.2.45:
     "@vue/server-renderer" "3.2.45"
     "@vue/shared" "3.2.45"
 
-vuefire@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/vuefire/-/vuefire-3.0.0.tgz#5b58bfedb8cafcb01010d9ab233a034ef0e312b6"
-  integrity sha512-Jc2uvIrSgbJd1XTHMMrgsQMR7VLjyywCGaM/EDw1E6ecv/94gXx8Ako+AAo2lc/sl/f7PdbBZ3mkIaXe7gMFgw==
+vuefire@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/vuefire/-/vuefire-3.0.1.tgz#2a26aa06573788ff73c24744fc62a649f15071b5"
+  integrity sha512-d3aYvoB30iQ6DwQ436PjEZKams09X1YviTwMWeydzuylyhURpk1ODQfZKCHwd9Cu/0xIb024xXQS4n+XeIMsNA==
   dependencies:
     vue-demi latest
 
