@@ -21,6 +21,7 @@ const props = defineProps<{
 	tables: TableDoc[]
 	tableDoc: TableDoc
 	isLoggedIn: boolean
+	countdown: number
 }>()
 
 const form = reactive({ ...props.tableDoc })
@@ -130,6 +131,10 @@ const lockedAtFormatted: ComputedRef<string> = computed(() => {
 		: formatTime(props.tableDoc.locked_at.seconds * 1000)
 })
 
+const countdownToTime = computed(() =>
+	new Date(props.countdown * 1000).toLocaleTimeString('de-DE', { minute: 'numeric', second: 'numeric' })
+)
+
 const cancel = (): void => {
 	emit('cancel')
 }
@@ -139,6 +144,9 @@ const cancel = (): void => {
 	<section>
 		<button type="button" @click="cancel">close</button>
 		<h2>Tisch {{ form.name }}</h2>
+
+		<div class="timer-radial"></div>
+		<div class="countdown">{{ countdownToTime }}</div>
 
 		<div v-if="tableDoc.locked_at">
 			locked at: {{ lockedAtFormatted }} // <code>{{ tableDoc.locked_at }}</code>
@@ -223,6 +231,33 @@ const cancel = (): void => {
 
 	& > :last-child::after {
 		content: '?';
+	}
+}
+
+/* https://web.dev/at-property/ */
+/* https://dev.to/afif/we-can-finally-animate-css-gradient-kdk */
+/* Chrome only, see https://caniuse.com/?search=%40property */
+@supports (background: paint(something)) {
+	@property --angle {
+		syntax: '<angle>';
+		inherits: false;
+		initial-value: 0deg;
+	}
+
+	.timer-radial {
+		--angle: 0deg;
+		position: relative;
+		width: 5rem;
+		height: 5rem;
+		border-radius: 50%;
+		background-color: hsl(0deg 0% 92%);
+		background-image: conic-gradient(darkorange var(--angle), transparent 0%);
+		transform: translateZ(0);
+
+		.is-running > & {
+			--angle: 360deg;
+			transition: --angle calc(var(--duration) * 1ms) linear;
+		}
 	}
 }
 </style>

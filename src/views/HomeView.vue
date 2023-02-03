@@ -27,6 +27,13 @@ const rightBlock: ComputedRef<TableDoc[]> = computed(() => props.tables.filter(i
 
 const OFFSET: number = 5 * 60 * 1000
 let _timeout: number | undefined
+const timerDuration: Ref<number> = ref(OFFSET)
+const isTimerRunning: Ref<boolean> = ref(false)
+let _interval: number | undefined
+const countdown: Ref<number> = ref(0)
+const decreaseCountdown = (): void => {
+	countdown.value--
+}
 // const _setLockedUntil = (): number => new Date().getTime() + OFFSET
 
 // 🔺 TODO Freischaltung der Seite zum Zeitpunkt x muss über eine externe Referenz kommen
@@ -63,6 +70,9 @@ const onEditTable = async (id: string): Promise<void> => {
 	const tableRef = doc(db, 'tables', id)
 	await updateDoc(tableRef, { locked_by: uuid.value, locked_at: serverTimestamp() })
 	_timeout = window.setTimeout(closeForm, OFFSET)
+	isTimerRunning.value = true
+	countdown.value = OFFSET / 1000
+	_interval = window.setInterval(decreaseCountdown, 1000)
 
 	// 🔺 TODO remove when final layout has been set up
 	await nextTick()
@@ -100,6 +110,8 @@ const cleanUp = (): void => {
 	if (!selectedTable.value) return
 
 	clearTimeout(_timeout)
+	isTimerRunning.value = false
+	clearInterval(_interval)
 	tableDocId.value = FAUX_ID
 	isSaving.value = false
 }
@@ -130,6 +142,8 @@ onBeforeRouteLeave(() => {
 </script>
 
 <template>
+	<div class="timer-bar" :class="{ 'is-running': isTimerRunning }" :style="{ '--duration': timerDuration }" />
+
 	<main>
 		<h1>Übersicht</h1>
 		<div>Client Time: {{ clientTime }}</div>
@@ -166,10 +180,13 @@ onBeforeRouteLeave(() => {
 	<TableForm
 		v-if="isTableDocIdValid && !!selectedTable"
 		id="table-form"
+		:class="{ 'is-running': isTimerRunning }"
+		:style="{ '--duration': timerDuration }"
 		:blocks="blocks"
 		:tables="tables"
 		:table-doc="selectedTable"
 		:is-logged-in="!!user"
+		:countdown="countdown"
 		@cancel="closeForm"
 		@saving="isSaving = true"
 		@saved="cleanUp"
@@ -180,3 +197,32 @@ onBeforeRouteLeave(() => {
 		<button type="button" @click="dialogEl?.close()">close</button>
 	</dialog>
 </template>
+
+<style lang="postcss">
+.timer-bar {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 0.25rem;
+
+	&::after {
+		content: '';
+		display: block;
+		height: inherit;
+		/* background: linear-gradient(to right, darkorange, darkorange) no-repeat -100vw; */
+		background-color: darkorange;
+		transform: translateX(-100%);
+	}
+
+	&.is-running {
+		background-color: wheat;
+
+		&::after {
+			/* background-position: 0; */
+			transform: translateX(0);
+			transition: transform calc(var(--duration) * 1ms) linear;
+		}
+	}
+}
+</style>
