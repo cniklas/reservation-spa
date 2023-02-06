@@ -249,8 +249,16 @@ const cancel = (): void => {
 		width: 5rem;
 		height: 5rem;
 		border-radius: 50%;
-		background-color: hsl(0deg 0% 92%);
-		background-image: conic-gradient(darkorange var(--angle), transparent 0%);
+		background-color: darkorange;
+		/* https://css-tricks.com/making-a-real-time-clock-with-a-conic-gradient-face/ */
+		background-image: conic-gradient(
+			from 0deg,
+			rgb(255 255 255) 2deg,
+			rgb(0 0 0 / 0.5) var(--angle),
+			rgb(255 255 255) 2deg,
+			rgb(0 0 0 / 0.7)
+		);
+		background-blend-mode: multiply;
 		transform: translateZ(0);
 
 		.is-running > & {
