@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { computed, type ComputedRef } from 'vue'
+import { computed, inject, type Ref, type ComputedRef } from 'vue'
 import type { TableDoc } from '@/types/TableDoc.type'
 import type { Reservation } from '@/types/Reservation.type'
 
-const props = defineProps<{
-	tables: TableDoc[]
-}>()
+const tables = inject('tables') as Ref<TableDoc[]>
 
 const _sortByName = (a: Reservation, b: Reservation): number => {
 	return a.name.localeCompare(b.name, 'de')
@@ -13,7 +11,7 @@ const _sortByName = (a: Reservation, b: Reservation): number => {
 
 const reservations: ComputedRef<Reservation[]> = computed(() => {
 	const _reservations: Reservation[] = []
-	props.tables.forEach(table => {
+	tables.value.forEach(table => {
 		let n = 0
 		while (n < table.seats) {
 			const key = `seat_${++n}`

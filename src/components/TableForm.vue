@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed, watch, toRaw, type Ref, type ComputedRef } from 'vue'
+import { ref, reactive, computed, watch, inject, toRaw, type Ref, type ComputedRef } from 'vue'
 import { useFirestore } from 'vuefire'
 import { doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
 import type { TableDoc } from '@/types/TableDoc.type'
@@ -7,8 +7,10 @@ import type { Reservation } from '@/types/Reservation.type'
 import { formatTime } from '@/use/helper'
 import { useErrorHandling } from '@/use/errorHandling'
 
+const blocks = inject('blocks') as Ref<Map<number, string>>
+
 const db = useFirestore()
-const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, unlockSubmit, validationErrors, validateName } =
+const { isSubmitLocked, beforeSubmit, handleSubmitError, unlockSubmit, validationErrors, validateName } =
 	useErrorHandling()
 
 const emit = defineEmits<{
@@ -17,7 +19,6 @@ const emit = defineEmits<{
 	(event: 'saved'): void
 }>()
 const props = defineProps<{
-	blocks: Map<number, string>
 	tables: TableDoc[]
 	tableDoc: TableDoc
 	isLoggedIn: boolean
@@ -89,8 +90,6 @@ const resetValue = (key: string): void => {
 }
 
 const onSubmit = async (): Promise<void> => {
-	if (isEmpty(form.name)) return
-
 	if (!isSubmitLocked.value) {
 		beforeSubmit()
 
@@ -206,7 +205,7 @@ const cancel = (): void => {
 				</ol>
 			</div>
 			<div>
-				<button type="submit" :disabled="isEmpty(form.name) || isSubmitLocked">Speichern</button>
+				<button type="submit" :disabled="isSubmitLocked">Speichern</button>
 				<button type="button" @click="cancel">Abbrechen</button>
 			</div>
 		</form>

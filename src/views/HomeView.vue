@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick, type Ref, type ComputedRef } from 'vue'
+import { ref, computed, watch, inject, onMounted, onBeforeUnmount, nextTick, type Ref, type ComputedRef } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 import { useCurrentUser, useFirestore, useDocument } from 'vuefire'
 import { collection, doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
@@ -9,10 +9,7 @@ import TableForm from '@/components/TableForm.vue'
 import TableGroup from '@/components/TableGroup.vue'
 import { formatDateTime, formatTime } from '@/use/helper'
 
-const props = defineProps<{
-	blocks: Map<number, string>
-	tables: TableDoc[]
-}>()
+const tables = inject('tables') as Ref<TableDoc[]>
 
 const user = useCurrentUser()
 const db = useFirestore()
@@ -21,9 +18,9 @@ const uuid = ref(`_${Math.random().toString(36).substring(2, 10)}`)
 const dialogEl: Ref<HTMLDialogElement | null> = ref(null)
 const dialogMessage = ref('')
 
-const leftBlock: ComputedRef<TableDoc[]> = computed(() => props.tables.filter(item => item.block_id === 1))
-const middleBlock: ComputedRef<TableDoc[]> = computed(() => props.tables.filter(item => item.block_id === 2))
-const rightBlock: ComputedRef<TableDoc[]> = computed(() => props.tables.filter(item => item.block_id === 3))
+const leftBlock: ComputedRef<TableDoc[]> = computed(() => tables.value.filter(item => item.block_id === 1))
+const middleBlock: ComputedRef<TableDoc[]> = computed(() => tables.value.filter(item => item.block_id === 2))
+const rightBlock: ComputedRef<TableDoc[]> = computed(() => tables.value.filter(item => item.block_id === 3))
 
 const OFFSET: number = 5 * 60 * 1000
 let _timeout: number | undefined
@@ -34,7 +31,6 @@ const countdown: Ref<number> = ref(0)
 const decreaseCountdown = (): void => {
 	countdown.value--
 }
-// const _setLockedUntil = (): number => new Date().getTime() + OFFSET
 
 // 🔺 TODO Freischaltung der Seite zum Zeitpunkt x muss über eine externe Referenz kommen
 const clientTime = ref('')
@@ -182,7 +178,6 @@ onBeforeRouteLeave(() => {
 		id="table-form"
 		:class="{ 'is-running': isTimerRunning }"
 		:style="{ '--duration': timerDuration }"
-		:blocks="blocks"
 		:tables="tables"
 		:table-doc="selectedTable"
 		:is-logged-in="!!user"

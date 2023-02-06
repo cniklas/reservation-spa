@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, watch, toRaw } from 'vue'
+import { reactive, watch, inject, toRaw, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useFirestore } from 'vuefire'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
@@ -10,11 +10,9 @@ const router = useRouter()
 const db = useFirestore()
 const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError } = useErrorHandling()
 
-const props = defineProps<{
-	blocks: Map<number, string>
-	tables: TableDoc[]
-}>()
-const _getNextIndex = (): number => Math.max(...props.tables.map(item => item.index)) + 1
+const blocks = inject('blocks') as Ref<Map<number, string>>
+const tables = inject('tables') as Ref<TableDoc[]>
+const _getNextIndex = (): number => Math.max(...tables.value.map(item => item.index)) + 1
 
 const form = reactive({
 	active: true,
@@ -39,7 +37,7 @@ const onSubmit = async (): Promise<void> => {
 		beforeSubmit()
 
 		try {
-			// 🔺 TODO name mus unique sein
+			// 🔺 TODO name muss unique sein
 			const formData = {
 				...toRaw(form),
 				index: _getNextIndex(),
