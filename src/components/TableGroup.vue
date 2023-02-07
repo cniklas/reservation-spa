@@ -12,11 +12,11 @@ defineProps<{
 	isFormOpen: boolean
 }>()
 
-const edit = (id: string): void => {
+const edit = (id: string) => {
 	emit('edit', id)
 }
 
-const unlock = (id: string): void => {
+const unlock = (id: string) => {
 	emit('unlock', id)
 }
 </script>

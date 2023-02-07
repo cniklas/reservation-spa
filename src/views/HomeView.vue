@@ -18,17 +18,17 @@ const uuid = ref(`_${Math.random().toString(36).substring(2, 10)}`)
 const dialogEl: Ref<HTMLDialogElement | null> = ref(null)
 const dialogMessage = ref('')
 
-const leftBlock: ComputedRef<TableDoc[]> = computed(() => tables.value.filter(item => item.block_id === 1))
-const middleBlock: ComputedRef<TableDoc[]> = computed(() => tables.value.filter(item => item.block_id === 2))
-const rightBlock: ComputedRef<TableDoc[]> = computed(() => tables.value.filter(item => item.block_id === 3))
+const leftBlock = computed(() => tables.value.filter(item => item.block_id === 1))
+const middleBlock = computed(() => tables.value.filter(item => item.block_id === 2))
+const rightBlock = computed(() => tables.value.filter(item => item.block_id === 3))
 
-const OFFSET: number = 5 * 60 * 1000
+const OFFSET = 5 * 60 * 1000
 let _timeout: number | undefined
-const timerDuration: Ref<number> = ref(OFFSET)
-const isTimerRunning: Ref<boolean> = ref(false)
+const timerDuration = ref(OFFSET)
+const isTimerRunning = ref(false)
 let _interval: number | undefined
-const countdown: Ref<number> = ref(0)
-const decreaseCountdown = (): void => {
+const countdown = ref(0)
+const decreaseCountdown = () => {
 	countdown.value--
 }
 
@@ -50,16 +50,16 @@ const _fetchTime = async () => {
 }
 
 const FAUX_ID = 'nope'
-const tableDocId: Ref<string> = ref(FAUX_ID)
-const isTableDocIdValid: ComputedRef<boolean> = computed(() => tableDocId.value !== FAUX_ID)
+const tableDocId = ref(FAUX_ID)
+const isTableDocIdValid = computed(() => tableDocId.value !== FAUX_ID)
 const _tableDoc = computed(() => doc(collection(db, 'tables'), tableDocId.value))
 // will always be in sync with the data source
 const selectedTable = useDocument(_tableDoc) as unknown as Ref<TableDoc | null>
-const isFormOpen: ComputedRef<boolean> = computed(() => isTableDocIdValid.value && !!selectedTable.value)
+const isFormOpen = computed(() => isTableDocIdValid.value && !!selectedTable.value)
 
-const isSaving: Ref<boolean> = ref(false)
+const isSaving = ref(false)
 
-const onEditTable = async (id: string): Promise<void> => {
+const onEditTable = async (id: string) => {
 	if (selectedTable.value) return
 
 	tableDocId.value = id
@@ -95,14 +95,14 @@ watch(
 	}
 )
 
-const closeForm = (): void => {
+const closeForm = () => {
 	if (!selectedTable.value) return
 
 	cleanUp()
 	_unlockTable(selectedTable.value.id)
 }
 
-const cleanUp = (): void => {
+const cleanUp = () => {
 	if (!selectedTable.value) return
 
 	clearTimeout(_timeout)
@@ -112,13 +112,13 @@ const cleanUp = (): void => {
 	isSaving.value = false
 }
 
-const onUnlockTable = (id: string): void => {
+const onUnlockTable = (id: string) => {
 	if (!user) return
 
 	_unlockTable(id)
 }
 
-const _unlockTable = async (id: string): Promise<void> => {
+const _unlockTable = async (id: string) => {
 	const tableRef = doc(db, 'tables', id)
 	await updateDoc(tableRef, { locked_by: deleteField(), locked_at: deleteField() })
 }

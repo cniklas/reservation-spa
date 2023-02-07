@@ -9,7 +9,7 @@ import './assets/main.css'
 
 document.title = import.meta.env.VITE_APP_NAME
 
-const blocks: Map<number, string> = new Map([
+const blocks = new Map([
 	[1, 'Linker Block'],
 	[2, 'Mittelblock'],
 	[3, 'Rechter Block'],

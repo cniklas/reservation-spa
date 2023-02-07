@@ -1,4 +1,4 @@
-import { ref, unref, reactive, type Ref } from 'vue'
+import { ref, unref, type Ref } from 'vue'
 import { compareTwoStrings } from 'string-similarity'
 import type { Reservation } from '@/types/Reservation.type'
 
@@ -6,44 +6,44 @@ const SIMILARITY_LIMIT = 0.64
 
 export const useErrorHandling = () => {
 	const errorCode: Ref<number | null> = ref(null)
-	const errorMessage: Ref<string> = ref('')
-	const isSubmitLocked: Ref<boolean> = ref(false)
-	const unlockSubmit = (): void => {
+	const errorMessage = ref('')
+	const isSubmitLocked = ref(false)
+	const unlockSubmit = () => {
 		isSubmitLocked.value = false
 	}
-	// const resetErrorState = (): void => {
+	// const resetErrorState = () => {
 	// 	errorCode.value = null
 	// 	errorMessage.value = ''
 	// 	unlockSubmit()
 	// }
 
-	const isEmpty = (...args: any[]): boolean => args.some(val => !unref(val).length)
+	const isEmpty = (...args: any[]) => args.some(val => !unref(val).length)
 
-	const beforeSubmit = (): void => {
+	const beforeSubmit = () => {
 		isSubmitLocked.value = true
 		// errorCode.value = null
 	}
 
-	const handleSubmitError = (error: any): void => {
+	const handleSubmitError = (error: any) => {
 		// TODO error handling
 		console.log(error)
 		unlockSubmit()
 	}
 
 	const validationErrors: Ref<Map<string, string | string[]>> = ref(new Map())
-	// const addError = (key: string, message: string): void => {
+	// const addError = (key: string, message: string) => {
 	// 	validationErrors.set(key, message)
 	// }
-	// const removeError = (key: string, element: HTMLInputElement | null): void => {
+	// const removeError = (key: string, element: HTMLInputElement | null) => {
 	// 	if (validationErrors.has(key) && (element?.checkValidity() ?? true)) {
 	// 		validationErrors.delete(key)
 	// 	}
 	// }
-	// const resetValidation = (): void => {
+	// const resetValidation = () => {
 	// 	validationErrors.clear()
 	// }
 
-	const validateName = (key: string, name: string, reservations: Reservation[]): void => {
+	const validateName = (key: string, name: string, reservations: Reservation[]) => {
 		if (!name.length) {
 			validationErrors.value.delete(key)
 			return
@@ -57,7 +57,7 @@ export const useErrorHandling = () => {
 
 		validationErrors.value.delete(key)
 
-		reservations.forEach((entry: Reservation) => {
+		reservations.forEach(entry => {
 			const similarity: number = compareTwoStrings(name.toLowerCase(), entry.name.toLowerCase())
 			// console.log(`${name} vs. ${entry.name}:\n${similarity}`)
 			if (similarity >= SIMILARITY_LIMIT) {

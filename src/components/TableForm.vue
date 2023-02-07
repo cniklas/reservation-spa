@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed, watch, inject, toRaw, type Ref, type ComputedRef } from 'vue'
+import { ref, reactive, computed, watch, inject, toRaw, type Ref } from 'vue'
 import { useFirestore } from 'vuefire'
 import { doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
 import type { TableDoc } from '@/types/TableDoc.type'
@@ -27,10 +27,10 @@ const props = defineProps<{
 
 const form = reactive({ ...props.tableDoc })
 const touchedSeats: Ref<Set<string>> = ref(new Set())
-const decrease = (): void => {
+const decrease = () => {
 	if (form.seats > 1) form.seats--
 }
-const increase = (): void => {
+const increase = () => {
 	if (form.seats < 8) form.seats++
 }
 watch(
@@ -53,7 +53,7 @@ watch(
 	}
 )
 
-const reservations: ComputedRef<Reservation[]> = computed(() => {
+const reservations = computed(() => {
 	const _reservations: Reservation[] = []
 	props.tables
 		.filter(item => item.id !== props.tableDoc.id)
@@ -79,17 +79,17 @@ const onChange = (key: string, el: HTMLInputElement) => {
 	el.setCustomValidity(validationErrors.value.has(key) ? 'Eingabe ungültig' : '')
 }
 
-const resetValidation = (key: string): void => {
+const resetValidation = (key: string) => {
 	touchedSeats.value.delete(key)
 	validationErrors.value.delete(key)
 	;(document.querySelector(`#${key}`) as HTMLInputElement).setCustomValidity('')
 }
-const resetValue = (key: string): void => {
+const resetValue = (key: string) => {
 	form[key] = ''
 	resetValidation(key)
 }
 
-const onSubmit = async (): Promise<void> => {
+const onSubmit = async () => {
 	if (!isSubmitLocked.value) {
 		beforeSubmit()
 
@@ -122,7 +122,7 @@ const onSubmit = async (): Promise<void> => {
 	}
 }
 
-const lockedAtFormatted: ComputedRef<string> = computed(() => {
+const lockedAtFormatted = computed(() => {
 	if (!props.tableDoc.locked_at) return ''
 
 	return props.tableDoc.locked_at.nanoseconds
@@ -134,7 +134,7 @@ const countdownToTime = computed(() =>
 	new Date(props.countdown * 1000).toLocaleTimeString('de-DE', { minute: 'numeric', second: 'numeric' })
 )
 
-const cancel = (): void => {
+const cancel = () => {
 	emit('cancel')
 }
 </script>

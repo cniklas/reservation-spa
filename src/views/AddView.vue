@@ -12,7 +12,7 @@ const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError } = useErrorHan
 
 const blocks = inject('blocks') as Ref<Map<number, string>>
 const tables = inject('tables') as Ref<TableDoc[]>
-const _getNextIndex = (): number => Math.max(...tables.value.map(item => item.index)) + 1
+const _getNextIndex = () => Math.max(...tables.value.map(item => item.index)) + 1
 
 const form = reactive({
 	active: true,
@@ -29,7 +29,7 @@ watch(
 	}
 )
 
-const onSubmit = async (): Promise<void> => {
+const onSubmit = async () => {
 	// if (!state.hasAuthenticated) return
 	if (isEmpty(form.name)) return
 

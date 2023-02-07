@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { computed, inject, type Ref, type ComputedRef } from 'vue'
+import { computed, inject, type Ref } from 'vue'
 import type { TableDoc } from '@/types/TableDoc.type'
 import type { Reservation } from '@/types/Reservation.type'
 
 const tables = inject('tables') as Ref<TableDoc[]>
 
-const _sortByName = (a: Reservation, b: Reservation): number => {
+const _sortByName = (a: Reservation, b: Reservation) => {
 	return a.name.localeCompare(b.name, 'de')
 }
 
-const reservations: ComputedRef<Reservation[]> = computed(() => {
+const reservations = computed(() => {
 	const _reservations: Reservation[] = []
 	tables.value.forEach(table => {
 		let n = 0

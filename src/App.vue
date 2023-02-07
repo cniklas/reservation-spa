@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, type Ref } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { useRoute, useRouter, RouterLink, RouterView } from 'vue-router'
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 
@@ -12,9 +12,9 @@ const auth = getAuth()
 const version: string = __APP_VERSION__
 // @ts-ignore
 // eslint-disable-next-line
-const buildTime: string = `${new Date(__BUILD_TIME__).toLocaleDateString('de-DE', { hour: 'numeric', minute: 'numeric' })} Uhr`
+const buildTime = `${new Date(__BUILD_TIME__).toLocaleDateString('de-DE', { hour: 'numeric', minute: 'numeric' })} Uhr`
 
-const logout = (): void => {
+const logout = () => {
 	try {
 		signOut(auth)
 	} catch (error) {
@@ -22,7 +22,7 @@ const logout = (): void => {
 	}
 }
 
-const isLoggedIn: Ref<boolean> = ref(false)
+const isLoggedIn = ref(false)
 watch(isLoggedIn, val => {
 	if (!val && route.name === 'add') {
 		router.push('/')
