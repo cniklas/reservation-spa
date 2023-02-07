@@ -40,6 +40,11 @@ onMounted(() => {
 		isLoggedIn.value = !!user
 	})
 })
+
+const now = new Date()
+if (now.getMonth() === 11 && now.getDate() === 31) {
+	router.replace('/liste')
+}
 </script>
 
 <template>
