@@ -69,6 +69,12 @@ export const useErrorHandling = () => {
 		})
 	}
 
+	const validateTableName = (name: string, tableNames: string[]) => {
+		tableNames.includes(name)
+			? validationErrors.value.set('name', 'Bitte wähle einen anderen Namen')
+			: validationErrors.value.delete('name')
+	}
+
 	return {
 		errorCode,
 		errorMessage,
@@ -80,6 +86,7 @@ export const useErrorHandling = () => {
 		// resetErrorState,
 		validationErrors,
 		validateName,
+		validateTableName,
 		// resetValidation,
 	}
 }

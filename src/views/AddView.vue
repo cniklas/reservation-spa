@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, watch, inject, toRaw, type Ref } from 'vue'
+import { reactive, computed, watch, inject, toRaw, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useFirestore } from 'vuefire'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
@@ -8,7 +8,8 @@ import { useErrorHandling } from '@/use/errorHandling'
 
 const router = useRouter()
 const db = useFirestore()
-const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError } = useErrorHandling()
+const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, validationErrors, validateTableName } =
+	useErrorHandling()
 
 const blocks = inject('blocks') as Ref<Map<number, string>>
 const tables = inject('tables') as Ref<TableDoc[]>
@@ -29,15 +30,21 @@ watch(
 	}
 )
 
+const _tableNames = computed(() => tables.value.map(item => item.name))
+const onUpdate = (e: Event) => {
+	validateTableName(form.name, _tableNames.value)
+	;(e.target as HTMLInputElement).setCustomValidity(validationErrors.value.has('name') ? 'Eingabe ungültig' : '')
+}
+
 const onSubmit = async () => {
 	// if (!state.hasAuthenticated) return
 	if (isEmpty(form.name)) return
+	if (validationErrors.value.size) return
 
 	if (!isSubmitLocked.value) {
 		beforeSubmit()
 
 		try {
-			// 🔺 TODO name muss unique sein
 			const formData = {
 				...toRaw(form),
 				index: _getNextIndex(),
@@ -68,7 +75,16 @@ const onSubmit = async () => {
 		<form novalidate @submit.prevent="onSubmit">
 			<div>
 				<label for="name">Name</label>
-				<input v-model.trim="form.name" type="text" id="name" autocomplete="off" maxlength="16" required />
+				<input
+					v-model.trim="form.name"
+					type="text"
+					id="name"
+					autocomplete="off"
+					maxlength="16"
+					required
+					@input="onUpdate"
+				/>
+				<div style="color: red">{{ validationErrors.get('name') }}</div>
 			</div>
 			<div>
 				<div>Block</div>
@@ -85,7 +101,9 @@ const onSubmit = async () => {
 				<label for="active">verfügbar</label>
 				<input v-model="form.active" type="checkbox" id="active" />
 			</div>
-			<div><button type="submit" :disabled="isEmpty(form.name) || isSubmitLocked">Speichern</button></div>
+			<div>
+				<button type="submit" :disabled="isEmpty(form.name) || isSubmitLocked">Speichern</button>
+			</div>
 		</form>
 	</main>
 </template>

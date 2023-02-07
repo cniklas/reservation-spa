@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, inject, onMounted, onBeforeUnmount, nextTick, type Ref, type ComputedRef } from 'vue'
+import { ref, computed, watch, inject, onMounted, onBeforeUnmount, nextTick, type Ref } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 import { useCurrentUser, useFirestore, useDocument } from 'vuefire'
 import { collection, doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
@@ -7,7 +7,7 @@ import { collection, doc, updateDoc, deleteField, serverTimestamp } from 'fireba
 import type { TableDoc } from '@/types/TableDoc.type'
 import TableForm from '@/components/TableForm.vue'
 import TableGroup from '@/components/TableGroup.vue'
-import { formatDateTime, formatTime } from '@/use/helper'
+import { formatDateTime } from '@/use/helper'
 
 const tables = inject('tables') as Ref<TableDoc[]>
 
