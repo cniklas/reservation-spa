@@ -49,7 +49,7 @@ if (now.getMonth() === 11 && now.getDate() === 31) {
 
 <template>
 	<header>
-		<img alt="Vue logo" src="@/assets/logo.svg" width="125" height="125" />
+		<!-- <img alt="Vue logo" src="@/assets/logo.svg" width="125" height="125" /> -->
 
 		<nav>
 			<RouterLink to="/">Home</RouterLink>

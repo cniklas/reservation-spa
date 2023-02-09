@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, inject, type Ref } from 'vue'
+import { ref, computed, inject, type Ref } from 'vue'
+import { refDebounced } from '@vueuse/core'
 import type { TableDoc } from '@/types/TableDoc.type'
 import type { Reservation } from '@/types/Reservation.type'
 
@@ -28,27 +29,58 @@ const reservations = computed(() => {
 	_reservations.sort(_sortByName)
 	return _reservations
 })
+
+const search = ref('')
+const searchDebounced = refDebounced(search, 360)
+const resetSearch = () => {
+	search.value = ''
+}
+
+const filteredReservations = computed(() => {
+	if (searchDebounced.value.length)
+		return reservations.value.filter(
+			item => item.name.toLowerCase().indexOf(searchDebounced.value.toLowerCase()) !== -1
+		)
+	return reservations.value
+})
 </script>
 
 <template>
 	<main>
 		<h1>Namensliste</h1>
 
-		<table>
-			<thead>
-				<tr>
-					<th>#</th>
-					<th>Name</th>
-					<th>Tisch</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr v-for="(entry, i) in reservations" :key="i">
-					<td>{{ i + 1 }}</td>
-					<td>{{ entry.name }}</td>
-					<td>{{ entry.table }}</td>
-				</tr>
-			</tbody>
-		</table>
+		<div v-if="reservations.length > 0">
+			<div>
+				<input
+					v-model.trim="search"
+					type="search"
+					inputmode="search"
+					placeholder="Suche"
+					autocorrect="off"
+					autocomplete="off"
+					enterkeyhint="search"
+					@keyup.esc="resetSearch"
+				/>
+			</div>
+
+			<table>
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Name</th>
+						<th>Tisch</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="(entry, i) in filteredReservations" :key="i">
+						<td>{{ i + 1 }}</td>
+						<td>{{ entry.name }}</td>
+						<td>{{ entry.table }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div v-else>keine Einträge</div>
 	</main>
 </template>
