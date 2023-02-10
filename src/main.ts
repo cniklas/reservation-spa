@@ -5,6 +5,7 @@ import { useFirestore, useCollection, VueFire, VueFireAuth } from 'vuefire'
 import { collection, query, orderBy } from 'firebase/firestore'
 import { firebaseApp } from './firebase'
 
+import 'virtual:windi.css'
 import './assets/main.css'
 
 document.title = import.meta.env.VITE_APP_NAME

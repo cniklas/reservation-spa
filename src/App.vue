@@ -49,9 +49,9 @@ if (now.getMonth() === 11 && now.getDate() === 31) {
 
 <template>
 	<header>
-		<!-- <img alt="Vue logo" src="@/assets/logo.svg" width="125" height="125" /> -->
+		<img alt="Vue logo" src="@/assets/logo.svg" width="125" height="125" />
 
-		<nav>
+		<nav class="flex items-center gap-2">
 			<RouterLink to="/">Home</RouterLink>
 			<RouterLink to="/liste">Liste</RouterLink>
 			<RouterLink v-if="isLoggedIn" to="/add">Add</RouterLink>
@@ -63,8 +63,8 @@ if (now.getMonth() === 11 && now.getDate() === 31) {
 	<RouterView />
 
 	<footer>
-		<details>
-			<summary>{{ version }}</summary>
+		<details class="font-mono text-sm">
+			<summary class="inline-block cursor-help">{{ version }}</summary>
 			<div>{{ buildTime }}</div>
 		</details>
 	</footer>

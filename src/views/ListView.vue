@@ -60,9 +60,10 @@ const filteredReservations = computed(() => {
 					enterkeyhint="search"
 					@keyup.esc="resetSearch"
 				/>
+				<button type="button" :class="{ hidden: !search.length }" @click="resetSearch">reset</button>
 			</div>
 
-			<table>
+			<table class="table-fixed">
 				<thead>
 					<tr>
 						<th>#</th>
