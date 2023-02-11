@@ -4,7 +4,6 @@ import { useFirestore } from 'vuefire'
 import { doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
 import type { TableDoc } from '@/types/TableDoc.type'
 import type { Reservation } from '@/types/Reservation.type'
-import { formatTime } from '@/use/helper'
 import { useErrorHandling } from '@/use/errorHandling'
 
 const blocks = inject('blocks') as Ref<Map<number, string>>
@@ -122,14 +121,6 @@ const onSubmit = async () => {
 	}
 }
 
-const lockedAtFormatted = computed(() => {
-	if (!props.tableDoc.locked_at) return ''
-
-	return props.tableDoc.locked_at.nanoseconds
-		? formatTime(props.tableDoc.locked_at.seconds * 1000 + props.tableDoc.locked_at.nanoseconds / 1000000)
-		: formatTime(props.tableDoc.locked_at.seconds * 1000)
-})
-
 const countdownToTime = computed(() =>
 	new Date(props.countdown * 1000).toLocaleTimeString('de-DE', { minute: 'numeric', second: 'numeric' })
 )
@@ -144,12 +135,8 @@ const cancel = () => {
 		<button type="button" @click="cancel">close</button>
 		<h2>Tisch {{ form.name }}</h2>
 
-		<div class="timer-radial"></div>
+		<!-- <div class="timer-radial relative h-20 w-20 rounded-full bg-rose-500 bg-blend-multiply" /> -->
 		<div class="countdown">{{ countdownToTime }}</div>
-
-		<div v-if="tableDoc.locked_at">
-			locked at: {{ lockedAtFormatted }} // <code>{{ tableDoc.locked_at }}</code>
-		</div>
 
 		<form novalidate @submit.prevent="onSubmit">
 			<template v-if="isLoggedIn">
@@ -215,9 +202,6 @@ const cancel = () => {
 <style lang="postcss">
 .comma-separated {
 	display: flex;
-	list-style: none;
-	margin: unset;
-	padding: unset;
 
 	& > :not(:last-child)::after {
 		content: ', ';
@@ -236,7 +220,8 @@ const cancel = () => {
 /* https://web.dev/at-property/ */
 /* https://dev.to/afif/we-can-finally-animate-css-gradient-kdk */
 /* Chrome only, see https://caniuse.com/?search=%40property */
-@supports (background: paint(something)) {
+/* https://css-tricks.com/making-a-real-time-clock-with-a-conic-gradient-face/ */
+/* @supports (background: paint(something)) {
 	@property --angle {
 		syntax: '<angle>';
 		inherits: false;
@@ -245,12 +230,6 @@ const cancel = () => {
 
 	.timer-radial {
 		--angle: 0deg;
-		position: relative;
-		width: 5rem;
-		height: 5rem;
-		border-radius: 50%;
-		background-color: darkorange;
-		/* https://css-tricks.com/making-a-real-time-clock-with-a-conic-gradient-face/ */
 		background-image: conic-gradient(
 			from 0deg,
 			rgb(255 255 255) 2deg,
@@ -258,7 +237,6 @@ const cancel = () => {
 			rgb(255 255 255) 2deg,
 			rgb(0 0 0 / 0.7)
 		);
-		background-blend-mode: multiply;
 		transform: translateZ(0);
 
 		.is-running > & {
@@ -266,5 +244,5 @@ const cancel = () => {
 			transition: --angle calc(var(--duration) * 1ms) linear;
 		}
 	}
-}
+} */
 </style>

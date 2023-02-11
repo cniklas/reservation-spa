@@ -138,7 +138,11 @@ onBeforeRouteLeave(() => {
 </script>
 
 <template>
-	<div class="timer-bar" :class="{ 'is-running': isTimerRunning }" :style="{ '--duration': timerDuration }" />
+	<div
+		class="timer-bar fixed left-0 top-0 h-1 w-full"
+		:class="{ 'is-running': isTimerRunning }"
+		:style="{ '--duration': timerDuration }"
+	/>
 
 	<main>
 		<h1>Übersicht</h1>
@@ -195,23 +199,16 @@ onBeforeRouteLeave(() => {
 
 <style lang="postcss">
 .timer-bar {
-	position: fixed;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 0.25rem;
-
 	&::after {
+		@apply block bg-rose-500;
 		content: '';
-		display: block;
 		height: inherit;
 		/* background: linear-gradient(to right, darkorange, darkorange) no-repeat -100vw; */
-		background-color: darkorange;
 		transform: translateX(-100%);
 	}
 
 	&.is-running {
-		background-color: wheat;
+		@apply bg-rose-50;
 
 		&::after {
 			/* background-position: 0; */

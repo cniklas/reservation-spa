@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { TableDoc } from '@/types/TableDoc.type'
+import type { Timestamp, TableDoc } from '@/types/TableDoc.type'
+import { formatTime } from '@/use/helper'
 
 const emit = defineEmits<{
 	(event: 'edit', id: string): void
@@ -19,6 +20,11 @@ const edit = (id: string) => {
 const unlock = (id: string) => {
 	emit('unlock', id)
 }
+
+const lockedAtFormatted = (lockedAt: Timestamp) =>
+	lockedAt.nanoseconds
+		? formatTime(lockedAt.seconds * 1000 + lockedAt.nanoseconds / 1000000)
+		: formatTime(lockedAt.seconds * 1000)
 </script>
 
 <template>
@@ -33,17 +39,11 @@ const unlock = (id: string) => {
 					<template v-if="table.locked_at">🔒</template>
 				</button>
 				<!-- <span>{{ formatDateTime(table.modified.seconds * 1000) }}</span> -->
-				<template v-if="table.locked_at">
-					<button v-if="isLoggedIn && table.locked_by !== uuid" type="button" @click="unlock(table.id)">🔑</button>
-					<!-- <code>{{ new Date(table.locked_at).getSeconds() }}.{{ new Date(table.locked_at).getMilliseconds() }}</code> -->
-					<!-- <template v-if="selectedTable?.id === table.id && selectedTable.locked_at">
-						|
-						<code>
-							{{ new Date(selectedTable.locked_at).getSeconds() }}.{{
-								new Date(selectedTable.locked_at).getMilliseconds()
-							}}
-						</code>
-					</template> -->
+				<template v-if="isLoggedIn && table.locked_at">
+					<button v-if="table.locked_by !== uuid" type="button" @click="unlock(table.id)">🔑</button>
+					<div>
+						locked at: {{ lockedAtFormatted(table.locked_at) }} // <code>{{ table.locked_at }}</code>
+					</div>
 				</template>
 			</template>
 		</li>

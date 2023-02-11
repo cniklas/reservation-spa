@@ -57,7 +57,6 @@ const filteredReservations = computed(() => {
 					placeholder="Suche"
 					autocorrect="off"
 					autocomplete="off"
-					enterkeyhint="search"
 					@keyup.esc="resetSearch"
 				/>
 				<button type="button" :class="{ hidden: !search.length }" @click="resetSearch">reset</button>
