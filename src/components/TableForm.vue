@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, reactive, computed, watch, inject, toRaw, type Ref } from 'vue'
+import { reactive, computed, watch, inject, toRaw } from 'vue'
 import { useFirestore } from 'vuefire'
 import { doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
 import type { TableDoc } from '@/types/TableDoc.type'
 import type { Reservation } from '@/types/Reservation.type'
 import { useErrorHandling } from '@/use/errorHandling'
 
-const blocks = inject('blocks') as Ref<Map<number, string>>
+const blocks = inject('blocks') as Map<number, string>
 
 const db = useFirestore()
 const { isSubmitLocked, beforeSubmit, handleSubmitError, unlockSubmit, validationErrors, validateName } =
@@ -25,7 +25,7 @@ const props = defineProps<{
 }>()
 
 const form = reactive({ ...props.tableDoc })
-const touchedSeats: Ref<Set<string>> = ref(new Set())
+const touchedSeats: Set<string> = reactive(new Set())
 const decrease = () => {
 	if (form.seats > 1) form.seats--
 }
@@ -45,8 +45,8 @@ watch(
 			while (n > form.seats) {
 				const key = `seat_${n--}`
 				form[key] = ''
-				touchedSeats.value.delete(key)
-				validationErrors.value.delete(key)
+				touchedSeats.delete(key)
+				validationErrors.delete(key)
 			}
 		}
 	}
@@ -73,14 +73,14 @@ const reservations = computed(() => {
 })
 
 const onChange = (key: string, el: HTMLInputElement) => {
-	touchedSeats.value.add(key)
+	touchedSeats.add(key)
 	validateName(key, form[key] as string, reservations.value)
-	el.setCustomValidity(validationErrors.value.has(key) ? 'Eingabe ungültig' : '')
+	el.setCustomValidity(validationErrors.has(key) ? 'Eingabe ungültig' : '')
 }
 
 const resetValidation = (key: string) => {
-	touchedSeats.value.delete(key)
-	validationErrors.value.delete(key)
+	touchedSeats.delete(key)
+	validationErrors.delete(key)
 	;(document.querySelector(`#${key}`) as HTMLInputElement).setCustomValidity('')
 }
 const resetValue = (key: string) => {
@@ -104,10 +104,10 @@ const onSubmit = async () => {
 			}
 
 			// validate
-			touchedSeats.value.forEach(key => {
+			touchedSeats.forEach(key => {
 				validateName(key, formData[key] as string, reservations.value)
 			})
-			if (validationErrors.value.size) return
+			if (validationErrors.size) return
 
 			emit('saving')
 			const tableRef = doc(db, 'tables', props.tableDoc.id)

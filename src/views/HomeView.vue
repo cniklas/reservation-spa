@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, inject, onMounted, onBeforeUnmount, nextTick, type Ref } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
-import { useCurrentUser, useFirestore, useDocument } from 'vuefire'
+import { useCurrentUser, useFirestore, useDocument, type _RefFirestore } from 'vuefire'
 import { collection, doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
 // import { isSafari } from '@firebase/util'
 import type { TableDoc } from '@/types/TableDoc.type'
@@ -9,7 +9,7 @@ import TableForm from '@/components/TableForm.vue'
 import TableGroup from '@/components/TableGroup.vue'
 import { formatDateTime } from '@/use/helper'
 
-const tables = inject('tables') as Ref<TableDoc[]>
+const tables = inject('tables') as _RefFirestore<TableDoc[]>
 
 const user = useCurrentUser()
 const db = useFirestore()

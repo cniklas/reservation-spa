@@ -1,4 +1,4 @@
-import { ref, unref, type Ref } from 'vue'
+import { ref, unref, reactive, type Ref } from 'vue'
 import { compareTwoStrings } from 'string-similarity'
 import type { Reservation } from '@/types/Reservation.type'
 
@@ -30,7 +30,7 @@ export const useErrorHandling = () => {
 		unlockSubmit()
 	}
 
-	const validationErrors: Ref<Map<string, string | string[]>> = ref(new Map())
+	const validationErrors: Map<string, string | string[]> = reactive(new Map())
 	// const addError = (key: string, message: string) => {
 	// 	validationErrors.set(key, message)
 	// }
@@ -45,34 +45,31 @@ export const useErrorHandling = () => {
 
 	const validateName = (key: string, name: string, reservations: Reservation[]) => {
 		if (!name.length) {
-			validationErrors.value.delete(key)
+			validationErrors.delete(key)
 			return
 		}
 
 		// there must be at least one space character
 		if (name.match(/ /g) === null) {
-			validationErrors.value.set(key, 'Bitte trage Vor- und Nachnamen ein')
+			validationErrors.set(key, 'Bitte trage Vor- und Nachnamen ein')
 			return
 		}
 
-		validationErrors.value.delete(key)
+		validationErrors.delete(key)
 
 		reservations.forEach(entry => {
 			const similarity: number = compareTwoStrings(name.toLowerCase(), entry.name.toLowerCase())
 			// console.log(`${name} vs. ${entry.name}:\n${similarity}`)
 			if (similarity >= SIMILARITY_LIMIT) {
-				validationErrors.value.set(key, [
-					...(validationErrors.value.get(key) ?? []),
-					`${entry.name} an Tisch ${entry.table}`,
-				])
+				validationErrors.set(key, [...(validationErrors.get(key) ?? []), `${entry.name} an Tisch ${entry.table}`])
 			}
 		})
 	}
 
 	const validateTableName = (name: string, tableNames: string[]) => {
 		tableNames.includes(name)
-			? validationErrors.value.set('name', 'Bitte wähle einen anderen Namen')
-			: validationErrors.value.delete('name')
+			? validationErrors.set('name', 'Bitte wähle einen anderen Namen')
+			: validationErrors.delete('name')
 	}
 
 	return {

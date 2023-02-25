@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { reactive, computed, watch, inject, toRaw, type Ref } from 'vue'
+import { reactive, computed, watch, inject, toRaw } from 'vue'
 import { useRouter } from 'vue-router'
-import { useFirestore } from 'vuefire'
+import { useFirestore, type _RefFirestore } from 'vuefire'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import type { TableDoc } from '@/types/TableDoc.type'
 import { useErrorHandling } from '@/use/errorHandling'
@@ -11,8 +11,8 @@ const db = useFirestore()
 const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, validationErrors, validateTableName } =
 	useErrorHandling()
 
-const blocks = inject('blocks') as Ref<Map<number, string>>
-const tables = inject('tables') as Ref<TableDoc[]>
+const blocks = inject('blocks') as Map<number, string>
+const tables = inject('tables') as _RefFirestore<TableDoc[]>
 const _getNextIndex = () => Math.max(...tables.value.map(item => item.index)) + 1
 
 const form = reactive({
@@ -33,13 +33,13 @@ watch(
 const _tableNames = computed(() => tables.value.map(item => item.name))
 const onUpdate = (e: Event) => {
 	validateTableName(form.name, _tableNames.value)
-	;(e.target as HTMLInputElement).setCustomValidity(validationErrors.value.has('name') ? 'Eingabe ungültig' : '')
+	;(e.target as HTMLInputElement).setCustomValidity(validationErrors.has('name') ? 'Eingabe ungültig' : '')
 }
 
 const onSubmit = async () => {
 	// if (!state.hasAuthenticated) return
 	if (isEmpty(form.name)) return
-	if (validationErrors.value.size) return
+	if (validationErrors.size) return
 
 	if (!isSubmitLocked.value) {
 		beforeSubmit()

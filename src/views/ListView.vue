@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, inject, type Ref } from 'vue'
+import { ref, computed, inject } from 'vue'
+import type { _RefFirestore } from 'vuefire'
 import { refDebounced } from '@vueuse/core'
 import type { TableDoc } from '@/types/TableDoc.type'
 import type { Reservation } from '@/types/Reservation.type'
 
-const tables = inject('tables') as Ref<TableDoc[]>
+const tables = inject('tables') as _RefFirestore<TableDoc[]>
 
 const _sortByName = (a: Reservation, b: Reservation) => {
 	return a.name.localeCompare(b.name, 'de')
