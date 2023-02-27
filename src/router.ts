@@ -19,8 +19,15 @@ const router = createRouter({
 			path: '/add',
 			name: 'add',
 			component: () => import('./views/AddView.vue'),
-			meta: {
-				requiresAuth: true,
+			beforeEnter: async to => {
+				const currentUser = await getCurrentUser()
+				if (!currentUser)
+					return {
+						name: 'login',
+						query: {
+							redirectTo: to.fullPath,
+						},
+					}
 			},
 		},
 		{
@@ -33,20 +40,6 @@ const router = createRouter({
 	scrollBehavior(_to, _from, savedPosition) {
 		return savedPosition ? savedPosition : { top: 0 }
 	},
-})
-
-router.beforeEach(async to => {
-	if (to.meta.requiresAuth) {
-		const currentUser = await getCurrentUser()
-		if (!currentUser) {
-			return {
-				path: '/login',
-				query: {
-					redirectTo: to.fullPath,
-				},
-			}
-		}
-	}
 })
 
 export default router

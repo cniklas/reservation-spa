@@ -89,35 +89,35 @@ const resetValue = (key: string) => {
 }
 
 const onSubmit = async () => {
-	if (!isSubmitLocked.value) {
-		beforeSubmit()
+	if (isSubmitLocked.value) return
 
-		try {
-			const formData: TableDoc = {
-				...toRaw(form),
-				// @ts-ignore
-				locked_by: deleteField(),
-				// @ts-ignore
-				locked_at: deleteField(),
-				// @ts-ignore
-				modified: serverTimestamp(),
-			}
+	beforeSubmit()
 
-			// validate
-			touchedSeats.forEach(key => {
-				validateName(key, formData[key] as string, reservations.value)
-			})
-			if (validationErrors.size) return
-
-			emit('saving')
-			const tableRef = doc(db, 'tables', props.tableDoc.id)
-			await updateDoc(tableRef, formData)
-			emit('saved')
-		} catch (error) {
-			handleSubmitError(error)
-		} finally {
-			unlockSubmit()
+	try {
+		const formData: TableDoc = {
+			...toRaw(form),
+			// @ts-ignore
+			locked_by: deleteField(),
+			// @ts-ignore
+			locked_at: deleteField(),
+			// @ts-ignore
+			modified: serverTimestamp(),
 		}
+
+		// validate
+		touchedSeats.forEach(key => {
+			validateName(key, formData[key] as string, reservations.value)
+		})
+		if (validationErrors.size) return
+
+		emit('saving')
+		const tableRef = doc(db, 'tables', props.tableDoc.id)
+		await updateDoc(tableRef, formData)
+		emit('saved')
+	} catch (error) {
+		handleSubmitError(error)
+	} finally {
+		unlockSubmit()
 	}
 }
 

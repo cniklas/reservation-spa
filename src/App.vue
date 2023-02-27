@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import { useRoute, useRouter, RouterLink, RouterView } from 'vue-router'
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 
@@ -23,6 +23,9 @@ const logout = () => {
 }
 
 const isLoggedIn = ref(false)
+onAuthStateChanged(auth, user => {
+	isLoggedIn.value = !!user
+})
 watch(isLoggedIn, val => {
 	if (!val && route.name === 'add') {
 		router.push('/')
@@ -30,15 +33,9 @@ watch(isLoggedIn, val => {
 	}
 
 	if (val && route.name === 'login') {
-		router.push((route.query.redirectTo as string) ?? '/')
+		router.replace((route.query.redirectTo as string) ?? '/')
 		return
 	}
-})
-
-onMounted(() => {
-	onAuthStateChanged(auth, user => {
-		isLoggedIn.value = !!user
-	})
 })
 
 const now = new Date()

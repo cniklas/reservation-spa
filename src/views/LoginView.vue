@@ -9,17 +9,15 @@ const email = ref('')
 const password = ref('')
 
 const onSubmit = async () => {
-	if (isEmpty(email, password)) return
+	if (isSubmitLocked.value || isEmpty(email, password)) return
 
-	if (!isSubmitLocked.value) {
-		beforeSubmit()
+	beforeSubmit()
 
-		try {
-			const auth = getAuth()
-			/* const { user } = */ await signInWithEmailAndPassword(auth, email.value, password.value)
-		} catch (error) {
-			handleSubmitError(error)
-		}
+	try {
+		const auth = getAuth()
+		/* const { user } = */ await signInWithEmailAndPassword(auth, email.value, password.value)
+	} catch (error) {
+		handleSubmitError(error)
 	}
 }
 </script>

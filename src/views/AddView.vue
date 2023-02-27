@@ -37,33 +37,30 @@ const onUpdate = (e: Event) => {
 }
 
 const onSubmit = async () => {
-	// if (!state.hasAuthenticated) return
-	if (isEmpty(form.name)) return
+	if (isSubmitLocked.value || isEmpty(form.name)) return
 	if (validationErrors.size) return
 
-	if (!isSubmitLocked.value) {
-		beforeSubmit()
+	beforeSubmit()
 
-		try {
-			const formData = {
-				...toRaw(form),
-				index: _getNextIndex(),
-				modified: serverTimestamp(),
-				seat_1: '',
-				seat_2: '',
-				seat_3: '',
-				seat_4: '',
-				seat_5: '',
-				seat_6: '',
-				seat_7: '',
-				seat_8: '',
-			}
-
-			await addDoc(collection(db, 'tables'), formData)
-			router.push({ name: 'home' })
-		} catch (error) {
-			handleSubmitError(error)
+	try {
+		const formData = {
+			...toRaw(form),
+			index: _getNextIndex(),
+			modified: serverTimestamp(),
+			seat_1: '',
+			seat_2: '',
+			seat_3: '',
+			seat_4: '',
+			seat_5: '',
+			seat_6: '',
+			seat_7: '',
+			seat_8: '',
 		}
+
+		await addDoc(collection(db, 'tables'), formData)
+		router.push({ name: 'home' })
+	} catch (error) {
+		handleSubmitError(error)
 	}
 }
 </script>
