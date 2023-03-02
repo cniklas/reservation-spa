@@ -18,7 +18,7 @@
     "string-similarity": "^4.0.4",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6",
-    "vuefire": "^3.0.1"
+    "vuefire": "^3.1.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
