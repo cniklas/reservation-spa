@@ -50,6 +50,7 @@
     "semi": false,
     "singleQuote": true,
     "useTabs": true,
-    "arrowParens": "avoid"
+    "arrowParens": "avoid",
+    "quoteProps": "preserve"
   }
 }
