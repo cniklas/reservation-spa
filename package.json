@@ -1,7 +1,12 @@
 {
   "name": "reservation-spa",
   "version": "1.2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cniklas/reservation-spa.git"
+  },
   "author": "Christian Niklas",
+  "license": "MIT",
   "scripts": {
     "dev": "vite --open",
     "build": "run-p type-check build-only",
