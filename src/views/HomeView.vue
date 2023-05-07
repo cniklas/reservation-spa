@@ -37,13 +37,24 @@ const clientTime = ref('')
 const serverTime = ref('')
 const _fetchTime = async () => {
 	try {
-		const response = await fetch('https://worldtimeapi.org/api/timezone/Europe/Berlin')
-		if (!response.ok) throw new Error('Could not retrieve server time')
+		// console.time('worldtimeapi answer time')
+		// const response = await fetch('https://worldtimeapi.org/api/timezone/Europe/Berlin')
+		// if (!response.ok) throw new Error('Could not retrieve server time')
+		// console.timeEnd('worldtimeapi answer time')
 
-		const dateNow = Date.now()
-		clientTime.value = `${formatDateTime(dateNow)}.${new Date(dateNow).getMilliseconds()}`
-		const { datetime } = await response.json()
-		serverTime.value = `${formatDateTime(datetime)}.${new Date(datetime).getMilliseconds()}`
+		console.time('timeapi answer time')
+		const response2 = await fetch('https://www.timeapi.io/api/Time/current/zone?timeZone=Europe/Berlin', {
+			// mode: 'no-cors',
+			// headers: { 'Content-Type': 'application/json' },
+		})
+		// if (!response2.ok) throw new Error('Could not retrieve server time')
+		console.timeEnd('timeapi answer time')
+		console.log(response2)
+
+		// const dateNow = Date.now()
+		// clientTime.value = `${formatDateTime(dateNow)}.${new Date(dateNow).getMilliseconds()}`
+		// const { datetime } = await response.json()
+		// serverTime.value = `${formatDateTime(datetime)}.${new Date(datetime).getMilliseconds()}`
 	} catch (error) {
 		console.error(error)
 	}
