@@ -1,4 +1,4 @@
-const formatDateTime = (timestamp?: number, options?: Intl.DateTimeFormatOptions) => {
+const formatDateTime = (timestamp?: number | string, options?: Intl.DateTimeFormatOptions) => {
 	if (!timestamp) return ''
 
 	const format: Intl.DateTimeFormatOptions = options ?? {

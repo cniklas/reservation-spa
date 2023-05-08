@@ -37,13 +37,18 @@ const clientTime = ref('')
 const serverTime = ref('')
 const _fetchTime = async () => {
 	try {
-		const response = await fetch('https://worldtimeapi.org/api/timezone/Europe/Berlin')
+		// console.time('server time')
+		// const response = await fetch('https://worldtimeapi.org/api/timezone/Europe/Berlin')
+		const response = await fetch(import.meta.env.VITE_TIME_REST_URL)
 		if (!response.ok) throw new Error('Could not retrieve server time')
+		// console.timeEnd('server time')
 
 		const dateNow = Date.now()
 		clientTime.value = `${formatDateTime(dateNow)}.${new Date(dateNow).getMilliseconds()}`
-		const { datetime } = await response.json()
-		serverTime.value = `${formatDateTime(datetime)}.${new Date(datetime).getMilliseconds()}`
+		// const { datetime } = await response.json()
+		// serverTime.value = `${formatDateTime(datetime)}.${new Date(datetime).getMilliseconds()}`
+		const { atom, micro }: { atom: string; micro: number } = await response.json()
+		serverTime.value = `${formatDateTime(atom)}.${Math.round(micro / 1000)}`
 	} catch (error) {
 		console.error(error)
 	}
