@@ -54,7 +54,7 @@ const filteredReservations = computed(() => {
 			<div>
 				<input
 					v-model.trim="search"
-					type="search"
+					type="text"
 					placeholder="Suche"
 					autocorrect="off"
 					autocomplete="off"

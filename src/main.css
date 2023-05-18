@@ -29,6 +29,11 @@ button {
 	padding: 0.0625rem 0.25rem;
 }
 
+/* iOS */
+button[type='submit'] {
+	@apply font-normal;
+}
+
 :any-link {
 	text-decoration: underline;
 }
