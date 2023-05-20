@@ -17,6 +17,10 @@ const uuid = ref(`_${Math.random().toString(36).substring(2, 10)}`)
 
 const dialogEl: Ref<HTMLDialogElement | null> = ref(null)
 const dialogMessage = ref('')
+const _showDialog = (message: string) => {
+	dialogMessage.value = message
+	dialogEl.value?.showModal()
+}
 
 const leftBlock = computed(() => tables.value.filter(item => item.block_id === 1))
 const middleBlock = computed(() => tables.value.filter(item => item.block_id === 2))
@@ -24,10 +28,9 @@ const rightBlock = computed(() => tables.value.filter(item => item.block_id === 
 
 let _interval: number | undefined
 
-// 🔺 TODO Interface sperren, solange `!isReleased.value`
 // 🔺 TODO mit `_fetchTime` verkuddeln, da clientseitige Zeit falsch sein kann
-const _releaseDate = new Date(import.meta.env.VITE_RELEASE_DATE).getTime()
-const _isReleasedNow = () => _releaseDate <= Date.now()
+const _releaseTime = new Date(import.meta.env.VITE_RELEASE_DATE).getTime()
+const _isReleasedNow = () => _releaseTime <= Date.now()
 const isReleased = ref(_isReleasedNow())
 if (!isReleased.value) {
 	_interval = window.setInterval(() => {
@@ -77,6 +80,16 @@ const _decreaseCountdown = () => {
 }
 
 const onEditTable = async (id: string) => {
+	if (!isReleased.value) {
+		_showDialog(
+			`Bitte noch etwas Geduld!\nEintragung ab ${new Date(_releaseTime).toLocaleDateString('de-DE', {
+				hour: 'numeric',
+				minute: 'numeric',
+			})} Uhr möglich.`
+		)
+		return
+	}
+
 	if (selectedTable.value) return
 
 	tableDocId.value = id
@@ -98,16 +111,14 @@ watch(
 		if (lockedBy && lockedBy !== uuid.value) {
 			console.warn('Conflict')
 			cleanUp()
-			dialogMessage.value = 'Conflict'
-			dialogEl.value?.showModal()
+			_showDialog('Conflict')
 			return
 		}
 
 		// if table is unlocked by admin user the open form needs to be closed
 		if (!lockedBy && isTableDocIdValid.value && !isSaving.value) {
 			cleanUp()
-			dialogMessage.value = 'Unlocked by admin user'
-			dialogEl.value?.showModal()
+			_showDialog('Unlocked by admin user')
 		}
 	}
 )
@@ -207,7 +218,7 @@ onBeforeRouteLeave(() => {
 	/>
 
 	<dialog ref="dialogEl">
-		<div>{{ dialogMessage }}</div>
+		<div class="whitespace-pre-line">{{ dialogMessage }}</div>
 		<button type="button" @click="dialogEl?.close()">close</button>
 	</dialog>
 </template>

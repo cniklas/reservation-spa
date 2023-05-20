@@ -46,14 +46,13 @@ if (now.getMonth() === 11 && now.getDate() === 31) {
 
 <template>
 	<header>
-		<img alt="Vue logo" src="@/assets/logo.svg" width="125" height="125" />
+		<!-- <img alt="Vue logo" src="@/assets/logo.svg" width="125" height="125" /> -->
 
 		<nav class="flex items-center gap-2">
 			<RouterLink to="/">Home</RouterLink>
 			<RouterLink to="/liste">Liste</RouterLink>
 			<RouterLink v-if="isLoggedIn" to="/add">Add</RouterLink>
-			<RouterLink v-if="!isLoggedIn" to="/login">Login</RouterLink>
-			<button v-else type="button" @click="logout">Logout</button>
+			<button v-if="isLoggedIn" type="button" @click="logout">Logout</button>
 		</nav>
 	</header>
 
