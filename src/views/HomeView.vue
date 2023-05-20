@@ -22,24 +22,28 @@ const leftBlock = computed(() => tables.value.filter(item => item.block_id === 1
 const middleBlock = computed(() => tables.value.filter(item => item.block_id === 2))
 const rightBlock = computed(() => tables.value.filter(item => item.block_id === 3))
 
-const OFFSET = 5 * 60 * 1000
-let _timeout: number | undefined
-const timerDuration = ref(OFFSET)
-const isTimerRunning = ref(false)
 let _interval: number | undefined
-const countdown = ref(0)
-const decreaseCountdown = () => {
-	countdown.value--
+
+// 🔺 TODO Interface sperren, solange `!isReleased.value`
+// 🔺 TODO mit `_fetchTime` verkuddeln, da clientseitige Zeit falsch sein kann
+const _releaseDate = new Date(import.meta.env.VITE_RELEASE_DATE).getTime()
+const _isReleasedNow = () => _releaseDate <= Date.now()
+const isReleased = ref(_isReleasedNow())
+if (!isReleased.value) {
+	_interval = window.setInterval(() => {
+		if (!_isReleasedNow()) return
+		clearInterval(_interval)
+		isReleased.value = true
+	}, 2000)
 }
 
-// 🔺 TODO Freischaltung der Seite zum Zeitpunkt x muss über eine externe Referenz kommen
 const clientTime = ref('')
 const serverTime = ref('')
 const _fetchTime = async () => {
 	try {
 		// console.time('server time')
 		// const response = await fetch('https://worldtimeapi.org/api/timezone/Europe/Berlin')
-		const response = await fetch(import.meta.env.VITE_TIME_REST_URL)
+		const response = await fetch(import.meta.env.VITE_GET_TIME_URL)
 		if (!response.ok) throw new Error('Could not retrieve server time')
 		// console.timeEnd('server time')
 
@@ -64,16 +68,24 @@ const isFormOpen = computed(() => isTableDocIdValid.value && !!selectedTable.val
 
 const isSaving = ref(false)
 
+const MAX_EDIT_DURATION = 4 * 60 * 1000
+let _editTimeout: number | undefined
+const isTimerRunning = ref(false)
+const editCountdown = ref(0)
+const _decreaseCountdown = () => {
+	editCountdown.value--
+}
+
 const onEditTable = async (id: string) => {
 	if (selectedTable.value) return
 
 	tableDocId.value = id
 	const tableRef = doc(db, 'tables', id)
 	await updateDoc(tableRef, { locked_by: uuid.value, locked_at: serverTimestamp() })
-	_timeout = window.setTimeout(closeForm, OFFSET)
+	_editTimeout = window.setTimeout(closeForm, MAX_EDIT_DURATION)
 	isTimerRunning.value = true
-	countdown.value = OFFSET / 1000
-	_interval = window.setInterval(decreaseCountdown, 1000)
+	editCountdown.value = MAX_EDIT_DURATION / 1000
+	_interval = window.setInterval(_decreaseCountdown, 1000)
 
 	// 🔺 TODO remove when final layout has been set up
 	await nextTick()
@@ -110,7 +122,7 @@ const closeForm = () => {
 const cleanUp = () => {
 	if (!selectedTable.value) return
 
-	clearTimeout(_timeout)
+	clearTimeout(_editTimeout)
 	isTimerRunning.value = false
 	clearInterval(_interval)
 	tableDocId.value = FAUX_ID
@@ -133,9 +145,11 @@ onMounted(() => {
 	// 🔺 especially on mobile, the `beforeunload` event is not reliably fired
 	// https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event#usage_notes
 	window.addEventListener('beforeunload', closeForm)
+	document.documentElement.style.setProperty('--duration', `${MAX_EDIT_DURATION}`)
 })
 onBeforeUnmount(() => {
 	closeForm()
+	if (!isReleased.value) clearInterval(_interval)
 })
 onBeforeRouteLeave(() => {
 	closeForm()
@@ -143,14 +157,11 @@ onBeforeRouteLeave(() => {
 </script>
 
 <template>
-	<div
-		class="timer-bar fixed left-0 top-0 h-1 w-full"
-		:class="{ 'is-running': isTimerRunning }"
-		:style="{ '--duration': timerDuration }"
-	/>
+	<div class="timer-bar fixed left-0 top-0 h-1 w-full" :class="{ 'is-running': isTimerRunning }" />
 
 	<main>
 		<h1>Übersicht</h1>
+		<pre>isReleased {{ isReleased }}</pre>
 		<div>Client Time: {{ clientTime }}</div>
 		<div>Server Time: {{ serverTime }}</div>
 
@@ -186,11 +197,10 @@ onBeforeRouteLeave(() => {
 		v-if="isTableDocIdValid && !!selectedTable"
 		id="table-form"
 		:class="{ 'is-running': isTimerRunning }"
-		:style="{ '--duration': timerDuration }"
 		:tables="tables"
 		:table-doc="selectedTable"
 		:is-logged-in="!!user"
-		:countdown="countdown"
+		:countdown="editCountdown"
 		@cancel="closeForm"
 		@saving="isSaving = true"
 		@saved="cleanUp"
