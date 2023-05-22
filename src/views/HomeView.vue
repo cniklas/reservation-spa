@@ -172,11 +172,10 @@ onBeforeRouteLeave(() => {
 
 	<main>
 		<h1>Übersicht</h1>
-		<pre>isReleased {{ isReleased }}</pre>
 		<div>Client Time: {{ clientTime }}</div>
 		<div>Server Time: {{ serverTime }}</div>
 
-		<div style="display: grid; grid-template-columns: repeat(3, 1fr)">
+		<div class="grid grid-cols-[repeat(3,1fr)]">
 			<TableGroup
 				:tables="leftBlock"
 				:uuid="uuid"

@@ -20,6 +20,10 @@ summary {
 }
 
 /* dev only */
+input {
+	border: 1px solid canvasText;
+}
+
 input:invalid,
 select:invalid,
 textarea:invalid {
@@ -32,6 +36,7 @@ button {
 	border-radius: 0.25rem;
 	padding: 0.0625rem 0.25rem;
 }
+/* END dev only */
 
 /* iOS */
 button[type='submit'] {

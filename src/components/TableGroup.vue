@@ -22,7 +22,6 @@ const lockedAtFormatted = (lockedAt: Timestamp) =>
 <template>
 	<ul>
 		<li v-for="table in tables" :key="table.id">
-			({{ table.index }})
 			<template v-if="!isLoggedIn && !table.active">{{ table.name }}</template>
 
 			<template v-else>

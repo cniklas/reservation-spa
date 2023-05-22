@@ -147,8 +147,8 @@ const cancel = () => {
 				<div>
 					<label for="seats">Anzahl Sitzplätze</label>
 					<!-- <input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="1" max="8" /> -->
-					{{ form.seats }}
 					<button type="button" :disabled="form.seats === 1" @click="decrease">-</button>
+					{{ form.seats }}
 					<button type="button" :disabled="form.seats === 8" @click="increase">+</button>
 				</div>
 				<div>
