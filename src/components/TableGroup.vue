@@ -15,13 +15,13 @@ defineProps<{
 
 const lockedAtFormatted = (lockedAt: Timestamp) =>
 	lockedAt.nanoseconds
-		? formatTime(lockedAt.seconds * 1000 + lockedAt.nanoseconds / 1000000)
+		? `${formatTime(lockedAt.seconds * 1000 + lockedAt.nanoseconds / 1000000)}.${lockedAt.nanoseconds / 1000000}`
 		: formatTime(lockedAt.seconds * 1000)
 </script>
 
 <template>
 	<ul>
-		<li v-for="table in tables" :key="table.id">
+		<li v-for="table in tables" :key="table.id" class="my-2">
 			<template v-if="!isLoggedIn && !table.active">{{ table.name }}</template>
 
 			<template v-else>
@@ -30,11 +30,14 @@ const lockedAtFormatted = (lockedAt: Timestamp) =>
 					<template v-if="table.locked_at">🔒</template>
 				</button>
 
-				<template v-if="isLoggedIn && table.locked_at">
-					<button v-if="table.locked_by !== uuid" type="button" @click="$emit('unlock', table.id)">🔑</button>
-					<div>
-						locked at: {{ lockedAtFormatted(table.locked_at) }} // <code>{{ table.locked_at }}</code>
-					</div>
+				<template v-if="table.locked_at">
+					<button v-if="isLoggedIn && table.locked_by !== uuid" type="button" @click="$emit('unlock', table.id)">
+						🔑
+					</button>
+					·
+					<span
+						>locked at: <time>{{ lockedAtFormatted(table.locked_at) }}</time></span
+					>
 				</template>
 			</template>
 		</li>

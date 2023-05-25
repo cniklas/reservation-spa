@@ -136,7 +136,7 @@ const cancel = () => {
 		<h2>Tisch {{ form.name }}</h2>
 
 		<!-- <div class="timer-radial relative h-20 w-20 rounded-full bg-rose-500 bg-blend-multiply" /> -->
-		<div class="countdown">{{ countdownToTime }}</div>
+		<div class="countdown my-2">{{ countdownToTime }}</div>
 
 		<form novalidate @submit.prevent="onSubmit">
 			<template v-if="isLoggedIn">
@@ -166,7 +166,7 @@ const cancel = () => {
 			<div>
 				<div>Sitzplätze</div>
 				<ol>
-					<li v-for="n in form.seats" :key="`seat-${n}`">
+					<li v-for="n in form.seats" :key="`seat-${n}`" class="my-2">
 						<!-- <label :for="`seat_${n}`">Sitzplatz {{ n }}</label> -->
 						<input
 							v-model.trim="form[`seat_${n}`]"

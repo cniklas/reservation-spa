@@ -7,6 +7,11 @@ input[type="search"]::-webkit-search-decoration {
 	-webkit-appearance: none;
 }
 
+/* iOS */
+button[type='submit'] {
+	@apply font-normal;
+}
+
 :disabled {
 	cursor: default;
 }
@@ -37,11 +42,6 @@ button {
 	padding: 0.0625rem 0.25rem;
 }
 /* END dev only */
-
-/* iOS */
-button[type='submit'] {
-	@apply font-normal;
-}
 
 :any-link {
 	text-decoration: underline;

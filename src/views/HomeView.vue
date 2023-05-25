@@ -171,7 +171,7 @@ onBeforeRouteLeave(() => {
 	<div class="timer-bar fixed left-0 top-0 h-1 w-full" :class="{ 'is-running': isTimerRunning }" />
 
 	<main>
-		<h1>Übersicht</h1>
+		<h1>Home</h1>
 		<div>Client Time: {{ clientTime }}</div>
 		<div>Server Time: {{ serverTime }}</div>
 
@@ -206,7 +206,6 @@ onBeforeRouteLeave(() => {
 	<TableForm
 		v-if="isTableDocIdValid && !!selectedTable"
 		id="table-form"
-		:class="{ 'is-running': isTimerRunning }"
 		:tables="tables"
 		:table-doc="selectedTable"
 		:is-logged-in="!!user"

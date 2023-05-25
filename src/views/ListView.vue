@@ -48,7 +48,7 @@ const filteredReservations = computed(() => {
 
 <template>
 	<main>
-		<h1>Namensliste</h1>
+		<h1>Liste</h1>
 
 		<div v-if="reservations.length > 0">
 			<div>
