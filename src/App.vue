@@ -8,10 +8,8 @@ const router = useRouter()
 const auth = getAuth()
 
 // @ts-ignore
-// eslint-disable-next-line
 const version: string = __APP_VERSION__
 // @ts-ignore
-// eslint-disable-next-line
 const buildTime = `${new Date(__BUILD_TIME__).toLocaleDateString('de-DE', { hour: 'numeric', minute: 'numeric' })} Uhr`
 
 const logout = () => {
@@ -38,8 +36,8 @@ watch(isLoggedIn, val => {
 	}
 })
 
-const now = new Date()
-if (now.getMonth() === 11 && now.getDate() === 31) {
+const _now = new Date()
+if (_now.getMonth() === 11 && _now.getDate() === 31) {
 	router.replace('/liste')
 }
 </script>

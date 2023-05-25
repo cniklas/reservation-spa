@@ -8,8 +8,6 @@ import { useFirestore, useCollection, VueFire, VueFireAuth } from 'vuefire'
 import { collection, query, orderBy } from 'firebase/firestore'
 import { firebaseApp } from './firebase'
 
-document.title = import.meta.env.VITE_APP_NAME
-
 const blocks = new Map([
 	[1, 'Linker Block'],
 	[2, 'Mittelblock'],
