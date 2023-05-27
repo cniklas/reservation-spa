@@ -41,6 +41,7 @@ if (!isReleased.value) {
 }
 
 const clientTime = ref('')
+const clientOffset = ref(0)
 const serverTime = ref('')
 const _fetchTime = async () => {
 	try {
@@ -50,12 +51,18 @@ const _fetchTime = async () => {
 		if (!response.ok) throw new Error('Could not retrieve server time')
 		// console.timeEnd('server time')
 
-		const dateNow = Date.now()
-		clientTime.value = `${formatDateTime(dateNow)}.${new Date(dateNow).getMilliseconds()}`
+		const clientNow = Date.now()
+		// 🔺 getMilliseconds() ist missverständlich, da z.B. für 2 ms `2` und nicht `002` zurückgegeben wird
+		// clientTime.value = `${formatDateTime(clientNow)}.${new Date(clientNow).getMilliseconds()}`
+		clientTime.value = formatDateTime(clientNow)
+
 		// const { datetime } = await response.json()
-		// serverTime.value = `${formatDateTime(datetime)}.${new Date(datetime).getMilliseconds()}`
 		const { atom, micro }: { atom: string; micro: number } = await response.json()
-		serverTime.value = `${formatDateTime(atom)}.${Math.round(micro / 1000)}`
+		const serverNow = new Date(atom).getTime() + Math.round(micro / 1000)
+		serverTime.value = formatDateTime(serverNow)
+
+		const _clientOffset = serverNow - clientNow
+		if (Math.abs(_clientOffset) > 2000) clientOffset.value = _clientOffset
 	} catch (error) {
 		console.error(error)
 	}
@@ -141,9 +148,7 @@ const cleanUp = () => {
 }
 
 const onUnlockTable = (id: string) => {
-	if (!user) return
-
-	_unlockTable(id)
+	if (user) _unlockTable(id)
 }
 
 const _unlockTable = async (id: string) => {
@@ -172,8 +177,9 @@ onBeforeRouteLeave(() => {
 
 	<main>
 		<h1>Home</h1>
-		<div>Client Time: {{ clientTime }}</div>
 		<div>Server Time: {{ serverTime }}</div>
+		<div>Client Time: {{ clientTime }}</div>
+		<div>Client Offset: {{ clientOffset }}</div>
 
 		<div class="grid grid-cols-[repeat(3,1fr)]">
 			<TableGroup
