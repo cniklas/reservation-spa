@@ -28,21 +28,14 @@ const rightBlock = computed(() => tables.value.filter(item => item.block_id === 
 
 let _interval: number | undefined
 
-// 🔺 TODO mit `_fetchTime` verkuddeln, da clientseitige Zeit falsch sein kann
-const _releaseTime = new Date(import.meta.env.VITE_RELEASE_DATE).getTime()
-const _isReleasedNow = () => _releaseTime <= Date.now()
-const isReleased = ref(_isReleasedNow())
-if (!isReleased.value) {
-	_interval = window.setInterval(() => {
-		if (!_isReleasedNow()) return
-		clearInterval(_interval)
-		isReleased.value = true
-	}, 2000)
-}
-
 const clientTime = ref('')
 const clientOffset = ref(0)
 const serverTime = ref('')
+const _releaseTime = new Date(import.meta.env.VITE_RELEASE_DATE).getTime()
+const isReleased = ref(false)
+// 🔺 take into account that the client time may not be set correctly
+const _isReleasedNow = () => _releaseTime <= Date.now() + clientOffset.value
+
 const _fetchTime = async () => {
 	try {
 		// console.time('server time')
@@ -63,6 +56,15 @@ const _fetchTime = async () => {
 
 		const _clientOffset = serverNow - clientNow
 		if (Math.abs(_clientOffset) > 2000) clientOffset.value = _clientOffset
+
+		isReleased.value = _isReleasedNow()
+		if (!isReleased.value) {
+			_interval = window.setInterval(() => {
+				if (!_isReleasedNow()) return
+				clearInterval(_interval)
+				isReleased.value = true
+			}, 2000)
+		}
 	} catch (error) {
 		console.error(error)
 	}
