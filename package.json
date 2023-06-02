@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@vueuse/core": "^10.1.2",
-    "firebase": "^9.19.1",
+    "firebase": "^9.22.1",
     "string-similarity": "^4.0.4",
     "vue": "^3.2.45",
     "vue-router": "^4.2.2",
