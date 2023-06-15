@@ -2,7 +2,6 @@
 import { ref, computed, watch, inject, onMounted, onBeforeUnmount, nextTick, type Ref } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 import { doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
-import { useFirestore } from '@vueuse/firebase/useFirestore'
 import { useAuth } from '@vueuse/firebase/useAuth'
 // import { isSafari } from '@firebase/util'
 import { auth, db } from '@/firebase'
@@ -70,13 +69,10 @@ const _fetchTime = async () => {
 }
 
 const uuid = ref(`_${Math.random().toString(36).substring(2, 10)}`)
-const FAUX_ID = 'nope'
-const tableDocId = ref(FAUX_ID)
-const isTableDocIdValid = computed(() => tableDocId.value !== FAUX_ID)
-const _tableDoc = computed(() => doc(db, 'tables', tableDocId.value))
+const tableDocId: Ref<string | null> = ref(null)
 // will always be in sync with the data source
-const selectedTable = useFirestore(_tableDoc) as Ref<TableDoc | null | undefined>
-const isFormOpen = computed(() => isTableDocIdValid.value && !!selectedTable.value)
+const selectedTable = computed(() => tables.value?.find(item => item.id === tableDocId.value))
+const isFormOpen = computed(() => !!tableDocId.value && !!selectedTable.value)
 
 const isSaving = ref(false)
 
@@ -125,18 +121,20 @@ watch(
 		}
 
 		// if table is unlocked by admin user the open form needs to be closed
-		if (!lockedBy && isTableDocIdValid.value && !isSaving.value) {
+		if (!lockedBy && !!tableDocId.value && !isSaving.value) {
 			cleanUp()
 			_showDialog('Unlocked by admin user')
 		}
 	}
 )
 
+// called in any case EXCEPT "save form"
 const closeForm = () => {
 	if (!selectedTable.value) return
 
+	const _tableDocId = selectedTable.value.id
 	cleanUp()
-	_unlockTable(selectedTable.value.id)
+	_unlockTable(_tableDocId)
 }
 
 const cleanUp = () => {
@@ -145,7 +143,7 @@ const cleanUp = () => {
 	clearTimeout(_editTimeout)
 	isTimerRunning.value = false
 	clearInterval(_interval)
-	tableDocId.value = FAUX_ID
+	tableDocId.value = null
 	isSaving.value = false
 }
 
@@ -212,7 +210,7 @@ onBeforeRouteLeave(() => {
 	</main>
 
 	<TableForm
-		v-if="isTableDocIdValid && !!selectedTable"
+		v-if="!!tableDocId && !!selectedTable"
 		id="table-form"
 		:tables="tables"
 		:table-doc="selectedTable"
