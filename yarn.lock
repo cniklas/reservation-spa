@@ -1039,6 +1039,14 @@
     "@vueuse/shared" "10.1.2"
     vue-demi ">=0.14.0"
 
+"@vueuse/firebase@^10.1.2":
+  version "10.1.2"
+  resolved "https://registry.yarnpkg.com/@vueuse/firebase/-/firebase-10.1.2.tgz#cae7b9e51b88f3a526bc34b27d96ad5b903e1c7f"
+  integrity sha512-k8aZ+xCD4xYSGJhCMvS9Fd0pjVZ7KK0MkWRF8o2Dg/ZnN04rJl1mPluqj5eYj8N3BY8dujDn+os0apoWYHaEHQ==
+  dependencies:
+    "@vueuse/shared" "10.1.2"
+    vue-demi ">=0.14.0"
+
 "@vueuse/metadata@10.1.2":
   version "10.1.2"
   resolved "https://registry.yarnpkg.com/@vueuse/metadata/-/metadata-10.1.2.tgz#d8ffe557b1042efd03a0aa88540a00c25d193ee3"
@@ -3465,7 +3473,7 @@ vitest@^0.31.4:
     vite-node "0.31.4"
     why-is-node-running "^2.2.2"
 
-vue-demi@>=0.14.0, vue-demi@latest:
+vue-demi@>=0.14.0:
   version "0.14.5"
   resolved "https://registry.yarnpkg.com/vue-demi/-/vue-demi-0.14.5.tgz#676d0463d1a1266d5ab5cba932e043d8f5f2fbd9"
   integrity sha512-o9NUVpl/YlsGJ7t+xuqJKx8EBGf1quRhCiT6D/J0pfwmk9zUwYkC7yrF4SZCe6fETvSM3UNL2edcbYrSyc4QHA==
@@ -3517,13 +3525,6 @@ vue@^3.2.45:
     "@vue/runtime-dom" "3.3.4"
     "@vue/server-renderer" "3.3.4"
     "@vue/shared" "3.3.4"
-
-vuefire@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/vuefire/-/vuefire-3.1.0.tgz#4da1478d1e6cdf0951612614056c8b3b51625581"
-  integrity sha512-iLY6GARr5la75tfxBZUm2zfbL6kQ11FWBUHClyfM602xgWskkBAIareGs3R4K2DC4QSWXslrYnteCyLlqouD8w==
-  dependencies:
-    vue-demi latest
 
 w3c-xmlserializer@^4.0.0:
   version "4.0.0"

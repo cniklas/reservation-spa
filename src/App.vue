@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useRoute, useRouter, RouterLink, RouterView } from 'vue-router'
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
+import { auth } from '@/firebase'
 
 const route = useRoute()
 const router = useRouter()
-const auth = getAuth()
 
 // @ts-ignore
 const version: string = __APP_VERSION__
