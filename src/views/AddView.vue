@@ -1,19 +1,18 @@
 <script setup lang="ts">
-import { reactive, computed, watch, inject, toRaw } from 'vue'
+import { reactive, computed, watch, inject, toRaw, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useFirestore, type _RefFirestore } from 'vuefire'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { db } from '@/firebase'
 import type { TableDoc } from '@/types/TableDoc.type'
 import { useErrorHandling } from '@/use/errorHandling'
 
 const router = useRouter()
-const db = useFirestore()
 const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, validationErrors, validateTableName } =
 	useErrorHandling()
 
 const blocks = inject('blocks') as Map<number, string>
-const tables = inject('tables') as _RefFirestore<TableDoc[]>
-const _getNextIndex = () => Math.max(...tables.value.map(item => item.index)) + 1
+const tables = inject('tables') as Ref<TableDoc[] | undefined>
+const _getNextIndex = () => Math.max(...(tables.value?.map(item => item.index) ?? [-1])) + 1
 
 const form = reactive({
 	active: true,
@@ -30,7 +29,7 @@ watch(
 	}
 )
 
-const _tableNames = computed(() => tables.value.map(item => item.name))
+const _tableNames = computed(() => tables.value?.map(item => item.name) ?? [])
 const onUpdate = (e: Event) => {
 	validateTableName(form.name, _tableNames.value)
 	;(e.target as HTMLInputElement).setCustomValidity(validationErrors.has('name') ? 'Eingabe ungültig' : '')

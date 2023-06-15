@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { reactive, computed, watch, inject, toRaw } from 'vue'
-import { useFirestore } from 'vuefire'
 import { doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
+import { db } from '@/firebase'
 import type { TableDoc } from '@/types/TableDoc.type'
 import type { Reservation } from '@/types/Reservation.type'
 import { useErrorHandling } from '@/use/errorHandling'
 
 const blocks = inject('blocks') as Map<number, string>
 
-const db = useFirestore()
 const { isSubmitLocked, beforeSubmit, handleSubmitError, unlockSubmit, validationErrors, validateName } =
 	useErrorHandling()
 
@@ -18,7 +17,7 @@ const emit = defineEmits<{
 	(event: 'saved'): void
 }>()
 const props = defineProps<{
-	tables: TableDoc[]
+	tables: TableDoc[] | undefined
 	tableDoc: TableDoc
 	isLoggedIn: boolean
 	countdown: number
@@ -55,8 +54,8 @@ watch(
 const reservations = computed(() => {
 	const _reservations: Reservation[] = []
 	props.tables
-		.filter(item => item.id !== props.tableDoc.id)
-		.forEach(table => {
+		?.filter(item => item.id !== props.tableDoc.id)
+		?.forEach(table => {
 			let n = 0
 			while (n < table.seats) {
 				const key = `seat_${++n}`
@@ -165,16 +164,16 @@ const cancel = () => {
 			</template>
 			<div>
 				<div>Sitzplätze</div>
-				<ol>
+				<ol class="list-decimal pl-4">
 					<li v-for="n in form.seats" :key="`seat-${n}`" class="my-2">
 						<!-- <label :for="`seat_${n}`">Sitzplatz {{ n }}</label> -->
+						<label :for="`seat_${n}`">Vor- und Nachname</label>
 						<input
 							v-model.trim="form[`seat_${n}`]"
 							type="text"
 							:id="`seat_${n}`"
 							autocomplete="off"
 							maxlength="36"
-							placeholder="Vor- und Nachname"
 							@change="onChange(`seat_${n}`, $event.target as HTMLInputElement)"
 						/>
 						<template v-if="validationErrors.has(`seat_${n}`)">

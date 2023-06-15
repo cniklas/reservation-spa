@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { ref, computed, watch, inject, onMounted, onBeforeUnmount, nextTick, type Ref } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
-import { useCurrentUser, useFirestore, useDocument, type _RefFirestore } from 'vuefire'
-import { collection, doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
+import { doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
+import { useFirestore } from '@vueuse/firebase/useFirestore'
+import { useAuth } from '@vueuse/firebase/useAuth'
 // import { isSafari } from '@firebase/util'
+import { auth, db } from '@/firebase'
 import type { TableDoc } from '@/types/TableDoc.type'
 import TableForm from '@/components/TableForm.vue'
 import TableGroup from '@/components/TableGroup.vue'
 import { formatDateTime } from '@/use/helper'
 
-const tables = inject('tables') as _RefFirestore<TableDoc[]>
+const tables = inject('tables') as Ref<TableDoc[] | undefined>
+const leftBlock = computed(() => tables.value?.filter(item => item.block_id === 1))
+const middleBlock = computed(() => tables.value?.filter(item => item.block_id === 2))
+const rightBlock = computed(() => tables.value?.filter(item => item.block_id === 3))
 
-const user = useCurrentUser()
-const db = useFirestore()
-const uuid = ref(`_${Math.random().toString(36).substring(2, 10)}`)
+const { isAuthenticated } = useAuth(auth)
 
 const dialogEl: Ref<HTMLDialogElement | null> = ref(null)
 const dialogMessage = ref('')
@@ -21,10 +24,6 @@ const _showDialog = (message: string) => {
 	dialogMessage.value = message
 	dialogEl.value?.showModal()
 }
-
-const leftBlock = computed(() => tables.value.filter(item => item.block_id === 1))
-const middleBlock = computed(() => tables.value.filter(item => item.block_id === 2))
-const rightBlock = computed(() => tables.value.filter(item => item.block_id === 3))
 
 let _interval: number | undefined
 
@@ -70,12 +69,13 @@ const _fetchTime = async () => {
 	}
 }
 
+const uuid = ref(`_${Math.random().toString(36).substring(2, 10)}`)
 const FAUX_ID = 'nope'
 const tableDocId = ref(FAUX_ID)
 const isTableDocIdValid = computed(() => tableDocId.value !== FAUX_ID)
-const _tableDoc = computed(() => doc(collection(db, 'tables'), tableDocId.value))
+const _tableDoc = computed(() => doc(db, 'tables', tableDocId.value))
 // will always be in sync with the data source
-const selectedTable = useDocument(_tableDoc) as unknown as Ref<TableDoc | null>
+const selectedTable = useFirestore(_tableDoc) as Ref<TableDoc | null | undefined>
 const isFormOpen = computed(() => isTableDocIdValid.value && !!selectedTable.value)
 
 const isSaving = ref(false)
@@ -150,7 +150,7 @@ const cleanUp = () => {
 }
 
 const onUnlockTable = (id: string) => {
-	if (user) _unlockTable(id)
+	if (isAuthenticated.value) _unlockTable(id)
 }
 
 const _unlockTable = async (id: string) => {
@@ -187,7 +187,7 @@ onBeforeRouteLeave(() => {
 			<TableGroup
 				:tables="leftBlock"
 				:uuid="uuid"
-				:is-logged-in="!!user"
+				:is-logged-in="isAuthenticated"
 				:is-form-open="isFormOpen"
 				@edit="onEditTable"
 				@unlock="onUnlockTable"
@@ -195,7 +195,7 @@ onBeforeRouteLeave(() => {
 			<TableGroup
 				:tables="middleBlock"
 				:uuid="uuid"
-				:is-logged-in="!!user"
+				:is-logged-in="isAuthenticated"
 				:is-form-open="isFormOpen"
 				@edit="onEditTable"
 				@unlock="onUnlockTable"
@@ -203,7 +203,7 @@ onBeforeRouteLeave(() => {
 			<TableGroup
 				:tables="rightBlock"
 				:uuid="uuid"
-				:is-logged-in="!!user"
+				:is-logged-in="isAuthenticated"
 				:is-form-open="isFormOpen"
 				@edit="onEditTable"
 				@unlock="onUnlockTable"
@@ -216,7 +216,7 @@ onBeforeRouteLeave(() => {
 		id="table-form"
 		:tables="tables"
 		:table-doc="selectedTable"
-		:is-logged-in="!!user"
+		:is-logged-in="isAuthenticated"
 		:countdown="editCountdown"
 		@cancel="closeForm"
 		@saving="isSaving = true"

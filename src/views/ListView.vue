@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, inject } from 'vue'
-import type { _RefFirestore } from 'vuefire'
+import { ref, computed, inject, type Ref } from 'vue'
 import { refDebounced } from '@vueuse/core'
 import type { TableDoc } from '@/types/TableDoc.type'
 import type { Reservation } from '@/types/Reservation.type'
 
-const tables = inject('tables') as _RefFirestore<TableDoc[]>
+const tables = inject('tables') as Ref<TableDoc[] | undefined>
 
 const _sortByName = (a: Reservation, b: Reservation) => {
 	return a.name.localeCompare(b.name, 'de')
@@ -13,7 +12,7 @@ const _sortByName = (a: Reservation, b: Reservation) => {
 
 const reservations = computed(() => {
 	const _reservations: Reservation[] = []
-	tables.value.forEach(table => {
+	tables.value?.forEach(table => {
 		let n = 0
 		while (n < table.seats) {
 			const key = `seat_${++n}`
@@ -21,7 +20,8 @@ const reservations = computed(() => {
 
 			const name = (table[key] as string).split(' ')
 			_reservations.push({
-				name: name.length > 1 ? `${name.at(-1)}, ${name.slice(0, -1).join(' ')}` : name.at(0) ?? '',
+				// name: name.length > 1 ? `${name.at(-1)}, ${name.slice(0, -1).join(' ')}` : name.at(0) ?? '',
+				name: name.length > 1 ? `${name[name.length - 1]}, ${name.slice(0, -1).join(' ')}` : name[0] ?? '',
 				table: table.name,
 			})
 		}
@@ -52,10 +52,11 @@ const filteredReservations = computed(() => {
 
 		<div v-if="reservations.length > 0">
 			<div>
+				<label for="search">Suche</label>
 				<input
 					v-model.trim="search"
 					type="text"
-					placeholder="Suche"
+					id="search"
 					autocorrect="off"
 					autocomplete="off"
 					@keyup.esc="resetSearch"

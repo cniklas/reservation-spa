@@ -7,7 +7,7 @@ defineEmits<{
 	(event: 'unlock', id: string): void
 }>()
 defineProps<{
-	tables: TableDoc[]
+	tables: TableDoc[] | undefined
 	uuid: string
 	isLoggedIn: boolean
 	isFormOpen: boolean

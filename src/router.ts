@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { getCurrentUser } from 'vuefire'
-import HomeView from './views/HomeView.vue'
+import { useAuth } from '@vueuse/firebase/useAuth'
+import { auth } from '@/firebase'
+import HomeView from '@/views/HomeView.vue'
+
+const { isAuthenticated } = useAuth(auth)
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,9 +22,8 @@ const router = createRouter({
 			path: '/add',
 			name: 'add',
 			component: () => import('./views/AddView.vue'),
-			beforeEnter: async to => {
-				const currentUser = await getCurrentUser()
-				if (!currentUser)
+			beforeEnter: to => {
+				if (!isAuthenticated.value)
 					return {
 						name: 'login',
 						query: {
