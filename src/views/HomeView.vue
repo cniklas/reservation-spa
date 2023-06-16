@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed, watch, inject, onMounted, onBeforeUnmount, nextTick, type Ref } from 'vue'
-import { onBeforeRouteLeave } from 'vue-router'
 import { doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
 import { useAuth } from '@vueuse/firebase/useAuth'
 // import { isSafari } from '@firebase/util'
@@ -68,7 +67,9 @@ const _fetchTime = async () => {
 	}
 }
 
-const uuid = ref(`_${Math.random().toString(36).substring(2, 10)}`)
+const uuid = ref(sessionStorage.getItem('uuid') ?? `_${Math.random().toString(36).substring(2, 10)}`)
+sessionStorage.setItem('uuid', uuid.value)
+
 const itemId: Ref<string | null> = ref(null)
 // will always be in sync with the data source
 const selectedItem = computed(() => tables.value?.find(item => item.id === itemId.value))
@@ -166,8 +167,19 @@ onBeforeUnmount(() => {
 	closeForm()
 	if (!isReleased.value) clearInterval(_interval)
 })
-onBeforeRouteLeave(() => {
-	closeForm()
+// onBeforeRouteLeave(() => {
+// 	closeForm()
+// })
+
+// unlock table if user accidentally reloads page on mobile (see `beforeunload` section)
+const _unlockTableAfterPageReload = () => {
+	const abandonedTable = tables.value?.find(item => item.locked_by === uuid.value)
+	if (abandonedTable) _unlockTable(abandonedTable.id)
+}
+// wait for firebase data to be fetched
+const unwatch = watch(tables, (_, oldVal) => {
+	if (oldVal === undefined) _unlockTableAfterPageReload()
+	unwatch() // stop watcher
 })
 </script>
 
