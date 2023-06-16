@@ -69,19 +69,16 @@ const _fetchTime = async () => {
 }
 
 const uuid = ref(`_${Math.random().toString(36).substring(2, 10)}`)
-const tableDocId: Ref<string | null> = ref(null)
+const itemId: Ref<string | null> = ref(null)
 // will always be in sync with the data source
-const selectedTable = computed(() => tables.value?.find(item => item.id === tableDocId.value))
-const isFormOpen = computed(() => !!tableDocId.value && !!selectedTable.value)
-
-const isSaving = ref(false)
+const selectedItem = computed(() => tables.value?.find(item => item.id === itemId.value))
 
 const MAX_EDIT_DURATION = 4 * 60 * 1000
 let _editTimeout: number | undefined
 const isTimerRunning = ref(false)
-const editCountdown = ref(0)
+const countdown = ref(0)
 const _decreaseCountdown = () => {
-	editCountdown.value--
+	countdown.value--
 }
 
 const onEditTable = async (id: string) => {
@@ -95,22 +92,24 @@ const onEditTable = async (id: string) => {
 		return
 	}
 
-	if (selectedTable.value) return
+	if (selectedItem.value) return
 
-	tableDocId.value = id
+	itemId.value = id // now `selectedItem` will be set
 	const tableRef = doc(db, 'tables', id)
 	await updateDoc(tableRef, { locked_by: uuid.value, locked_at: serverTimestamp() })
 	_editTimeout = window.setTimeout(closeForm, MAX_EDIT_DURATION)
 	isTimerRunning.value = true
-	editCountdown.value = MAX_EDIT_DURATION / 1000
+	countdown.value = MAX_EDIT_DURATION / 1000
 	_interval = window.setInterval(_decreaseCountdown, 1000)
 
 	// 🔺 TODO remove when final layout has been set up
 	await nextTick()
 	document.querySelector('#table-form')?.scrollIntoView({ behavior: 'smooth' })
 }
+const isSaving = ref(false)
+
 watch(
-	() => selectedTable.value?.locked_by,
+	() => selectedItem.value?.locked_by,
 	(lockedBy: string | undefined) => {
 		// another user owned the table at the same moment
 		if (lockedBy && lockedBy !== uuid.value) {
@@ -121,7 +120,7 @@ watch(
 		}
 
 		// if table is unlocked by admin user the open form needs to be closed
-		if (!lockedBy && !!tableDocId.value && !isSaving.value) {
+		if (!lockedBy && itemId.value !== null && !isSaving.value) {
 			cleanUp()
 			_showDialog('Unlocked by admin user')
 		}
@@ -130,20 +129,20 @@ watch(
 
 // called in any case EXCEPT "save form"
 const closeForm = () => {
-	if (!selectedTable.value) return
+	if (!selectedItem.value) return
 
-	const _tableDocId = selectedTable.value.id
+	const id = selectedItem.value.id
 	cleanUp()
-	_unlockTable(_tableDocId)
+	_unlockTable(id)
 }
 
 const cleanUp = () => {
-	if (!selectedTable.value) return
+	if (!selectedItem.value) return
 
 	clearTimeout(_editTimeout)
 	isTimerRunning.value = false
 	clearInterval(_interval)
-	tableDocId.value = null
+	itemId.value = null // now `selectedItem` will be unset
 	isSaving.value = false
 }
 
@@ -186,7 +185,7 @@ onBeforeRouteLeave(() => {
 				:tables="leftBlock"
 				:uuid="uuid"
 				:is-logged-in="isAuthenticated"
-				:is-form-open="isFormOpen"
+				:is-form-open="!!selectedItem"
 				@edit="onEditTable"
 				@unlock="onUnlockTable"
 			/>
@@ -194,7 +193,7 @@ onBeforeRouteLeave(() => {
 				:tables="middleBlock"
 				:uuid="uuid"
 				:is-logged-in="isAuthenticated"
-				:is-form-open="isFormOpen"
+				:is-form-open="!!selectedItem"
 				@edit="onEditTable"
 				@unlock="onUnlockTable"
 			/>
@@ -202,7 +201,7 @@ onBeforeRouteLeave(() => {
 				:tables="rightBlock"
 				:uuid="uuid"
 				:is-logged-in="isAuthenticated"
-				:is-form-open="isFormOpen"
+				:is-form-open="!!selectedItem"
 				@edit="onEditTable"
 				@unlock="onUnlockTable"
 			/>
@@ -210,12 +209,11 @@ onBeforeRouteLeave(() => {
 	</main>
 
 	<TableForm
-		v-if="!!tableDocId && !!selectedTable"
+		v-if="!!selectedItem"
 		id="table-form"
-		:tables="tables"
-		:table-doc="selectedTable"
+		:entry="selectedItem"
 		:is-logged-in="isAuthenticated"
-		:countdown="editCountdown"
+		:countdown="countdown"
 		@cancel="closeForm"
 		@saving="isSaving = true"
 		@saved="cleanUp"

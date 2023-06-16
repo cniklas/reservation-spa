@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, computed, watch, inject, toRaw } from 'vue'
+import { reactive, computed, watch, inject, toRaw, type Ref } from 'vue'
 import { doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/firebase'
 import type { TableDoc } from '@/types/TableDoc.type'
@@ -7,6 +7,7 @@ import type { Reservation } from '@/types/Reservation.type'
 import { useErrorHandling } from '@/use/errorHandling'
 
 const blocks = inject('blocks') as Map<number, string>
+const tables = inject('tables') as Ref<TableDoc[] | undefined>
 
 const { isSubmitLocked, beforeSubmit, handleSubmitError, unlockSubmit, validationErrors, validateName } =
 	useErrorHandling()
@@ -17,13 +18,12 @@ const emit = defineEmits<{
 	(event: 'saved'): void
 }>()
 const props = defineProps<{
-	tables: TableDoc[] | undefined
-	tableDoc: TableDoc
+	entry: TableDoc
 	isLoggedIn: boolean
 	countdown: number
 }>()
 
-const form = reactive({ ...props.tableDoc })
+const form = reactive({ ...props.entry })
 const touchedSeats: Set<string> = reactive(new Set())
 const decrease = () => {
 	if (form.seats > 1) form.seats--
@@ -38,9 +38,9 @@ watch(
 		// else if (val > 8) form.seats = 8
 
 		// clear names and error messages
-		const diff = props.tableDoc.seats - form.seats
+		const diff = props.entry.seats - form.seats
 		if (diff > 0) {
-			let n = props.tableDoc.seats
+			let n = props.entry.seats
 			while (n > form.seats) {
 				const key = `seat_${n--}`
 				form[key] = ''
@@ -53,17 +53,17 @@ watch(
 
 const reservations = computed(() => {
 	const _reservations: Reservation[] = []
-	props.tables
-		?.filter(item => item.id !== props.tableDoc.id)
-		?.forEach(table => {
+	tables.value
+		?.filter(item => item.id !== props.entry.id)
+		?.forEach(_table => {
 			let n = 0
-			while (n < table.seats) {
+			while (n < _table.seats) {
 				const key = `seat_${++n}`
-				if (!(table[key] as string).length) continue
+				if (!(_table[key] as string).length) continue
 
 				_reservations.push({
-					name: table[key] as string,
-					table: table.name,
+					name: _table[key] as string,
+					table: _table.name,
 				})
 			}
 		})
@@ -110,7 +110,7 @@ const onSubmit = async () => {
 		if (validationErrors.size) return
 
 		emit('saving')
-		const tableRef = doc(db, 'tables', props.tableDoc.id)
+		const tableRef = doc(db, 'tables', props.entry.id)
 		await updateDoc(tableRef, formData)
 		emit('saved')
 	} catch (error) {
@@ -132,7 +132,7 @@ const cancel = () => {
 <template>
 	<section>
 		<button type="button" @click="cancel">close</button>
-		<h2>Tisch {{ form.name }}</h2>
+		<h2>Tisch {{ entry.name }}</h2>
 
 		<!-- <div class="timer-radial relative h-20 w-20 rounded-full bg-rose-500 bg-blend-multiply" /> -->
 		<div class="countdown my-2">{{ countdownToTime }}</div>

@@ -12,17 +12,17 @@ const _sortByName = (a: Reservation, b: Reservation) => {
 
 const reservations = computed(() => {
 	const _reservations: Reservation[] = []
-	tables.value?.forEach(table => {
+	tables.value?.forEach(_table => {
 		let n = 0
-		while (n < table.seats) {
+		while (n < _table.seats) {
 			const key = `seat_${++n}`
-			if (!(table[key] as string).length) continue
+			if (!(_table[key] as string).length) continue
 
-			const name = (table[key] as string).split(' ')
+			const name = (_table[key] as string).split(' ')
 			_reservations.push({
 				// name: name.length > 1 ? `${name.at(-1)}, ${name.slice(0, -1).join(' ')}` : name.at(0) ?? '',
 				name: name.length > 1 ? `${name[name.length - 1]}, ${name.slice(0, -1).join(' ')}` : name[0] ?? '',
-				table: table.name,
+				table: _table.name,
 			})
 		}
 	})
