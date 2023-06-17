@@ -61,7 +61,7 @@ const filteredReservations = computed(() => {
 					autocomplete="off"
 					@keyup.esc="resetSearch"
 				/>
-				<button type="button" :class="{ 'hidden': !search.length }" @click="resetSearch">reset</button>
+				<button type="button" :class="{ hidden: !search.length }" @click="resetSearch">reset</button>
 			</div>
 
 			<table class="table-fixed">
