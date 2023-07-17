@@ -21,6 +21,8 @@ const dialogMessage = ref('')
 const _showDialog = (message: string) => {
 	dialogMessage.value = message
 	dialogEl.value?.showModal()
+	// https://www.matuzo.at/blog/2023/focus-dialog/#conclusion
+	dialogEl.value?.focus()
 }
 
 let _interval: number | undefined
@@ -231,7 +233,7 @@ const unwatch = watch(tables, (_, oldVal) => {
 		@saved="cleanUp"
 	/>
 
-	<dialog ref="dialogEl">
+	<dialog ref="dialogEl" tabindex="-1">
 		<div class="whitespace-pre-line">{{ dialogMessage }}</div>
 		<button type="button" @click="dialogEl?.close()">close</button>
 	</dialog>
