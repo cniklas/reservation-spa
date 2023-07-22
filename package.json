@@ -1,6 +1,6 @@
 {
   "name": "reservation-spa",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/cniklas/reservation-spa.git"
@@ -42,7 +42,6 @@
     "eslint-plugin-vue": "^9.11.0",
     "jsdom": "^21.1.0",
     "npm-run-all": "^4.1.5",
-    "postcss-nesting": "^11.2.1",
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.3.0",
     "typescript": "~4.9.5",

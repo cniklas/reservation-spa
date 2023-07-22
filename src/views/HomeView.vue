@@ -245,7 +245,6 @@ const unwatch = watch(tables, (_, oldVal) => {
 		@apply block bg-rose-500;
 		content: '';
 		height: inherit;
-		/* background: linear-gradient(to right, darkorange, darkorange) no-repeat -100vw; */
 		transform: translateX(-100%);
 	}
 
@@ -253,7 +252,6 @@ const unwatch = watch(tables, (_, oldVal) => {
 		@apply bg-rose-50;
 
 		&::after {
-			/* background-position: 0; */
 			transform: translateX(0);
 			transition: transform calc(var(--duration) * 1ms) linear;
 		}

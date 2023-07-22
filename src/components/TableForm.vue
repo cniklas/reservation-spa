@@ -198,7 +198,7 @@ const cancel = () => {
 	</section>
 </template>
 
-<style lang="postcss">
+<style>
 .comma-separated {
 	display: flex;
 
