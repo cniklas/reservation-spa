@@ -16,7 +16,7 @@ const rightBlock = computed(() => tables.value?.filter(item => item.block_id ===
 
 const { isAuthenticated } = useAuth(auth)
 
-const dialogEl: Ref<HTMLDialogElement | null> = ref(null)
+const dialogEl = ref<HTMLDialogElement | null>(null)
 const dialogMessage = ref('')
 const _showDialog = (message: string) => {
 	dialogMessage.value = message
@@ -72,7 +72,7 @@ const _fetchTime = async () => {
 const uuid = ref(sessionStorage.getItem('uuid') ?? `_${Math.random().toString(36).substring(2, 10)}`)
 sessionStorage.setItem('uuid', uuid.value)
 
-const itemId: Ref<string | null> = ref(null)
+const itemId = ref<string | null>(null)
 // will always be in sync with the data source
 const selectedItem = computed(() => tables.value?.find(item => item.id === itemId.value))
 

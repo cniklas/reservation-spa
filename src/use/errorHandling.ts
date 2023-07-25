@@ -1,11 +1,11 @@
-import { ref, unref, reactive, type Ref } from 'vue'
+import { ref, unref, reactive } from 'vue'
 import { compareTwoStrings } from 'string-similarity'
 import type { Reservation } from '@/types/Reservation.type'
 
 const SIMILARITY_LIMIT = 0.64
 
 export const useErrorHandling = () => {
-	const errorCode: Ref<number | null> = ref(null)
+	const errorCode = ref<number | null>(null)
 	const errorMessage = ref('')
 	const isSubmitLocked = ref(false)
 	const unlockSubmit = () => {
