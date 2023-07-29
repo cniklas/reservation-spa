@@ -6,9 +6,7 @@ import type { Reservation } from '@/types/Reservation.type'
 
 const tables = inject('tables') as Ref<TableDoc[] | undefined>
 
-const _sortByName = (a: Reservation, b: Reservation) => {
-	return a.name.localeCompare(b.name, 'de')
-}
+const _sortByName = (a: Reservation, b: Reservation) => a.name.localeCompare(b.name, 'de')
 
 const reservations = computed(() => {
 	const _reservations: Reservation[] = []

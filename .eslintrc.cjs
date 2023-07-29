@@ -12,6 +12,10 @@ module.exports = {
 		'@vue/eslint-config-prettier',
 		'@vue/prettier',
 	],
+	rules: {
+		'arrow-body-style': 'warn',
+		'prefer-arrow-callback': 'warn',
+	},
 	parserOptions: {
 		ecmaVersion: 'latest',
 	},
