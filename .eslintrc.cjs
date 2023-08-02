@@ -9,8 +9,7 @@ module.exports = {
 		'plugin:vue/vue3-strongly-recommended',
 		'eslint:recommended',
 		'@vue/eslint-config-typescript',
-		'@vue/eslint-config-prettier',
-		'@vue/prettier',
+		'@vue/eslint-config-prettier/skip-formatting',
 	],
 	rules: {
 		'arrow-body-style': 'warn',

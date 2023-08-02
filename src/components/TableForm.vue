@@ -23,6 +23,7 @@ const props = defineProps<{
 	countdown: number
 }>()
 
+// eslint-disable-next-line vue/no-setup-props-destructure
 const form = reactive({ ...props.entry })
 const touchedSeats: Set<string> = reactive(new Set())
 const decrease = () => {
