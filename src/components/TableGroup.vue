@@ -21,11 +21,11 @@ const lockedAtFormatted = (lockedAt: Timestamp) =>
 
 <template>
 	<ul>
-		<li v-for="table in tables" :key="table.id" class="my-2">
+		<li v-for="table in tables" :key="table.id" class="my-2" data-test-table>
 			<template v-if="!isLoggedIn && !table.active">{{ table.name }}</template>
 
 			<template v-else>
-				<button type="button" :disabled="isFormOpen || !!table.locked_at" @click="$emit('edit', table.id)">
+				<button type="button" :disabled="isFormOpen || !!table.locked_at" data-test-edit-button @click="$emit('edit', table.id)">
 					{{ table.name }}
 					<template v-if="table.locked_at">🔒</template>
 				</button>
