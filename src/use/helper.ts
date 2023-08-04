@@ -18,4 +18,6 @@ const formatTime = (timestamp?: number) => {
 	return new Date(timestamp).toLocaleTimeString('de-DE')
 }
 
-export { formatDateTime, formatTime }
+const createUuid = () => `_${Math.random().toString(36).substring(2, 10)}`
+
+export { formatDateTime, formatTime, createUuid }

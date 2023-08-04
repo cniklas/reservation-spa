@@ -7,7 +7,7 @@ import { auth, db } from '@/firebase'
 import type { TableDoc } from '@/types/TableDoc.type'
 import TableForm from '@/components/TableForm.vue'
 import TableGroup from '@/components/TableGroup.vue'
-import { formatDateTime } from '@/use/helper'
+import { formatDateTime, createUuid } from '@/use/helper'
 
 const tables = inject('tables') as Ref<TableDoc[] | undefined>
 const leftBlock = computed(() => tables.value?.filter(item => item.block_id === 1))
@@ -69,7 +69,7 @@ const _fetchTime = async () => {
 	}
 }
 
-const uuid = ref(sessionStorage.getItem('uuid') ?? `_${Math.random().toString(36).substring(2, 10)}`)
+const uuid = ref(sessionStorage.getItem('uuid') ?? createUuid())
 sessionStorage.setItem('uuid', uuid.value)
 
 const itemId = ref<string | null>(null)

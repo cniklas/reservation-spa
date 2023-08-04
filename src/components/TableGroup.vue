@@ -31,7 +31,7 @@ const lockedAtFormatted = (lockedAt: Timestamp) =>
 				</button>
 
 				<template v-if="table.locked_at">
-					<button v-if="isLoggedIn && table.locked_by !== uuid" type="button" @click="$emit('unlock', table.id)">
+					<button v-if="isLoggedIn && table.locked_by !== uuid" type="button" data-test-unlock-button @click="$emit('unlock', table.id)">
 						🔑
 					</button>
 					·

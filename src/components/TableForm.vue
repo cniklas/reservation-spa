@@ -27,7 +27,7 @@ const props = defineProps<{
 const form = reactive({ ...props.entry })
 const touchedSeats: Set<string> = reactive(new Set())
 const decrease = () => {
-	if (form.seats > 1) form.seats--
+	if (form.seats > 4) form.seats--
 }
 const increase = () => {
 	if (form.seats < 8) form.seats++
@@ -35,9 +35,6 @@ const increase = () => {
 watch(
 	() => form.seats,
 	() => {
-		// if (val < 1) form.seats = 1
-		// else if (val > 8) form.seats = 8
-
 		// clear names and error messages
 		const diff = props.entry.seats - form.seats
 		if (diff > 0) {
@@ -146,8 +143,8 @@ const cancel = () => {
 				</div>
 				<div>
 					<label for="seats">Anzahl Sitzplätze</label>
-					<!-- <input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="1" max="8" /> -->
-					<button type="button" :disabled="form.seats === 1" @click="decrease">-</button>
+					<!-- <input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="4" max="8" /> -->
+					<button type="button" :disabled="form.seats === 4" @click="decrease">-</button>
 					{{ form.seats }}
 					<button type="button" :disabled="form.seats === 8" @click="increase">+</button>
 				</div>
