@@ -58,7 +58,7 @@ export const useErrorHandling = () => {
 		validationErrors.delete(key)
 
 		reservations.forEach(entry => {
-			const similarity: number = compareTwoStrings(name.toLowerCase(), entry.name.toLowerCase())
+			const similarity = compareTwoStrings(name.toLowerCase(), entry.name.toLowerCase())
 			// console.log(`${name} vs. ${entry.name}:\n${similarity}`)
 			if (similarity >= SIMILARITY_LIMIT) {
 				validationErrors.set(key, [...(validationErrors.get(key) ?? []), `${entry.name} an Tisch ${entry.table}`])

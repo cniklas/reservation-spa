@@ -30,6 +30,7 @@
     "@tsconfig/node18": "^18.2.0",
     "@types/jsdom": "^21.1.1",
     "@types/node": "^18.17.0",
+    "@types/string-similarity": "^4.0.0",
     "@unocss/reset": "^0.54.1",
     "@unocss/transformer-directives": "^0.54.1",
     "@vitejs/plugin-vue": "^4.2.3",
