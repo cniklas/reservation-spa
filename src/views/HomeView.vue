@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, watch, inject, onMounted, onBeforeUnmount, nextTick, type Ref } from 'vue'
+import { ref, computed, watch, inject, onMounted, onBeforeUnmount, nextTick, defineAsyncComponent, type Ref } from 'vue'
 import { doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
 import { useAuth } from '@vueuse/firebase/useAuth'
 // import { isSafari } from '@firebase/util'
 import { auth, db } from '@/firebase'
 import type { TableDoc } from '@/types/TableDoc.type'
-import TableForm from '@/components/TableForm.vue'
 import TableGroup from '@/components/TableGroup.vue'
 import { formatDateTime, createUuid } from '@/use/helper'
 
@@ -15,6 +14,8 @@ const middleBlock = computed(() => tables.value?.filter(item => item.block_id ==
 const rightBlock = computed(() => tables.value?.filter(item => item.block_id === 3))
 
 const { isAuthenticated } = useAuth(auth)
+
+const TableForm = defineAsyncComponent(() => import('@/components/TableForm.vue'))
 
 const dialogEl = ref<HTMLDialogElement | null>(null)
 const dialogMessage = ref('')
@@ -90,7 +91,7 @@ const onEditTable = async (id: string) => {
 			`Bitte noch etwas Geduld!\nEintragung ab ${new Date(_releaseTime).toLocaleDateString('de-DE', {
 				hour: 'numeric',
 				minute: 'numeric',
-			})} Uhr möglich.`
+			})} Uhr möglich.`,
 		)
 		return
 	}
@@ -127,7 +128,7 @@ watch(
 			cleanUp()
 			_showDialog('Unlocked by admin user')
 		}
-	}
+	},
 )
 
 // called in any case EXCEPT "save form"
