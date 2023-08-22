@@ -25,13 +25,23 @@ const lockedAtFormatted = (lockedAt: Timestamp) =>
 			<template v-if="!isLoggedIn && !table.active">{{ table.name }}</template>
 
 			<template v-else>
-				<button type="button" :disabled="isFormOpen || !!table.locked_at" data-test-edit-button @click="$emit('edit', table.id)">
+				<button
+					type="button"
+					:disabled="isFormOpen || !!table.locked_at"
+					data-test-edit-button
+					@click="$emit('edit', table.id)"
+				>
 					{{ table.name }}
 					<template v-if="table.locked_at">🔒</template>
 				</button>
 
-				<template v-if="table.locked_at">
-					<button v-if="isLoggedIn && table.locked_by !== uuid" type="button" data-test-unlock-button @click="$emit('unlock', table.id)">
+				<template v-if="isLoggedIn && table.locked_at">
+					<button
+						v-if="table.locked_by !== uuid"
+						type="button"
+						data-test-unlock-button
+						@click="$emit('unlock', table.id)"
+					>
 						🔑
 					</button>
 					·

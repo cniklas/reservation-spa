@@ -26,14 +26,14 @@ const _showDialog = (message: string) => {
 	dialogEl.value?.focus()
 }
 
-let _interval: number | undefined
+let _intervalId: number | undefined
 
 const clientTime = ref('')
 const clientOffset = ref(0)
 const serverTime = ref('')
 const _releaseTime = new Date(import.meta.env.VITE_RELEASE_DATE).getTime()
 const isReleased = ref(false)
-// 🔺 take into account that the client time may not be set correctly
+// takes into account that the client time may not be set correctly
 const _isReleasedNow = () => _releaseTime <= Date.now() + clientOffset.value
 
 const _fetchTime = async () => {
@@ -58,13 +58,13 @@ const _fetchTime = async () => {
 		if (Math.abs(_clientOffset) > 2000) clientOffset.value = _clientOffset
 
 		isReleased.value = _isReleasedNow()
-		if (!isReleased.value) {
-			_interval = window.setInterval(() => {
-				if (!_isReleasedNow()) return
-				clearInterval(_interval)
-				isReleased.value = true
-			}, 2000)
-		}
+		if (isReleased.value) return
+
+		_intervalId = window.setInterval(() => {
+			if (!_isReleasedNow()) return
+			clearInterval(_intervalId)
+			isReleased.value = true
+		}, 2000)
 	} catch (error) {
 		console.error(error)
 	}
@@ -77,8 +77,8 @@ const itemId = ref<string | null>(null)
 // will always be in sync with the data source
 const selectedItem = computed(() => tables.value?.find(item => item.id === itemId.value))
 
-const MAX_EDIT_DURATION = 4 * 60 * 1000
-let _editTimeout: number | undefined
+const EDIT_TIMEOUT = 4 * 60 * 1000
+let _editTimeoutId: number | undefined
 const isTimerRunning = ref(false)
 const countdown = ref(0)
 const _decreaseCountdown = () => {
@@ -101,10 +101,10 @@ const onEditTable = async (id: string) => {
 	itemId.value = id // now `selectedItem` will be set
 	const tableRef = doc(db, 'tables', id)
 	await updateDoc(tableRef, { locked_by: uuid.value, locked_at: serverTimestamp() })
-	_editTimeout = window.setTimeout(closeForm, MAX_EDIT_DURATION)
+	_editTimeoutId = window.setTimeout(closeForm, EDIT_TIMEOUT)
 	isTimerRunning.value = true
-	countdown.value = MAX_EDIT_DURATION / 1000
-	_interval = window.setInterval(_decreaseCountdown, 1000)
+	countdown.value = EDIT_TIMEOUT / 1000
+	_intervalId = window.setInterval(_decreaseCountdown, 1000)
 
 	// 🔺 TODO remove when final layout has been set up
 	await nextTick()
@@ -143,9 +143,9 @@ const closeForm = () => {
 const cleanUp = () => {
 	if (!selectedItem.value) return
 
-	clearTimeout(_editTimeout)
+	clearTimeout(_editTimeoutId)
 	isTimerRunning.value = false
-	clearInterval(_interval)
+	clearInterval(_intervalId)
 	itemId.value = null // now `selectedItem` will be unset
 	isSaving.value = false
 }
@@ -164,11 +164,12 @@ onMounted(() => {
 	// 🔺 especially on mobile, the `beforeunload` event is not reliably fired
 	// https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event#usage_notes
 	window.addEventListener('beforeunload', closeForm)
-	document.documentElement.style.setProperty('--duration', `${MAX_EDIT_DURATION}`)
+	document.documentElement.style.setProperty('--duration', `${EDIT_TIMEOUT}`)
 })
 onBeforeUnmount(() => {
 	closeForm()
-	if (!isReleased.value) clearInterval(_interval)
+
+	clearInterval(_intervalId)
 })
 // onBeforeRouteLeave(() => {
 // 	closeForm()

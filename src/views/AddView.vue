@@ -26,7 +26,7 @@ watch(
 	val => {
 		if (val < 1) form.seats = 1
 		else if (val > 8) form.seats = 8
-	}
+	},
 )
 
 const _tableNames = computed(() => tables.value?.map(item => item.name) ?? [])
@@ -94,8 +94,10 @@ const onSubmit = async () => {
 				<input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="1" max="8" />
 			</div>
 			<div>
-				<label for="active">verfügbar</label>
-				<input v-model="form.active" type="checkbox" id="active" />
+				<label>
+					verfügbar
+					<input v-model="form.active" type="checkbox" id="active" />
+				</label>
 			</div>
 			<div>
 				<button type="submit" :disabled="isEmpty(form.name) || isSubmitLocked">Speichern</button>

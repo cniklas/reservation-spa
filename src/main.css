@@ -29,10 +29,18 @@ input {
 	border: 1px solid canvasText;
 }
 
-input:invalid,
-select:invalid,
-textarea:invalid {
+input:user-invalid,
+select:user-invalid,
+textarea:user-invalid {
 	border-color: red;
+}
+
+@supports not selector(:user-invalid) {
+	input:invalid,
+	select:invalid,
+	textarea:invalid {
+		border-color: red;
+	}
 }
 
 button {

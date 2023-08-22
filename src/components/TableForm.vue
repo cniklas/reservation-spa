@@ -46,7 +46,7 @@ watch(
 				validationErrors.delete(key)
 			}
 		}
-	}
+	},
 )
 
 const reservations = computed(() => {
@@ -119,7 +119,7 @@ const onSubmit = async () => {
 }
 
 const countdownToTime = computed(() =>
-	new Date(props.countdown * 1000).toLocaleTimeString('de-DE', { minute: 'numeric', second: 'numeric' })
+	new Date(props.countdown * 1000).toLocaleTimeString('de-DE', { minute: 'numeric', second: 'numeric' }),
 )
 
 const cancel = () => {
@@ -142,8 +142,9 @@ const cancel = () => {
 					<input v-model.trim="form.name" type="text" id="name" autocomplete="off" maxlength="16" required />
 				</div>
 				<div>
-					<label for="seats">Anzahl Sitzplätze</label>
+					<!-- <label for="seats">Anzahl Sitzplätze</label> -->
 					<!-- <input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="4" max="8" /> -->
+					<span>Anzahl Sitzplätze</span>
 					<button type="button" :disabled="form.seats === 4" @click="decrease">-</button>
 					{{ form.seats }}
 					<button type="button" :disabled="form.seats === 8" @click="increase">+</button>
@@ -156,8 +157,10 @@ const cancel = () => {
 					</template>
 				</div>
 				<div>
-					<label for="active">verfügbar</label>
-					<input v-model="form.active" type="checkbox" id="active" />
+					<label>
+						verfügbar
+						<input v-model="form.active" type="checkbox" id="active" />
+					</label>
 				</div>
 			</template>
 			<div>

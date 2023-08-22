@@ -38,7 +38,7 @@ const resetSearch = () => {
 const filteredReservations = computed(() => {
 	if (searchDebounced.value.length)
 		return reservations.value.filter(
-			item => item.name.toLowerCase().indexOf(searchDebounced.value.toLowerCase()) !== -1
+			item => item.name.toLowerCase().indexOf(searchDebounced.value.toLowerCase()) !== -1,
 		)
 	return reservations.value
 })
