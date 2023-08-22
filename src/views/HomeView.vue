@@ -27,6 +27,7 @@ const _showDialog = (message: string) => {
 }
 
 let _intervalId: number | undefined
+const ONE_MINUTE = 60 * 1000
 
 const clientTime = ref('')
 const clientOffset = ref(0)
@@ -77,7 +78,7 @@ const itemId = ref<string | null>(null)
 // will always be in sync with the data source
 const selectedItem = computed(() => tables.value?.find(item => item.id === itemId.value))
 
-const EDIT_TIMEOUT = 4 * 60 * 1000
+const EDIT_TIMEOUT = 4 * ONE_MINUTE
 let _editTimeoutId: number | undefined
 const isTimerRunning = ref(false)
 const countdown = ref(0)
@@ -168,22 +169,47 @@ onMounted(() => {
 })
 onBeforeUnmount(() => {
 	closeForm()
-
 	clearInterval(_intervalId)
 })
 // onBeforeRouteLeave(() => {
 // 	closeForm()
 // })
 
-// unlock table if user accidentally reloads page on mobile (see `beforeunload` section)
+// unlock table if user reloads page on mobile (see `beforeunload` section)
 const _unlockTableAfterPageReload = () => {
 	const abandonedTable = tables.value?.find(item => item.locked_by === uuid.value)
 	if (abandonedTable) _unlockTable(abandonedTable.id)
 }
 // wait for firebase data to be fetched
-const unwatch = watch(tables, (_, oldVal) => {
+const _unwatchTables = watch(tables, (_, oldVal) => {
 	if (oldVal === undefined) _unlockTableAfterPageReload()
-	unwatch() // stop watcher
+	_unwatchTables() // stop watcher
+})
+
+// On iOS (maybe also on other mobile devices) if the browser runs in the background,
+// because the user switches to another app, the edit timeout callback (closeForm) never gets called.
+// So we need to setup some auto unlock mechanism.
+let _expiredTablesIntervalId: number | undefined
+const _unlockExpiredTables = () => {
+	const dateNow = Date.now() + clientOffset.value
+	tables.value?.map(item => {
+		if (item.locked_at && item.locked_at.seconds * 1000 + EDIT_TIMEOUT + ONE_MINUTE < dateNow) {
+			_unlockTable(item.id)
+		}
+	})
+}
+watch(
+	isAuthenticated,
+	val => {
+		if (val) {
+			_unlockExpiredTables()
+			_expiredTablesIntervalId = window.setInterval(_unlockExpiredTables, ONE_MINUTE / 6)
+		}
+	},
+	{ immediate: true },
+)
+onBeforeUnmount(() => {
+	clearInterval(_expiredTablesIntervalId)
 })
 </script>
 
