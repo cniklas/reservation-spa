@@ -1,0 +1,4 @@
+[[headers]]
+	for = "/*.(avif|css|jpeg|jpg|js|png|svg|webp|woff2)"
+	[headers.values]
+	Cache-Control = "public, max-age=31536000, immutable" # 12 months
