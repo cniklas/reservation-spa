@@ -20,8 +20,8 @@ const lockedAtFormatted = (lockedAt: Timestamp) =>
 </script>
 
 <template>
-	<ul>
-		<li v-for="table in tables" :key="table.id" class="my-2" data-test-table>
+	<ul class="flex flex-wrap gap-2">
+		<li v-for="table in tables" :key="table.id" data-test-table>
 			<template v-if="!isLoggedIn && !table.active">{{ table.name }}</template>
 
 			<template v-else>

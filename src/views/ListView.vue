@@ -45,12 +45,12 @@ const filteredReservations = computed(() => {
 </script>
 
 <template>
-	<main>
-		<h1>Liste</h1>
+	<main class="px-4">
+		<h1 class="text-xl font-semibold">Liste</h1>
 
 		<div v-if="reservations.length > 0">
 			<div>
-				<label for="search">Suche</label>
+				<label class="mr-2" for="search">Suche</label>
 				<input
 					v-model.trim="search"
 					type="text"
@@ -62,7 +62,7 @@ const filteredReservations = computed(() => {
 				<button type="button" :class="{ hidden: !search.length }" @click="resetSearch">reset</button>
 			</div>
 
-			<table class="table-fixed">
+			<table>
 				<thead>
 					<tr>
 						<th>#</th>

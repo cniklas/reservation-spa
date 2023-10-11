@@ -27,6 +27,7 @@ summary {
 /* dev only */
 input {
 	border: 1px solid canvasText;
+	padding: 0.125rem 0.25rem;
 }
 
 input:user-invalid,
@@ -49,9 +50,9 @@ button {
 	border-radius: 0.25rem;
 	padding: 0.0625rem 0.25rem;
 
-	&:disabled {
+	/* &:disabled {
 		background: deeppink;
-	}
+	} */
 }
 /* END dev only */
 

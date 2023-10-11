@@ -43,7 +43,7 @@ if (_now.getMonth() === 11 && _now.getDate() === 31) {
 </script>
 
 <template>
-	<header>
+	<header class="mb-5 p-4">
 		<!-- <img alt="Vue logo" src="@/assets/logo.svg" width="125" height="125" /> -->
 
 		<nav class="flex items-center gap-2">
@@ -56,7 +56,7 @@ if (_now.getMonth() === 11 && _now.getDate() === 31) {
 
 	<RouterView />
 
-	<footer>
+	<footer class="mt-10 p-4">
 		<details class="font-mono text-sm">
 			<summary class="inline-block cursor-help">{{ version }}</summary>
 			<div>{{ buildTime }}</div>

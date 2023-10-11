@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, inject, onMounted, onBeforeUnmount, nextTick, defineAsyncComponent, type Ref } from 'vue'
+import { ref, computed, watch, inject, onMounted, onBeforeUnmount, defineAsyncComponent, type Ref } from 'vue'
 import { doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
 import { useAuth } from '@vueuse/firebase/useAuth'
 // import { isSafari } from '@firebase/util'
@@ -106,10 +106,6 @@ const onEditTable = async (id: string) => {
 	isTimerRunning.value = true
 	countdown.value = EDIT_TIMEOUT / 1000
 	_intervalId = window.setInterval(_decreaseCountdown, 1000)
-
-	// 🔺 TODO remove when final layout has been set up
-	await nextTick()
-	document.querySelector('#table-form')?.scrollIntoView({ behavior: 'smooth' })
 }
 const isSaving = ref(false)
 
@@ -216,13 +212,15 @@ onBeforeUnmount(() => {
 <template>
 	<div class="timer-bar fixed left-0 top-0 h-1 w-full" :class="{ 'is-running': isTimerRunning }" />
 
-	<main>
-		<h1>Home</h1>
-		<div>Server Time: {{ serverTime }}</div>
-		<div>Client Time: {{ clientTime }}</div>
-		<div>Client Offset: {{ clientOffset }}</div>
+	<main class="px-4">
+		<h1 class="text-xl font-semibold">Home</h1>
+		<pre v-if="isAuthenticated">
+Server Time: {{ serverTime }}
+Client Time: {{ clientTime }}
+Client Offset: {{ clientOffset }}</pre
+		>
 
-		<div class="grid grid-cols-[repeat(3,1fr)]">
+		<div class="my-10 grid gap-2">
 			<TableGroup
 				:tables="leftBlock"
 				:uuid="uuid"
@@ -252,7 +250,7 @@ onBeforeUnmount(() => {
 
 	<TableForm
 		v-if="!!selectedItem"
-		id="table-form"
+		class="px-4"
 		:entry="selectedItem"
 		:is-logged-in="isAuthenticated"
 		:countdown="countdown"
