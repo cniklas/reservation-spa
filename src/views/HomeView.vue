@@ -41,7 +41,8 @@ const _fetchTime = async () => {
 	try {
 		// console.time('server time')
 		// const response = await fetch('https://worldtimeapi.org/api/timezone/Europe/Berlin')
-		const response = await fetch(import.meta.env.VITE_GET_TIME_URL)
+		// @ts-ignore
+		const response = await fetch(import.meta.env.VITE_GET_TIME_URL, { priority: 'low' })
 		if (!response.ok) throw new Error('Could not retrieve server time')
 		// console.timeEnd('server time')
 
