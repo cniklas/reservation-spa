@@ -142,8 +142,6 @@ const cancel = () => {
 					<input v-model.trim="form.name" type="text" id="name" autocomplete="off" maxlength="16" required />
 				</div>
 				<div>
-					<!-- <label for="seats">Anzahl Sitzplätze</label> -->
-					<!-- <input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="4" max="8" /> -->
 					<span>Anzahl Sitzplätze</span>
 					<button type="button" :disabled="form.seats === 4" @click="decrease">-</button>
 					{{ form.seats }}
@@ -176,6 +174,7 @@ const cancel = () => {
 								:id="`seat_${n}`"
 								autocomplete="off"
 								maxlength="36"
+								enterkeyhint="done"
 								@change="onChange(`seat_${n}`, $event.target as HTMLInputElement)"
 							/>
 						</div>

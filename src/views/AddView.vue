@@ -91,7 +91,7 @@ const onSubmit = async () => {
 			</div>
 			<div>
 				<label for="seats">Anzahl Sitzplätze</label>
-				<input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="1" max="8" />
+				<input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="4" max="8" />
 			</div>
 			<div>
 				<label>

@@ -26,7 +26,7 @@ const onSubmit = /* async */ () => {
 	<main class="px-4">
 		<h1 class="text-xl font-semibold">Login</h1>
 		<form novalidate @submit.prevent="onSubmit">
-			<div><input v-model.trim="email" type="email" autocomplete="username" enterkeyhint="go" /></div>
+			<div><input v-model.trim="email" type="email" autocomplete="username" /></div>
 			<div><input v-model.trim="password" type="password" autocomplete="current-password" enterkeyhint="go" /></div>
 			<div><button type="submit" :disabled="isSubmitLocked">Login</button></div>
 		</form>
