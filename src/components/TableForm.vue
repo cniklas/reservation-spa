@@ -128,9 +128,9 @@ const cancel = () => {
 </script>
 
 <template>
-	<section>
+	<section aria-labelledby="form-headline">
 		<!-- <button type="button" @click="cancel">close</button> -->
-		<h2 class="text-xl font-semibold">Tisch {{ entry.name }}</h2>
+		<h2 class="text-xl font-semibold" id="form-headline" aria-hidden="true">Tisch {{ entry.name }}</h2>
 
 		<!-- <div class="timer-radial relative h-20 w-20 rounded-full bg-rose-500 bg-blend-multiply" /> -->
 		<div class="my-2 font-semibold">{{ countdownToTime }}</div>
