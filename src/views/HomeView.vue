@@ -255,6 +255,7 @@ Client Offset: {{ clientOffset }}</pre
 		:entry="selectedItem"
 		:is-logged-in="isAuthenticated"
 		:countdown="countdown"
+		:db="db"
 		@cancel="closeForm"
 		@saving="isSaving = true"
 		@saved="cleanUp"

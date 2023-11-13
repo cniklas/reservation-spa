@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { reactive, computed, watch, inject, toRaw, type Ref } from 'vue'
-import { doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
-import { db } from '@/firebase'
+import { doc, updateDoc, deleteField, serverTimestamp, type Firestore } from 'firebase/firestore'
 import type { TableDoc } from '@/types/TableDoc.type'
 import type { Reservation } from '@/types/Reservation.type'
 import { useErrorHandling } from '@/use/errorHandling'
@@ -21,6 +20,7 @@ const props = defineProps<{
 	entry: TableDoc
 	isLoggedIn: boolean
 	countdown: number
+	db: Firestore
 }>()
 
 // eslint-disable-next-line vue/no-setup-props-destructure
@@ -108,7 +108,7 @@ const onSubmit = async () => {
 		if (validationErrors.size) return
 
 		emit('saving')
-		const tableRef = doc(db, 'tables', props.entry.id)
+		const tableRef = doc(props.db, 'tables', props.entry.id)
 		await updateDoc(tableRef, formData)
 		emit('saved')
 	} catch (error) {
@@ -143,9 +143,9 @@ const cancel = () => {
 				</div>
 				<div>
 					<span>Anzahl Sitzplätze</span>
-					<button type="button" :disabled="form.seats === 4" @click="decrease">-</button>
+					<button type="button" :disabled="form.seats === 4" data-test-decrease-button @click="decrease">-</button>
 					{{ form.seats }}
-					<button type="button" :disabled="form.seats === 8" @click="increase">+</button>
+					<button type="button" :disabled="form.seats === 8" data-test-increase-button @click="increase">+</button>
 				</div>
 				<div>
 					<div>Block</div>
@@ -157,16 +157,16 @@ const cancel = () => {
 				<div>
 					<label>
 						verfügbar
-						<input v-model="form.active" type="checkbox" id="active" />
+						<input v-model="form.active" type="checkbox" />
 					</label>
 				</div>
 			</template>
+
 			<div>
 				<div>Sitzplätze</div>
 				<ol class="list-decimal pl-4">
-					<li v-for="n in form.seats" :key="`seat-${n}`" class="my-2">
+					<li v-for="n in form.seats" :key="`seat-${n}`" class="my-2" data-test-seat>
 						<div class="grid w-fit grid-cols-2 gap-2">
-							<!-- <label :for="`seat_${n}`">Sitzplatz {{ n }}</label> -->
 							<label :for="`seat_${n}`">Vor- und Nachname</label>
 							<input
 								v-model.trim="form[`seat_${n}`]"
@@ -197,7 +197,7 @@ const cancel = () => {
 
 			<div class="mt-5 grid w-fit grid-cols-2 gap-x-2">
 				<button type="submit" :disabled="isSubmitLocked">Speichern</button>
-				<button type="button" @click="cancel">Abbrechen</button>
+				<button type="button" data-test-cancel-button @click="cancel">Abbrechen</button>
 			</div>
 		</form>
 	</section>
@@ -207,16 +207,16 @@ const cancel = () => {
 .comma-separated {
 	display: flex;
 
-	& > :not(:last-child)::after {
+	> :not(:last-child)::after {
 		content: ', ';
 		white-space: pre-wrap;
 	}
 
-	& > :nth-last-child(2)::after {
+	> :nth-last-child(2)::after {
 		content: ' oder ';
 	}
 
-	& > :last-child::after {
+	> :last-child::after {
 		content: '?';
 	}
 }
