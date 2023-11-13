@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { reactive, computed, watch, inject, toRaw, type Ref } from 'vue'
-import { doc, updateDoc, deleteField, serverTimestamp, type Firestore } from 'firebase/firestore'
+import { deleteField, serverTimestamp, type DocumentData } from 'firebase/firestore'
 import type { TableDoc } from '@/types/TableDoc.type'
 import type { Reservation } from '@/types/Reservation.type'
 import { useErrorHandling } from '@/use/errorHandling'
 
 const blocks = inject('blocks') as Map<number, string>
 const tables = inject('tables') as Ref<TableDoc[] | undefined>
+const updateDocument = inject('updateDocument') as (id: string, data: DocumentData) => Promise<void>
 
 const { isSubmitLocked, beforeSubmit, handleSubmitError, unlockSubmit, validationErrors, validateName } =
 	useErrorHandling()
@@ -20,7 +21,6 @@ const props = defineProps<{
 	entry: TableDoc
 	isLoggedIn: boolean
 	countdown: number
-	db: Firestore
 }>()
 
 // eslint-disable-next-line vue/no-setup-props-destructure
@@ -108,8 +108,7 @@ const onSubmit = async () => {
 		if (validationErrors.size) return
 
 		emit('saving')
-		const tableRef = doc(props.db, 'tables', props.entry.id)
-		await updateDoc(tableRef, formData)
+		await updateDocument(props.entry.id, formData)
 		emit('saved')
 	} catch (error) {
 		handleSubmitError(error)

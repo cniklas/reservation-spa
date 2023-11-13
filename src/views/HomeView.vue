@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, watch, inject, onMounted, onBeforeUnmount, defineAsyncComponent, type Ref } from 'vue'
-import { doc, updateDoc, deleteField, serverTimestamp } from 'firebase/firestore'
+import { deleteField, serverTimestamp, type DocumentData } from 'firebase/firestore'
 import { useAuth } from '@vueuse/firebase/useAuth'
 // import { isSafari } from '@firebase/util'
-import { auth, db } from '@/firebase'
+import { auth } from '@/firebase'
 import type { TableDoc } from '@/types/TableDoc.type'
 import TableGroup from '@/components/TableGroup.vue'
 import { formatDateTime, createUuid } from '@/use/helper'
@@ -12,6 +12,7 @@ const tables = inject('tables') as Ref<TableDoc[] | undefined>
 const leftBlock = computed(() => tables.value?.filter(item => item.block_id === 1))
 const middleBlock = computed(() => tables.value?.filter(item => item.block_id === 2))
 const rightBlock = computed(() => tables.value?.filter(item => item.block_id === 3))
+const updateDocument = inject('updateDocument') as (id: string, data: DocumentData) => Promise<void>
 
 const { isAuthenticated } = useAuth(auth)
 
@@ -101,8 +102,7 @@ const onEditTable = async (id: string) => {
 	if (selectedItem.value) return
 
 	itemId.value = id // now `selectedItem` will be set
-	const tableRef = doc(db, 'tables', id)
-	await updateDoc(tableRef, { locked_by: uuid.value, locked_at: serverTimestamp() })
+	await updateDocument(id, { locked_by: uuid.value, locked_at: serverTimestamp() })
 	_editTimeoutId = window.setTimeout(closeForm, EDIT_TIMEOUT)
 	isTimerRunning.value = true
 	countdown.value = EDIT_TIMEOUT / 1000
@@ -153,8 +153,7 @@ const onUnlockTable = (id: string) => {
 }
 
 const _unlockTable = async (id: string) => {
-	const tableRef = doc(db, 'tables', id)
-	await updateDoc(tableRef, { locked_by: deleteField(), locked_at: deleteField() })
+	await updateDocument(id, { locked_by: deleteField(), locked_at: deleteField() })
 }
 
 onMounted(() => {
@@ -255,7 +254,6 @@ Client Offset: {{ clientOffset }}</pre
 		:entry="selectedItem"
 		:is-logged-in="isAuthenticated"
 		:countdown="countdown"
-		:db="db"
 		@cancel="closeForm"
 		@saving="isSaving = true"
 		@saved="cleanUp"

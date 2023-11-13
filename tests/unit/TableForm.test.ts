@@ -70,13 +70,13 @@ const factory = (props?: any) =>
 			provide: {
 				blocks,
 				tables,
+				updateDocument: () => {},
 			},
 		},
 		props: {
 			entry,
 			isLoggedIn: false,
 			countdown: EDIT_TIMEOUT,
-			db: {},
 			...props,
 		},
 	})
