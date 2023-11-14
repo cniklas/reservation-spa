@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { reactive, computed, watch, inject, toRaw, type Ref } from 'vue'
+import { reactive, computed, watch, toRaw } from 'vue'
 import { useRouter } from 'vue-router'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/firebase'
-import type { TableDoc } from '@/types/TableDoc.type'
+import { PROVIDE_BLOCKS, PROVIDE_TABLES } from '@/keys'
 import { useErrorHandling } from '@/use/errorHandling'
+import { injectStrict } from '@/use/helper'
 
 const router = useRouter()
 const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, validationErrors, validateTableName } =
 	useErrorHandling()
 
-const blocks = inject('blocks') as Map<number, string>
-const tables = inject('tables') as Ref<TableDoc[] | undefined>
+const blocks = injectStrict(PROVIDE_BLOCKS)
+const tables = injectStrict(PROVIDE_TABLES)
 const _getNextIndex = () => Math.max(...(tables.value?.map(item => item.index) ?? [-1])) + 1
 
 const form = reactive({

@@ -6,6 +6,7 @@ import './main.css'
 import { createApp } from 'vue'
 import { collection, query, orderBy, doc, updateDoc, type DocumentData } from 'firebase/firestore'
 import { useFirestore } from '@vueuse/firebase/useFirestore'
+import { PROVIDE_BLOCKS, PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from './keys'
 import App from './App.vue'
 import router from './router'
 import { db } from './firebase'
@@ -24,8 +25,8 @@ const updateDocument = async (id: string, data: DocumentData) => {
 }
 
 const app = createApp(App)
-app.provide('blocks', blocks)
-app.provide('tables', tables)
-app.provide('updateDocument', updateDocument)
+app.provide(PROVIDE_BLOCKS, blocks)
+app.provide(PROVIDE_TABLES, tables)
+app.provide(PROVIDE_UPDATE_DOCUMENT, updateDocument)
 app.use(router)
 app.mount('#app')

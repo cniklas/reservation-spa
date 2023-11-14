@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { reactive, computed, watch, inject, toRaw, type Ref } from 'vue'
-import { deleteField, serverTimestamp, type DocumentData } from 'firebase/firestore'
+import { reactive, computed, watch, toRaw } from 'vue'
+import { deleteField, serverTimestamp } from 'firebase/firestore'
 import type { TableDoc } from '@/types/TableDoc.type'
 import type { Reservation } from '@/types/Reservation.type'
+import { PROVIDE_BLOCKS, PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '@/keys'
 import { useErrorHandling } from '@/use/errorHandling'
+import { injectStrict } from '@/use/helper'
 
-const blocks = inject('blocks') as Map<number, string>
-const tables = inject('tables') as Ref<TableDoc[] | undefined>
-const updateDocument = inject('updateDocument') as (id: string, data: DocumentData) => Promise<void>
+const blocks = injectStrict(PROVIDE_BLOCKS)
+const tables = injectStrict(PROVIDE_TABLES)
+const updateDocument = injectStrict(PROVIDE_UPDATE_DOCUMENT)
 
 const { isSubmitLocked, beforeSubmit, handleSubmitError, unlockSubmit, validationErrors, validateName } =
 	useErrorHandling()

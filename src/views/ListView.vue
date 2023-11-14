@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, inject, type Ref } from 'vue'
+import { ref, computed } from 'vue'
 import { refDebounced } from '@vueuse/core'
-import type { TableDoc } from '@/types/TableDoc.type'
 import type { Reservation } from '@/types/Reservation.type'
+import { PROVIDE_TABLES } from '@/keys'
+import { injectStrict } from '@/use/helper'
 
-const tables = inject('tables') as Ref<TableDoc[] | undefined>
+const tables = injectStrict(PROVIDE_TABLES)
 
 const _sortByName = (a: Reservation, b: Reservation) => a.name.localeCompare(b.name, 'de')
 

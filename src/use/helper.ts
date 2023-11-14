@@ -1,3 +1,5 @@
+import { inject, type InjectionKey } from 'vue'
+
 const formatDateTime = (timestamp?: number | string, options?: Intl.DateTimeFormatOptions) => {
 	if (!timestamp) return ''
 
@@ -20,4 +22,11 @@ const formatTime = (timestamp?: number) => {
 
 const createUuid = () => `_${Math.random().toString(36).substring(2, 10)}`
 
-export { formatDateTime, formatTime, createUuid }
+// https://logaretm.com/blog/type-safe-provide-inject/
+const injectStrict = <T>(key: InjectionKey<T>, fallback?: T) => {
+	const resolved = inject(key, fallback)
+	if (!resolved) throw new Error(`Could not resolve ${key.description}`)
+	return resolved
+}
+
+export { formatDateTime, formatTime, createUuid, injectStrict }

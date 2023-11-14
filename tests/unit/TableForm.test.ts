@@ -2,6 +2,7 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import TableForm from '../../src/components/TableForm.vue'
 import type { TableDoc } from '../../src/types/TableDoc.type'
+import { PROVIDE_BLOCKS, PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '../../src/keys'
 
 const blocks = new Map([
 	[1, 'Linker Block'],
@@ -68,9 +69,9 @@ const factory = (props?: any) =>
 	mount(TableForm, {
 		global: {
 			provide: {
-				blocks,
-				tables,
-				updateDocument: () => {},
+				[PROVIDE_BLOCKS as symbol]: blocks,
+				[PROVIDE_TABLES as symbol]: tables,
+				[PROVIDE_UPDATE_DOCUMENT as symbol]: () => {},
 			},
 		},
 		props: {

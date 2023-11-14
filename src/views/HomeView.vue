@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { ref, computed, watch, inject, onMounted, onBeforeUnmount, defineAsyncComponent, type Ref } from 'vue'
-import { deleteField, serverTimestamp, type DocumentData } from 'firebase/firestore'
+import { ref, computed, watch, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue'
+import { deleteField, serverTimestamp } from 'firebase/firestore'
 import { useAuth } from '@vueuse/firebase/useAuth'
 // import { isSafari } from '@firebase/util'
 import { auth } from '@/firebase'
-import type { TableDoc } from '@/types/TableDoc.type'
 import TableGroup from '@/components/TableGroup.vue'
-import { formatDateTime, createUuid } from '@/use/helper'
+import { PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '@/keys'
+import { formatDateTime, createUuid, injectStrict } from '@/use/helper'
 
-const tables = inject('tables') as Ref<TableDoc[] | undefined>
+const tables = injectStrict(PROVIDE_TABLES)
 const leftBlock = computed(() => tables.value?.filter(item => item.block_id === 1))
 const middleBlock = computed(() => tables.value?.filter(item => item.block_id === 2))
 const rightBlock = computed(() => tables.value?.filter(item => item.block_id === 3))
-const updateDocument = inject('updateDocument') as (id: string, data: DocumentData) => Promise<void>
+const updateDocument = injectStrict(PROVIDE_UPDATE_DOCUMENT)
 
 const { isAuthenticated } = useAuth(auth)
 
