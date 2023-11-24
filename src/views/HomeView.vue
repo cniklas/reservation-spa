@@ -9,9 +9,9 @@ import { PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '@/keys'
 import { formatDateTime, createUuid, injectStrict } from '@/use/helper'
 
 const tables = injectStrict(PROVIDE_TABLES)
-const leftBlock = computed(() => tables.value?.filter(item => item.block_id === 1))
-const middleBlock = computed(() => tables.value?.filter(item => item.block_id === 2))
-const rightBlock = computed(() => tables.value?.filter(item => item.block_id === 3))
+// const leftBlock = computed(() => tables.value?.filter(item => item.block_id === 1))
+// const middleBlock = computed(() => tables.value?.filter(item => item.block_id === 2))
+// const rightBlock = computed(() => tables.value?.filter(item => item.block_id === 3))
 const updateDocument = injectStrict(PROVIDE_UPDATE_DOCUMENT)
 
 const { isAuthenticated } = useAuth(auth)
@@ -222,29 +222,15 @@ Client Offset: {{ clientOffset }}</pre
 
 		<div class="my-10 grid gap-2">
 			<TableGroup
-				:tables="leftBlock"
+				v-if="tables"
+				:tables="tables"
 				:uuid="uuid"
 				:is-logged-in="isAuthenticated"
 				:is-form-open="!!selectedItem"
 				@edit="onEditTable"
 				@unlock="onUnlockTable"
 			/>
-			<TableGroup
-				:tables="middleBlock"
-				:uuid="uuid"
-				:is-logged-in="isAuthenticated"
-				:is-form-open="!!selectedItem"
-				@edit="onEditTable"
-				@unlock="onUnlockTable"
-			/>
-			<TableGroup
-				:tables="rightBlock"
-				:uuid="uuid"
-				:is-logged-in="isAuthenticated"
-				:is-form-open="!!selectedItem"
-				@edit="onEditTable"
-				@unlock="onUnlockTable"
-			/>
+			<div v-else>Lade Daten …</div>
 		</div>
 	</main>
 
