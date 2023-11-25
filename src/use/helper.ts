@@ -1,4 +1,5 @@
 import { inject, type InjectionKey } from 'vue'
+import type { SortableReservation } from '@/types/Reservation.type'
 
 const formatDateTime = (timestamp?: number | string, options?: Intl.DateTimeFormatOptions) => {
 	if (!timestamp) return ''
@@ -30,6 +31,9 @@ const formatCount = (count: number, noun: [string, string]) =>
 
 const createUuid = () => `_${Math.random().toString(36).substring(2, 10)}`
 
+const sortByName = (a: SortableReservation, b: SortableReservation) =>
+	a.sortableName.localeCompare(b.sortableName, 'de')
+
 // https://logaretm.com/blog/type-safe-provide-inject/
 const injectStrict = <T>(key: InjectionKey<T>, fallback?: T) => {
 	const resolved = inject(key, fallback)
@@ -37,4 +41,4 @@ const injectStrict = <T>(key: InjectionKey<T>, fallback?: T) => {
 	return resolved
 }
 
-export { formatDateTime, formatTime, formatCount, createUuid, injectStrict }
+export { formatDateTime, formatTime, formatCount, createUuid, sortByName, injectStrict }

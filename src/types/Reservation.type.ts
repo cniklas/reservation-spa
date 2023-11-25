@@ -1,5 +1,10 @@
 export type Reservation = {
 	name: string
-	sortableName?: string
+	table: string
+}
+
+export type SortableReservation = {
+	name: string
+	sortableName: string
 	table: string
 }

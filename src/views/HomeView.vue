@@ -4,14 +4,11 @@ import { deleteField, serverTimestamp } from 'firebase/firestore'
 import { useAuth } from '@vueuse/firebase/useAuth'
 // import { isSafari } from '@firebase/util'
 import { auth } from '@/firebase'
-import TableGroup from '@/components/TableGroup.vue'
+import TableGrid from '@/components/TableGrid.vue'
 import { PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '@/keys'
 import { formatDateTime, createUuid, injectStrict } from '@/use/helper'
 
 const tables = injectStrict(PROVIDE_TABLES)
-// const leftBlock = computed(() => tables.value?.filter(item => item.block_id === 1))
-// const middleBlock = computed(() => tables.value?.filter(item => item.block_id === 2))
-// const rightBlock = computed(() => tables.value?.filter(item => item.block_id === 3))
 const updateDocument = injectStrict(PROVIDE_UPDATE_DOCUMENT)
 
 const { isAuthenticated } = useAuth(auth)
@@ -210,7 +207,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-	<div class="timer-bar fixed left-0 top-0 h-1 w-full" :class="{ 'is-running': isTimerRunning }" />
+	<div class="timer-bar z-2 fixed left-0 top-0 h-1 w-full" :class="{ 'is-running': isTimerRunning }" />
 
 	<main class="px-4">
 		<h1 class="text-xl font-semibold">Home</h1>
@@ -220,8 +217,8 @@ Client Time: {{ clientTime }}
 Client Offset: {{ clientOffset }}</pre
 		>
 
-		<div class="my-10 grid gap-2">
-			<TableGroup
+		<div class="my-10">
+			<TableGrid
 				v-if="tables"
 				:tables="tables"
 				:uuid="uuid"

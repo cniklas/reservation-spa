@@ -36,16 +36,15 @@ watch(isLoggedIn, val => {
 	}
 })
 
-const _now = new Date()
-if (_now.getMonth() === 11 && _now.getDate() === 31) {
-	router.replace('/liste')
-}
+// const _now = new Date()
+// if (_now.getMonth() === 11 && _now.getDate() === 31) {
+// 	router.replace('/liste')
+// }
 </script>
 
 <template>
-	<header class="mb-5 p-4">
-		<!-- <img alt="Vue logo" src="@/assets/logo.svg" width="125" height="125" /> -->
-
+	<!-- <img alt="Vue logo" src="@/assets/logo.svg" width="125" height="125" /> -->
+	<header v-if="isLoggedIn" class="mb-5 p-4">
 		<nav class="flex items-center gap-2">
 			<RouterLink to="/">Home</RouterLink>
 			<RouterLink to="/liste">Liste</RouterLink>
@@ -60,7 +59,7 @@ if (_now.getMonth() === 11 && _now.getDate() === 31) {
 		<details class="font-mono text-sm">
 			<summary class="inline-block cursor-help">{{ version }}</summary>
 			<div>{{ buildTime }}</div>
-			<a href="https://github.com/cniklas/reservation-spa" class="inline-block h-6 w-6" rel="noopener">
+			<a href="https://github.com/cniklas/reservation-spa" class="mt-2 inline-block h-6 w-6" rel="noopener">
 				<span class="sr-only">GitHub repo</span>
 				<svg aria-hidden="true" class="h-6 w-6 fill-current" viewBox="0 0 16 16" width="24" height="24">
 					<path

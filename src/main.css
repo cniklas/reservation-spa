@@ -7,9 +7,8 @@ input[type='search']::-webkit-search-decoration {
 	-webkit-appearance: none;
 }
 
-th,
-td {
-	padding: unset;
+button {
+	background-color: unset; /* https://unocss.dev/guide/style-reset#tailwind */
 }
 
 /* iOS */
@@ -27,6 +26,15 @@ summary {
 	&::-webkit-details-marker {
 		display: none;
 	}
+}
+
+th,
+td {
+	padding: unset;
+}
+
+:any-link {
+	text-decoration: underline;
 }
 
 /* dev only */
@@ -48,19 +56,4 @@ textarea:user-invalid {
 		border-color: red;
 	}
 }
-
-button {
-	background-color: hsl(0deg 0% 90%);
-	border: 1px solid currentColor;
-	border-radius: 0.25rem;
-	padding: 0.0625rem 0.25rem;
-
-	/* &:disabled {
-		background: deeppink;
-	} */
-}
 /* END dev only */
-
-:any-link {
-	text-decoration: underline;
-}

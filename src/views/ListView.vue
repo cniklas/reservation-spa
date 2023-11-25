@@ -1,35 +1,32 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { refDebounced } from '@vueuse/core'
-import type { Reservation } from '@/types/Reservation.type'
+import type { SortableReservation } from '@/types/Reservation.type'
 import { PROVIDE_TABLES } from '@/keys'
-import { formatCount, injectStrict } from '@/use/helper'
+import { formatCount, sortByName, injectStrict } from '@/use/helper'
 
 const tables = injectStrict(PROVIDE_TABLES)
 
-// @ts-ignore
-const _sortByName = (a: Reservation, b: Reservation) => a.sortableName.localeCompare(b.sortableName, 'de')
-
 const reservations = computed(() => {
-	const _reservations: Reservation[] = []
-	tables.value?.forEach(_table => {
+	const reservations: SortableReservation[] = []
+	tables.value?.forEach(table => {
 		let n = 0
-		while (n < _table.seats) {
+		while (n < table.seats) {
 			const key = `seat_${++n}`
-			if (!(_table[key] as string).length) continue
+			if (!(table[key] as string).length) continue
 
-			const name = (_table[key] as string).split(' ')
-			_reservations.push({
+			const name = (table[key] as string).split(' ')
+			reservations.push({
 				name: name.join(' '),
 				// sortableName: name.length > 1 ? `${name.at(-1)}, ${name.slice(0, -1).join(' ')}` : name.at(0) ?? '',
 				sortableName: name.length > 1 ? `${name[name.length - 1]}, ${name.slice(0, -1).join(' ')}` : name[0] ?? '',
-				table: _table.name,
+				table: table.name,
 			})
 		}
 	})
 
-	_reservations.sort(_sortByName)
-	return _reservations
+	reservations.sort(sortByName)
+	return reservations
 })
 
 const search = ref('')
@@ -50,8 +47,8 @@ const filteredReservations = computed(() => {
 		<h1 class="text-xl font-semibold">Liste</h1>
 
 		<div v-if="reservations.length > 0">
-			<div class="mb-4">{{ formatCount(reservations.length, ['Person', 'Personen']) }}</div>
-			<div>
+			<div>{{ formatCount(reservations.length, ['Person', 'Personen']) }}</div>
+			<div class="z-1 sticky top-0 -mx-4 bg-white px-4 py-4">
 				<label class="mr-2" for="search">Suche</label>
 				<input
 					v-model.trim="search"
@@ -64,16 +61,16 @@ const filteredReservations = computed(() => {
 				<button type="button" :class="{ hidden: !search.length }" @click="resetSearch">reset</button>
 			</div>
 
-			<table class="re__list-table">
+			<table class="re__list-table -mx-2">
 				<thead>
 					<tr>
-						<th class="text-left">Name</th>
-						<th class="text-left">Tisch</th>
+						<th class="text-left font-semibold">Name</th>
+						<th class="text-left font-semibold">Tisch</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-for="(entry, i) in filteredReservations" :key="i">
-						<td>{{ entry.name }}</td>
+						<td>{{ entry.sortableName }}</td>
 						<td>{{ entry.table }}</td>
 					</tr>
 				</tbody>
@@ -85,13 +82,7 @@ const filteredReservations = computed(() => {
 </template>
 
 <style>
-.re__list-table {
-	margin-inline: -0.5rem;
-	width: 32rem;
-	max-width: calc(100% + 1rem);
-
-	& :is(th, td) {
-		padding: 0.125rem 0.5rem;
-	}
+.re__list-table :is(th, td) {
+	padding: 0.125rem 0.5rem;
 }
 </style>
