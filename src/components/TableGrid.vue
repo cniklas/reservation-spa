@@ -86,25 +86,10 @@ const sortedSeats = (table: TableDoc) => {
 	reservations.sort(sortByName)
 	return reservations
 }
-
-const reservations = computed(() => {
-	let count = 0
-	props.tables?.forEach(table => {
-		let n = 0
-		while (n < table.seats) {
-			const key = `seat_${++n}`
-			if ((table[key] as string).length) count++
-		}
-	})
-
-	return `${formatCount(count, ['Person', 'Personen'])} eingetragen`
-})
 </script>
 
 <template>
-	<div>{{ reservations }}</div>
-
-	<div class="z-1 sticky top-0 -mx-4 mb-10 border-b border-b-black bg-white px-4 py-4">
+	<div class="sticky top-0 z-10 -mx-4 mb-10 border-b border-b-black bg-white p-4">
 		<label class="mr-2" for="search">Suche</label>
 		<input
 			v-model.trim="search"
@@ -169,7 +154,7 @@ const reservations = computed(() => {
 }
 
 .re__grid-table-number {
-	@apply grid h-12 w-12 place-content-center rounded-[50%] border border-black text-xl font-semibold;
+	@apply grid h-12 w-12 place-content-center rounded-[50%] border border-black text-xl font-semibold; /* text-dark-500 */
 }
 
 .re__grid-table-label {

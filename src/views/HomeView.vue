@@ -5,8 +5,9 @@ import { useAuth } from '@vueuse/firebase/useAuth'
 // import { isSafari } from '@firebase/util'
 import { auth } from '@/firebase'
 import TableGrid from '@/components/TableGrid.vue'
+import AppSidebar from '@/components/AppSidebar.vue'
 import { PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '@/keys'
-import { formatDateTime, createUuid, injectStrict } from '@/use/helper'
+import { formatDateTime, formatCount, createUuid, injectStrict } from '@/use/helper'
 
 const tables = injectStrict(PROVIDE_TABLES)
 const updateDocument = injectStrict(PROVIDE_UPDATE_DOCUMENT)
@@ -15,6 +16,9 @@ const { isAuthenticated } = useAuth(auth)
 
 const TableForm = defineAsyncComponent(() => import('@/components/TableForm.vue'))
 
+const title: string = import.meta.env.VITE_APP_NAME
+
+const sidebarEl = ref<InstanceType<typeof AppSidebar> | null>(null)
 const dialogEl = ref<HTMLDialogElement | null>(null)
 const dialogMessage = ref('')
 const _showDialog = (message: string) => {
@@ -24,7 +28,20 @@ const _showDialog = (message: string) => {
 	dialogEl.value?.focus()
 }
 
-let _intervalId: number | undefined
+const reservations = computed(() => {
+	let count = 0
+	tables.value?.forEach(table => {
+		let n = 0
+		while (n < table.seats) {
+			const key = `seat_${++n}`
+			if ((table[key] as string).length) count++
+		}
+	})
+
+	return `${formatCount(count, ['Person', 'Personen'])} eingetragen`
+})
+
+let _releaseIntervalId: number
 const ONE_MINUTE = 60 * 1000
 
 const clientTime = ref('')
@@ -60,9 +77,9 @@ const _fetchTime = async () => {
 		isReleased.value = _isReleasedNow()
 		if (isReleased.value) return
 
-		_intervalId = window.setInterval(() => {
+		_releaseIntervalId = window.setInterval(() => {
 			if (!_isReleasedNow()) return
-			clearInterval(_intervalId)
+			clearInterval(_releaseIntervalId)
 			isReleased.value = true
 		}, 2000)
 	} catch (error) {
@@ -76,15 +93,38 @@ sessionStorage.setItem('uuid', uuid.value)
 const itemId = ref<string | null>(null)
 // will always be in sync with the data source
 const selectedItem = computed(() => tables.value?.find(item => item.id === itemId.value))
+watch(itemId, val => {
+	if (val) sidebarEl.value?.open()
+})
 
 const EDIT_TIMEOUT = 4 * ONE_MINUTE
-let _editTimeoutId: number | undefined
+let _editTimeoutId: number
+let _countdownIntervalId: number
 const isTimerRunning = ref(false)
 const countdown = ref(0)
 const _decreaseCountdown = () => {
 	countdown.value--
 }
+const countdownToTime = computed(() =>
+	new Date(countdown.value * 1000).toLocaleTimeString('de-DE', { minute: 'numeric', second: 'numeric' }),
+)
 
+const onTimeoutOrCancel = () => {
+	sidebarEl.value?.close(() => {
+		_clearAndUnlock()
+	})
+}
+const onSaved = () => {
+	sidebarEl.value?.close(() => {
+		_clearEditState()
+	})
+}
+const onConflict = (message: string) => {
+	sidebarEl.value?.close(() => {
+		_clearEditState()
+	})
+	_showDialog(message)
+}
 const onEditTable = async (id: string) => {
 	if (!isReleased.value) {
 		_showDialog(
@@ -99,74 +139,71 @@ const onEditTable = async (id: string) => {
 	if (selectedItem.value) return
 
 	itemId.value = id // now `selectedItem` will be set
-	await updateDocument(id, { locked_by: uuid.value, locked_at: serverTimestamp() })
-	_editTimeoutId = window.setTimeout(closeForm, EDIT_TIMEOUT)
+	/* await */ updateDocument(id, { locked_by: uuid.value, locked_at: serverTimestamp() })
+	_editTimeoutId = window.setTimeout(onTimeoutOrCancel, EDIT_TIMEOUT)
 	isTimerRunning.value = true
 	countdown.value = EDIT_TIMEOUT / 1000
-	_intervalId = window.setInterval(_decreaseCountdown, 1000)
+	_countdownIntervalId = window.setInterval(_decreaseCountdown, 1000)
 }
-const isSaving = ref(false)
 
+const isSaving = ref(false)
 watch(
 	() => selectedItem.value?.locked_by,
 	(lockedBy: string | undefined) => {
 		// another user owned the table at the same moment
 		if (lockedBy && lockedBy !== uuid.value) {
 			console.warn('Conflict')
-			cleanUp()
-			_showDialog('Conflict')
+			onConflict('Conflict')
 			return
 		}
 
 		// if table is unlocked by admin user the open form needs to be closed
 		if (!lockedBy && itemId.value !== null && !isSaving.value) {
-			cleanUp()
-			_showDialog('Unlocked by admin user')
+			onConflict('Unlocked by admin user')
 		}
 	},
 )
 
-// called in any case EXCEPT "save form"
-const closeForm = () => {
-	if (!selectedItem.value) return
-
-	const id = selectedItem.value.id
-	cleanUp()
-	_unlockTable(id)
-}
-
-const cleanUp = () => {
-	if (!selectedItem.value) return
-
+const clearTimer = () => {
 	clearTimeout(_editTimeoutId)
 	isTimerRunning.value = false
-	clearInterval(_intervalId)
-	itemId.value = null // now `selectedItem` will be unset
-	isSaving.value = false
+	clearInterval(_countdownIntervalId)
 }
 
-const onUnlockTable = (id: string) => {
-	if (isAuthenticated.value) _unlockTable(id)
+const _clearEditState = () => {
+	if (!selectedItem.value) return
+
+	clearTimer()
+	itemId.value = null // now `selectedItem` will be unset
+	isSaving.value = false
 }
 
 const _unlockTable = async (id: string) => {
 	await updateDocument(id, { locked_by: deleteField(), locked_at: deleteField() })
 }
 
+const _clearAndUnlock = () => {
+	if (!selectedItem.value) return
+
+	const id = selectedItem.value.id
+	_clearEditState()
+	_unlockTable(id)
+}
+
+const onUnlockTable = (id: string) => {
+	if (isAuthenticated.value) _unlockTable(id)
+}
+
 onMounted(() => {
 	_fetchTime()
 	// 🔺 especially on mobile, the `beforeunload` event is not reliably fired
 	// https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event#usage_notes
-	window.addEventListener('beforeunload', closeForm)
-	document.documentElement.style.setProperty('--duration', `${EDIT_TIMEOUT}`)
+	window.addEventListener('beforeunload', _clearAndUnlock)
 })
 onBeforeUnmount(() => {
-	closeForm()
-	clearInterval(_intervalId)
+	_clearAndUnlock()
+	clearInterval(_releaseIntervalId)
 })
-// onBeforeRouteLeave(() => {
-// 	closeForm()
-// })
 
 // unlock table if user reloads page on mobile (see `beforeunload` section)
 const _unlockTableAfterPageReload = () => {
@@ -182,7 +219,7 @@ const _unwatchTables = watch(tables, (_, oldVal) => {
 // On iOS (maybe also on other mobile devices) if the browser runs in the background,
 // because the user switches to another app, the edit timeout callback (closeForm) never gets called.
 // So we need to setup some auto unlock mechanism.
-let _expiredTablesIntervalId: number | undefined
+let _expiredTablesIntervalId: number
 const _unlockExpiredTables = () => {
 	const dateNow = Date.now() + clientOffset.value
 	tables.value?.map(item => {
@@ -207,15 +244,15 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-	<div class="timer-bar z-2 fixed left-0 top-0 h-1 w-full" :class="{ 'is-running': isTimerRunning }" />
+	<div
+		class="re__timer-bar fixed left-0 top-0 z-30 h-1 w-full"
+		:class="{ 'is-running': isTimerRunning }"
+		:style="{ '--edit-timeout': `${EDIT_TIMEOUT}ms` }"
+	/>
 
-	<main class="px-4">
-		<h1 class="text-xl font-semibold">Home</h1>
-		<pre v-if="isAuthenticated">
-Server Time: {{ serverTime }}
-Client Time: {{ clientTime }}
-Client Offset: {{ clientOffset }}</pre
-		>
+	<main class="px-4 py-5">
+		<h1 class="text-2xl font-semibold">{{ title }}</h1>
+		<div v-if="tables">{{ reservations }}</div>
 
 		<div class="my-10">
 			<TableGrid
@@ -231,30 +268,36 @@ Client Offset: {{ clientOffset }}</pre
 		</div>
 	</main>
 
-	<TableForm
-		v-if="!!selectedItem"
-		class="px-4"
-		:entry="selectedItem"
-		:is-logged-in="isAuthenticated"
-		:countdown="countdown"
-		@cancel="closeForm"
-		@saving="isSaving = true"
-		@saved="cleanUp"
-	/>
+	<AppSidebar ref="sidebarEl" :headline="!!selectedItem ? `Tisch ${selectedItem.name}` : ''" @closing="clearTimer">
+		<TableForm
+			v-if="!!selectedItem"
+			:entry="selectedItem"
+			:is-logged-in="isAuthenticated"
+			@cancel="onTimeoutOrCancel"
+			@saving="isSaving = true"
+			@saved="onSaved"
+		>
+			{{ countdownToTime }}
+		</TableForm>
+	</AppSidebar>
 
 	<dialog ref="dialogEl" tabindex="-1">
 		<div class="whitespace-pre-line">{{ dialogMessage }}</div>
 		<button type="button" @click="dialogEl?.close()">close</button>
 	</dialog>
+
+	<Teleport to="#debug-info">Client Offset: {{ clientOffset }}</Teleport>
 </template>
 
 <style lang="postcss">
-.timer-bar {
+.re__timer-bar {
+	transition: background-color 240ms;
+
 	&::after {
-		@apply block bg-rose-500;
+		@apply h-inherit block bg-rose-500;
 		content: '';
-		height: inherit;
 		transform: translateX(-100%);
+		transition: transform 240ms;
 	}
 
 	&.is-running {
@@ -262,7 +305,8 @@ Client Offset: {{ clientOffset }}</pre
 
 		&::after {
 			transform: translateX(0);
-			transition: transform calc(var(--duration) * 1ms) linear;
+			transition-duration: var(--edit-timeout);
+			transition-timing-function: linear;
 		}
 	}
 }

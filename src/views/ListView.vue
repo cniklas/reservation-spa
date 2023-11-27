@@ -48,7 +48,7 @@ const filteredReservations = computed(() => {
 
 		<div v-if="reservations.length > 0">
 			<div>{{ formatCount(reservations.length, ['Person', 'Personen']) }}</div>
-			<div class="z-1 sticky top-0 -mx-4 bg-white px-4 py-4">
+			<div class="sticky top-0 z-10 -mx-4 bg-white p-4">
 				<label class="mr-2" for="search">Suche</label>
 				<input
 					v-model.trim="search"

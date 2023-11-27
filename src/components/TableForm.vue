@@ -22,7 +22,6 @@ const emit = defineEmits<{
 const props = defineProps<{
 	entry: TableDoc
 	isLoggedIn: boolean
-	countdown: number
 }>()
 
 // eslint-disable-next-line vue/no-setup-props-destructure
@@ -119,89 +118,80 @@ const onSubmit = async () => {
 	}
 }
 
-const countdownToTime = computed(() =>
-	new Date(props.countdown * 1000).toLocaleTimeString('de-DE', { minute: 'numeric', second: 'numeric' }),
-)
-
 const cancel = () => {
 	emit('cancel')
 }
 </script>
 
 <template>
-	<section aria-labelledby="form-headline">
-		<!-- <button type="button" @click="cancel">close</button> -->
-		<h2 class="text-xl font-semibold" id="form-headline" aria-hidden="true">Tisch {{ entry.name }}</h2>
+	<!-- <div class="timer-radial relative h-20 w-20 rounded-full bg-rose-500 bg-blend-multiply" /> -->
+	<div class="my-2 font-semibold empty:hidden"><slot /></div>
 
-		<!-- <div class="timer-radial relative h-20 w-20 rounded-full bg-rose-500 bg-blend-multiply" /> -->
-		<div class="my-2 font-semibold">{{ countdownToTime }}</div>
-
-		<form novalidate @submit.prevent="onSubmit">
-			<template v-if="isLoggedIn">
-				<div>
-					<label for="name">Name</label>
-					<input v-model.trim="form.name" type="text" id="name" autocomplete="off" maxlength="16" required />
-				</div>
-				<div>
-					<span>Anzahl Sitzplätze</span>
-					<button type="button" :disabled="form.seats === 4" data-test-decrease-button @click="decrease">-</button>
-					{{ form.seats }}
-					<button type="button" :disabled="form.seats === 8" data-test-increase-button @click="increase">+</button>
-				</div>
-				<div>
-					<div>Block</div>
-					<template v-for="[key, block] of blocks" :key="`block-${key}`">
-						<input v-model.number="form.block_id" type="radio" :id="`block_id_${key}`" name="block_id" :value="key" />
-						<label :for="`block_id_${key}`">{{ block }}</label>
-					</template>
-				</div>
-				<div>
-					<label>
-						verfügbar
-						<input v-model="form.active" type="checkbox" />
-					</label>
-				</div>
-			</template>
-
+	<form novalidate @submit.prevent="onSubmit">
+		<template v-if="isLoggedIn">
 			<div>
-				<div>Sitzplätze</div>
-				<ol class="list-decimal pl-4">
-					<li v-for="n in form.seats" :key="`seat-${n}`" class="my-2" data-test-seat>
-						<div class="grid w-fit grid-cols-2 gap-2">
-							<label :for="`seat_${n}`">Vor- und Nachname</label>
-							<input
-								v-model.trim="form[`seat_${n}`]"
-								type="text"
-								:id="`seat_${n}`"
-								autocomplete="off"
-								maxlength="36"
-								enterkeyhint="done"
-								@change="onChange(`seat_${n}`, $event.target as HTMLInputElement)"
-							/>
-						</div>
-						<template v-if="validationErrors.has(`seat_${n}`)">
-							<template v-if="Array.isArray(validationErrors.get(`seat_${n}`))">
-								<div style="color: red">Ist diese Person identisch mit</div>
-								<ul class="comma-separated">
-									<li v-for="(hit, i) in validationErrors.get(`seat_${n}`)" :key="`${n}-${i}`">{{ hit }}</li>
-								</ul>
-								<div class="mt-2 grid w-fit grid-cols-2 gap-x-2">
-									<button type="button" @click="resetValue(`seat_${n}`)">ja</button>
-									<button type="button" @click="resetValidation(`seat_${n}`)">nein</button>
-								</div>
-							</template>
-							<div v-else style="color: red">{{ validationErrors.get(`seat_${n}`) }}</div>
-						</template>
-					</li>
-				</ol>
+				<label for="name">Name</label>
+				<input v-model.trim="form.name" type="text" id="name" autocomplete="off" maxlength="16" required />
 			</div>
+			<div>
+				<span>Anzahl Sitzplätze</span>
+				<button type="button" :disabled="form.seats === 4" data-test-decrease-button @click="decrease">-</button>
+				{{ form.seats }}
+				<button type="button" :disabled="form.seats === 8" data-test-increase-button @click="increase">+</button>
+			</div>
+			<div>
+				<div>Block</div>
+				<template v-for="[key, block] of blocks" :key="`block-${key}`">
+					<input v-model.number="form.block_id" type="radio" :id="`block_id_${key}`" name="block_id" :value="key" />
+					<label :for="`block_id_${key}`">{{ block }}</label>
+				</template>
+			</div>
+			<div>
+				<label>
+					verfügbar
+					<input v-model="form.active" type="checkbox" />
+				</label>
+			</div>
+		</template>
 
-			<div class="mt-5 grid w-fit grid-cols-2 gap-x-2">
-				<button type="submit" :disabled="isSubmitLocked">Speichern</button>
-				<button type="button" data-test-cancel-button @click="cancel">Abbrechen</button>
-			</div>
-		</form>
-	</section>
+		<div>
+			<div>Sitzplätze</div>
+			<ol class="list-decimal pl-4">
+				<li v-for="n in form.seats" :key="`seat-${n}`" class="my-2" data-test-seat>
+					<div class="grid w-fit grid-cols-2 gap-2">
+						<label :for="`seat_${n}`">Vor- und Nachname</label>
+						<input
+							v-model.trim="form[`seat_${n}`]"
+							type="text"
+							:id="`seat_${n}`"
+							autocomplete="off"
+							maxlength="36"
+							enterkeyhint="done"
+							@change="onChange(`seat_${n}`, $event.target as HTMLInputElement)"
+						/>
+					</div>
+					<template v-if="validationErrors.has(`seat_${n}`)">
+						<template v-if="Array.isArray(validationErrors.get(`seat_${n}`))">
+							<div style="color: red">Ist diese Person identisch mit</div>
+							<ul class="comma-separated">
+								<li v-for="(hit, i) in validationErrors.get(`seat_${n}`)" :key="`${n}-${i}`">{{ hit }}</li>
+							</ul>
+							<div class="mt-2 grid w-fit grid-cols-2 gap-x-2">
+								<button type="button" @click="resetValue(`seat_${n}`)">ja</button>
+								<button type="button" @click="resetValidation(`seat_${n}`)">nein</button>
+							</div>
+						</template>
+						<div v-else style="color: red">{{ validationErrors.get(`seat_${n}`) }}</div>
+					</template>
+				</li>
+			</ol>
+		</div>
+
+		<div class="mt-5 grid w-fit grid-cols-2 gap-x-2">
+			<button type="submit" :disabled="isSubmitLocked">Speichern</button>
+			<button type="button" data-test-cancel-button @click="cancel">Abbrechen</button>
+		</div>
+	</form>
 </template>
 
 <style>
@@ -246,7 +236,7 @@ const cancel = () => {
 
 		.is-running > & {
 			--angle: 360deg;
-			transition: --angle calc(var(--duration) * 1ms) linear;
+			transition: --angle var(--edit-timeout) linear;
 		}
 	}
 } */

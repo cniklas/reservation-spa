@@ -1,5 +1,7 @@
-:root {
-	--duration: 240000; /* 4 minutes */
+body {
+	color: theme('colors.dark.700');
+	min-height: 100vh;
+	min-height: 100dvh;
 }
 
 input[type='search']::-webkit-search-cancel-button,
