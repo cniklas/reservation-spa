@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { refDebounced } from '@vueuse/core'
+import SkateboardSpinner from '@/components/SkateboardSpinner.vue'
 import type { Timestamp, TableDoc } from '@/types/TableDoc.type'
 import type { SortableReservation } from '@/types/Reservation.type'
 import { formatTime, formatCount, sortByName } from '@/use/helper'
@@ -115,21 +116,28 @@ const sortedSeats = (table: TableDoc) => {
 			>
 				<dl class="re__grid-table" :class="{ 'is-available': table.seats - countTakenSeats(table) }">
 					<dt class="re__grid-table-number">
-						{{ firstWord(table.name) }}
+						<div class="re__grid-table-number-wrapper">
+							{{ firstWord(table.name) }}
+						</div>
+						<Transition name="fade" mode="out-in">
+							<div v-if="table.locked_at" class="re__spinner-wrapper">
+								<SkateboardSpinner class="re__spinner" />
+							</div>
+						</Transition>
 					</dt>
 					<dd>
 						<div class="re__grid-table-label">
 							{{ restOfWords(table.name) }}
 						</div>
-						<div>{{ formatEmptySeats(table) }}</div>
+						<TransitionGroup name="exchange">
+							<div v-if="table.locked_at" class="text-sm leading-[1.5rem]">wird bearbeitet</div>
+							<div v-else>{{ formatEmptySeats(table) }}</div>
+						</TransitionGroup>
 					</dd>
 				</dl>
 			</button>
 
 			<ol class="dot-separated text-sm">
-				<!-- <li v-for="n in countTakenSeats(table)" :key="`${table.id}-${n}`">
-					{{ table[`seat_${n}`] }}
-				</li> -->
 				<li v-for="(seat, n) in sortedSeats(table)" :key="`${table.id}-${n}`">
 					{{ seat.name }}
 				</li>
@@ -144,7 +152,7 @@ const sortedSeats = (table: TableDoc) => {
 }
 
 .re__grid-table {
-	@apply grid grid-cols-[3rem_2fr] items-center gap-x-2.5 rounded-[1.8125rem] border border-black bg-white p-1;
+	@apply grid grid-cols-[3rem_1fr] items-center gap-x-2.5 rounded-[1.8125rem] border border-black bg-white p-1;
 
 	box-shadow: 0 4px 0 -1px theme('colors.dark.50'); /* theme('colors.neutral.500') */
 
@@ -154,7 +162,11 @@ const sortedSeats = (table: TableDoc) => {
 }
 
 .re__grid-table-number {
-	@apply grid h-12 w-12 place-content-center rounded-[50%] border border-black text-xl font-semibold; /* text-dark-500 */
+	@apply grid h-12 w-12  rounded-[50%] border border-black text-xl font-semibold; /* text-dark-500 */
+}
+
+.re__grid-table-number-wrapper {
+	@apply col-start-1 col-end-1 row-start-1 row-end-1 grid place-content-center;
 }
 
 .re__grid-table-label {
@@ -167,5 +179,36 @@ const sortedSeats = (table: TableDoc) => {
 	> :not(:last-child)::after {
 		@apply mx-1 hidden content-['•'] sm:inline-block;
 	}
+}
+
+.re__spinner-wrapper {
+	@apply relative col-start-1 col-end-1 row-start-1 row-end-1;
+}
+
+.re__spinner {
+	@apply absolute left-1/2 h-16 w-16;
+	transform: translate(-50%, -15px);
+}
+
+/* .pl__ring {
+	@apply hidden;
+} */
+
+.fade-enter-active,
+.fade-leave-active,
+.exchange-enter-active,
+.exchange-leave-active {
+	transition: opacity 160ms;
+}
+
+.fade-enter-from,
+.fade-leave-to,
+.exchange-enter-from,
+.exchange-leave-to {
+	opacity: 0;
+}
+
+.exchange-leave-active {
+	position: absolute;
 }
 </style>
