@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { refDebounced } from '@vueuse/core'
 import SkateboardSpinner from '@/components/SkateboardSpinner.vue'
-import type { Timestamp, TableDoc } from '@/types/TableDoc.type'
+import type { TableDoc } from '@/types/TableDoc.type'
 import type { SortableReservation } from '@/types/Reservation.type'
 import { formatTime, formatCount, sortByName } from '@/use/helper'
 
@@ -107,35 +107,44 @@ const sortedSeats = (table: TableDoc) => {
 		class="w-2xl grid max-w-full grid-cols-[10.5rem_1fr] items-start gap-x-4 gap-y-6 sm:grid-cols-[12rem_1fr] sm:gap-6"
 	>
 		<template v-for="table in filteredTables" :key="table.id">
-			<button
-				type="button"
-				class="re__grid-table-button"
-				:disabled="isFormOpen || !!table.locked_at"
-				data-test-edit-button
-				@click="$emit('edit', table.id)"
-			>
-				<dl class="re__grid-table" :class="{ 'is-available': table.seats - countTakenSeats(table) }">
-					<dt class="re__grid-table-number">
-						<div class="re__grid-table-number-wrapper">
-							{{ firstWord(table.name) }}
-						</div>
-						<Transition name="fade" mode="out-in">
-							<div v-if="table.locked_at" class="re__spinner-wrapper">
-								<SkateboardSpinner class="re__spinner" />
+			<div class="re__grid-table-button-wrapper">
+				<button
+					type="button"
+					class="re__grid-table-button"
+					:disabled="isFormOpen || !!table.locked_at"
+					data-test-edit-button
+					@click="$emit('edit', table.id)"
+				>
+					<dl class="re__grid-table" :class="{ 'is-available': table.seats - countTakenSeats(table) }">
+						<dt class="re__grid-table-number">
+							<div class="re__grid-table-number-wrapper">
+								{{ firstWord(table.name) }}
 							</div>
-						</Transition>
-					</dt>
-					<dd>
-						<div class="re__grid-table-label">
-							{{ restOfWords(table.name) }}
-						</div>
-						<TransitionGroup name="exchange">
-							<div v-if="table.locked_at" class="text-sm leading-[1.5rem]">wird bearbeitet</div>
-							<div v-else>{{ formatEmptySeats(table) }}</div>
-						</TransitionGroup>
-					</dd>
-				</dl>
-			</button>
+							<Transition name="fade" mode="out-in">
+								<div v-if="table.locked_at" class="re__spinner-wrapper">
+									<SkateboardSpinner class="re__spinner" />
+								</div>
+							</Transition>
+						</dt>
+						<dd>
+							<div class="re__grid-table-label">
+								{{ restOfWords(table.name) }}
+							</div>
+							<TransitionGroup name="exchange">
+								<div v-if="table.locked_at" class="text-sm leading-[1.5rem]">wird bearbeitet</div>
+								<div v-else>{{ formatEmptySeats(table) }}</div>
+							</TransitionGroup>
+						</dd>
+					</dl>
+				</button>
+
+				<div v-if="isLoggedIn && table.locked_at && table.locked_by !== uuid" class="text-center">
+					<div class="text-sm">seit {{ formatTime(table.locked_at.seconds * 1000) }} Uhr</div>
+					<button type="button" class="re__grid-table-release-button" @click="$emit('unlock', table.id)">
+						🔑 entsperren
+					</button>
+				</div>
+			</div>
 
 			<ol class="dot-separated text-sm">
 				<li v-for="(seat, n) in sortedSeats(table)" :key="`${table.id}-${n}`">
@@ -147,14 +156,21 @@ const sortedSeats = (table: TableDoc) => {
 </template>
 
 <style lang="postcss">
+.re__grid-table-button-wrapper {
+	@apply grid gap-4;
+}
+
 .re__grid-table-button {
 	@apply rounded-[1.8125rem] text-left;
 }
 
+.re__grid-table-release-button {
+	@apply bg-dark-900 rounded-4 mt-1 inline-grid h-8 place-content-center px-4 text-white;
+}
+
 .re__grid-table {
 	@apply grid grid-cols-[3rem_1fr] items-center gap-x-2.5 rounded-[1.8125rem] border border-black bg-white p-1;
-
-	box-shadow: 0 4px 0 -1px theme('colors.dark.50'); /* theme('colors.neutral.500') */
+	box-shadow: 0 4px 0 -1px theme('colors.dark.50');
 
 	&.is-available {
 		box-shadow: 0 7px 0 -1px theme('colors.lime.500');
