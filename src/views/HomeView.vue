@@ -283,7 +283,7 @@ onBeforeUnmount(() => {
 
 	<dialog ref="dialogEl" tabindex="-1">
 		<div class="whitespace-pre-line">{{ dialogMessage }}</div>
-		<button type="button" @click="dialogEl?.close()">close</button>
+		<button type="button" class="re__primary-button" @click="dialogEl?.close()">schließen</button>
 	</dialog>
 
 	<Teleport to="#debug-info">Client Offset: {{ clientOffset }}</Teleport>

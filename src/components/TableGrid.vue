@@ -140,13 +140,13 @@ const sortedSeats = (table: TableDoc) => {
 
 				<div v-if="isLoggedIn && table.locked_at && table.locked_by !== uuid" class="text-center">
 					<div class="text-sm">seit {{ formatTime(table.locked_at.seconds * 1000) }} Uhr</div>
-					<button type="button" class="re__grid-table-release-button" @click="$emit('unlock', table.id)">
+					<button type="button" class="re__primary-button mt-1" @click="$emit('unlock', table.id)">
 						🔑 entsperren
 					</button>
 				</div>
 			</div>
 
-			<ol class="dot-separated text-sm">
+			<ol class="re__dot-separated text-sm">
 				<li v-for="(seat, n) in sortedSeats(table)" :key="`${table.id}-${n}`">
 					{{ seat.name }}
 				</li>
@@ -162,10 +162,6 @@ const sortedSeats = (table: TableDoc) => {
 
 .re__grid-table-button {
 	@apply rounded-[1.8125rem] text-left;
-}
-
-.re__grid-table-release-button {
-	@apply bg-dark-900 rounded-4 mt-1 inline-grid h-8 place-content-center px-4 text-white;
 }
 
 .re__grid-table {
@@ -189,7 +185,7 @@ const sortedSeats = (table: TableDoc) => {
 	@apply rounded-3 min-h-6 grid w-fit items-center bg-gray-200 px-2.5 text-sm empty:hidden;
 }
 
-.dot-separated {
+.re__dot-separated {
 	@apply sm:flex sm:flex-wrap;
 
 	> :not(:last-child)::after {
@@ -206,9 +202,9 @@ const sortedSeats = (table: TableDoc) => {
 	transform: translate(-50%, -15px);
 }
 
-/* .pl__ring {
+.pl__ring {
 	@apply hidden;
-} */
+}
 
 .fade-enter-active,
 .fade-leave-active,
@@ -221,10 +217,10 @@ const sortedSeats = (table: TableDoc) => {
 .fade-leave-to,
 .exchange-enter-from,
 .exchange-leave-to {
-	opacity: 0;
+	@apply opacity-0;
 }
 
 .exchange-leave-active {
-	position: absolute;
+	@apply absolute;
 }
 </style>

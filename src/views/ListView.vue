@@ -43,8 +43,8 @@ const filteredReservations = computed(() => {
 </script>
 
 <template>
-	<main class="px-4">
-		<h1 class="text-xl font-semibold">Liste</h1>
+	<main class="px-4 py-5">
+		<h1 class="text-2xl font-semibold">Liste</h1>
 
 		<div v-if="reservations.length > 0">
 			<div>{{ formatCount(reservations.length, ['Person', 'Personen']) }}</div>

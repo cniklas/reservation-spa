@@ -2,13 +2,8 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import TableForm from '../../src/components/TableForm.vue'
 import type { TableDoc } from '../../src/types/TableDoc.type'
-import { PROVIDE_BLOCKS, PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '../../src/keys'
+import { PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '../../src/keys'
 
-const blocks = new Map([
-	[1, 'Linker Block'],
-	[2, 'Mittelblock'],
-	[3, 'Rechter Block'],
-])
 const tables: TableDoc[] = [
 	{
 		active: true,
@@ -63,13 +58,11 @@ const tables: TableDoc[] = [
 	},
 ]
 const entry = tables.at(0)
-const EDIT_TIMEOUT = 4 * 60
 
 const factory = (props?: any) =>
 	mount(TableForm, {
 		global: {
 			provide: {
-				[PROVIDE_BLOCKS as symbol]: blocks,
 				[PROVIDE_TABLES as symbol]: tables,
 				[PROVIDE_UPDATE_DOCUMENT as symbol]: () => {},
 			},
@@ -77,7 +70,6 @@ const factory = (props?: any) =>
 		props: {
 			entry,
 			isLoggedIn: false,
-			countdown: EDIT_TIMEOUT,
 			...props,
 		},
 	})

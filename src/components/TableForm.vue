@@ -3,11 +3,10 @@ import { reactive, computed, watch, toRaw } from 'vue'
 import { deleteField, serverTimestamp } from 'firebase/firestore'
 import type { TableDoc } from '@/types/TableDoc.type'
 import type { Reservation } from '@/types/Reservation.type'
-import { PROVIDE_BLOCKS, PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '@/keys'
+import { PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '@/keys'
 import { useErrorHandling } from '@/use/errorHandling'
 import { injectStrict } from '@/use/helper'
 
-const blocks = injectStrict(PROVIDE_BLOCKS)
 const tables = injectStrict(PROVIDE_TABLES)
 const updateDocument = injectStrict(PROVIDE_UPDATE_DOCUMENT)
 
@@ -135,17 +134,33 @@ const cancel = () => {
 			</div>
 			<div>
 				<span>Anzahl Sitzplätze</span>
-				<button type="button" :disabled="form.seats === 4" data-test-decrease-button @click="decrease">-</button>
-				{{ form.seats }}
-				<button type="button" :disabled="form.seats === 8" data-test-increase-button @click="increase">+</button>
+				<button
+					type="button"
+					class="re__secondary-button"
+					:disabled="form.seats === 4"
+					data-test-decrease-button
+					@click="decrease"
+				>
+					-
+				</button>
+				<span class="w-1ch mx-2 inline-block">{{ form.seats }}</span>
+				<button
+					type="button"
+					class="re__secondary-button"
+					:disabled="form.seats === 8"
+					data-test-increase-button
+					@click="increase"
+				>
+					+
+				</button>
 			</div>
-			<div>
+			<!-- <div>
 				<div>Block</div>
 				<template v-for="[key, block] of blocks" :key="`block-${key}`">
 					<input v-model.number="form.block_id" type="radio" :id="`block_id_${key}`" name="block_id" :value="key" />
 					<label :for="`block_id_${key}`">{{ block }}</label>
 				</template>
-			</div>
+			</div> -->
 			<div>
 				<label>
 					verfügbar
@@ -172,35 +187,35 @@ const cancel = () => {
 					</div>
 					<template v-if="validationErrors.has(`seat_${n}`)">
 						<template v-if="Array.isArray(validationErrors.get(`seat_${n}`))">
-							<div style="color: red">Ist diese Person identisch mit</div>
-							<ul class="comma-separated">
+							<div class="text-red-500">Ist diese Person identisch mit:</div>
+							<ul class="re__comma-separated">
 								<li v-for="(hit, i) in validationErrors.get(`seat_${n}`)" :key="`${n}-${i}`">{{ hit }}</li>
 							</ul>
 							<div class="mt-2 grid w-fit grid-cols-2 gap-x-2">
-								<button type="button" @click="resetValue(`seat_${n}`)">ja</button>
-								<button type="button" @click="resetValidation(`seat_${n}`)">nein</button>
+								<button type="button" class="re__secondary-button" @click="resetValue(`seat_${n}`)">ja</button>
+								<button type="button" class="re__secondary-button" @click="resetValidation(`seat_${n}`)">nein</button>
 							</div>
 						</template>
-						<div v-else style="color: red">{{ validationErrors.get(`seat_${n}`) }}</div>
+						<div v-else class="text-red-500">{{ validationErrors.get(`seat_${n}`) }}</div>
 					</template>
 				</li>
 			</ol>
 		</div>
 
 		<div class="mt-5 grid w-fit grid-cols-2 gap-x-2">
-			<button type="submit" :disabled="isSubmitLocked">Speichern</button>
-			<button type="button" data-test-cancel-button @click="cancel">Abbrechen</button>
+			<button type="submit" class="re__primary-button" :disabled="isSubmitLocked">Speichern</button>
+			<button type="button" class="re__secondary-button" data-test-cancel-button @click="cancel">Abbrechen</button>
 		</div>
 	</form>
 </template>
 
-<style>
-.comma-separated {
-	display: flex;
+<style lang="postcss">
+.re__comma-separated {
+	@apply flex flex-wrap;
 
 	> :not(:last-child)::after {
+		@apply white-space-pre-wrap;
 		content: ', ';
-		white-space: pre-wrap;
 	}
 
 	> :nth-last-child(2)::after {

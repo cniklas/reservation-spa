@@ -67,9 +67,8 @@ export const useErrorHandling = () => {
 	}
 
 	const validateTableName = (name: string, tableNames: string[]) => {
-		tableNames.includes(name)
-			? validationErrors.set('name', 'Bitte wähle einen anderen Namen')
-			: validationErrors.delete('name')
+		const found = tableNames.some(tableName => name.toLowerCase() === tableName.toLowerCase())
+		found ? validationErrors.set('name', 'Bitte wähle einen anderen Namen') : validationErrors.delete('name')
 	}
 
 	return {

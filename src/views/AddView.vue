@@ -3,7 +3,7 @@ import { reactive, computed, watch, toRaw } from 'vue'
 import { useRouter } from 'vue-router'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/firebase'
-import { PROVIDE_BLOCKS, PROVIDE_TABLES } from '@/keys'
+import { PROVIDE_TABLES } from '@/keys'
 import { useErrorHandling } from '@/use/errorHandling'
 import { injectStrict } from '@/use/helper'
 
@@ -11,7 +11,6 @@ const router = useRouter()
 const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, validationErrors, validateTableName } =
 	useErrorHandling()
 
-const blocks = injectStrict(PROVIDE_BLOCKS)
 const tables = injectStrict(PROVIDE_TABLES)
 const _getNextIndex = () => Math.max(...(tables.value?.map(item => item.index) ?? [-1])) + 1
 
@@ -66,8 +65,8 @@ const onSubmit = async () => {
 </script>
 
 <template>
-	<main class="px-4">
-		<h1 class="text-xl font-semibold">Add</h1>
+	<main class="px-4 py-5">
+		<h1 class="text-2xl font-semibold">Add</h1>
 
 		<form novalidate @submit.prevent="onSubmit">
 			<div>
@@ -81,15 +80,15 @@ const onSubmit = async () => {
 					required
 					@input="onUpdate"
 				/>
-				<div style="color: red">{{ validationErrors.get('name') }}</div>
+				<div class="text-red-500">{{ validationErrors.get('name') }}</div>
 			</div>
-			<div>
+			<!-- <div>
 				<div>Block</div>
 				<template v-for="[key, block] of blocks" :key="`block-${key}`">
 					<input v-model.number="form.block_id" type="radio" :id="`block_id_${key}`" name="block_id" :value="key" />
 					<label :for="`block_id_${key}`">{{ block }}</label>
 				</template>
-			</div>
+			</div> -->
 			<div>
 				<label for="seats">Anzahl Sitzplätze</label>
 				<input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="4" max="8" />
@@ -101,7 +100,7 @@ const onSubmit = async () => {
 				</label>
 			</div>
 			<div>
-				<button type="submit" :disabled="isEmpty(form.name) || isSubmitLocked">Speichern</button>
+				<button type="submit" class="re__primary-button" :disabled="isEmpty(form.name) || isSubmitLocked">Speichern</button>
 			</div>
 		</form>
 	</main>

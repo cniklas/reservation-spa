@@ -23,12 +23,27 @@ const onSubmit = /* async */ () => {
 </script>
 
 <template>
-	<main class="px-4">
-		<h1 class="text-xl font-semibold">Login</h1>
+	<main class="px-4 py-5">
+		<h1 class="text-2xl font-semibold">Login</h1>
+
 		<form novalidate @submit.prevent="onSubmit">
-			<div><input v-model.trim="email" type="email" autocomplete="username" /></div>
-			<div><input v-model.trim="password" type="password" autocomplete="current-password" enterkeyhint="go" /></div>
-			<div><button type="submit" :disabled="isSubmitLocked">Login</button></div>
+			<div>
+				<label for="username">Benutzername</label>
+				<input v-model.trim="email" type="email" id="username" autocomplete="username" />
+			</div>
+			<div>
+				<label for="password">Passwort</label>
+				<input
+					v-model.trim="password"
+					type="password"
+					id="password"
+					autocomplete="current-password"
+					enterkeyhint="go"
+				/>
+			</div>
+			<div>
+				<button type="submit" class="re__primary-button" :disabled="isSubmitLocked">Login</button>
+			</div>
 		</form>
 	</main>
 </template>
