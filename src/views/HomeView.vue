@@ -7,16 +7,27 @@ import { auth } from '@/firebase'
 import TableGrid from '@/components/TableGrid.vue'
 import AppSidebar from '@/components/AppSidebar.vue'
 import { PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '@/keys'
-import { formatDateTime, formatCount, createUuid, injectStrict } from '@/use/helper'
+import { formatCount, createUuid, injectStrict } from '@/use/helper'
+import { ONE_MINUTE, EDIT_TIMEOUT, RELEASE_TIME, useTimeout } from '@/use/timeout'
 
 const tables = injectStrict(PROVIDE_TABLES)
 const updateDocument = injectStrict(PROVIDE_UPDATE_DOCUMENT)
 
-const { isAuthenticated } = useAuth(auth)
-
 const TableForm = defineAsyncComponent(() => import('@/components/TableForm.vue'))
 
 const title: string = import.meta.env.VITE_APP_NAME
+
+const { isAuthenticated } = useAuth(auth)
+const {
+	clientOffset,
+	isReleased,
+	clearReleaseInterval,
+	fetchTime,
+	isTimerRunning,
+	countdownToTime,
+	setTimer,
+	clearTimer,
+} = useTimeout()
 
 const sidebarEl = ref<InstanceType<typeof AppSidebar> | null>(null)
 const dialogEl = ref<HTMLDialogElement | null>(null)
@@ -41,52 +52,6 @@ const reservations = computed(() => {
 	return `${formatCount(count, ['Person', 'Personen'])} eingetragen`
 })
 
-let _releaseIntervalId: number
-const ONE_MINUTE = 60 * 1000
-
-const clientTime = ref('')
-const clientOffset = ref(0)
-const serverTime = ref('')
-const _releaseTime = new Date(import.meta.env.VITE_RELEASE_DATE).getTime()
-const isReleased = ref(false)
-// takes into account that the client time may not be set correctly
-const _isReleasedNow = () => _releaseTime <= Date.now() + clientOffset.value
-
-const _fetchTime = async () => {
-	try {
-		// console.time('server time')
-		// const response = await fetch('https://worldtimeapi.org/api/timezone/Europe/Berlin')
-		// @ts-ignore
-		const response = await fetch(import.meta.env.VITE_GET_TIME_URL, { priority: 'low' })
-		if (!response.ok) throw new Error('Could not retrieve server time')
-		// console.timeEnd('server time')
-
-		const clientNow = Date.now()
-		// 🔺 getMilliseconds() ist missverständlich, da z.B. für 2 ms `2` und nicht `002` zurückgegeben wird
-		// clientTime.value = `${formatDateTime(clientNow)}.${new Date(clientNow).getMilliseconds()}`
-		clientTime.value = formatDateTime(clientNow)
-
-		// const { datetime } = await response.json()
-		const { atom, micro }: { atom: string; micro: number } = await response.json()
-		const serverNow = new Date(atom).getTime() + Math.round(micro / 1000)
-		serverTime.value = formatDateTime(serverNow)
-
-		const _clientOffset = serverNow - clientNow
-		if (Math.abs(_clientOffset) > 2000) clientOffset.value = _clientOffset
-
-		isReleased.value = _isReleasedNow()
-		if (isReleased.value) return
-
-		_releaseIntervalId = window.setInterval(() => {
-			if (!_isReleasedNow()) return
-			clearInterval(_releaseIntervalId)
-			isReleased.value = true
-		}, 2000)
-	} catch (error) {
-		console.error(error)
-	}
-}
-
 const uuid = ref(sessionStorage.getItem('uuid') ?? createUuid())
 sessionStorage.setItem('uuid', uuid.value)
 
@@ -96,18 +61,6 @@ const selectedItem = computed(() => tables.value?.find(item => item.id === itemI
 watch(itemId, val => {
 	if (val) sidebarEl.value?.open()
 })
-
-const EDIT_TIMEOUT = 4 * ONE_MINUTE
-let _editTimeoutId: number
-let _countdownIntervalId: number
-const isTimerRunning = ref(false)
-const countdown = ref(0)
-const _decreaseCountdown = () => {
-	countdown.value--
-}
-const countdownToTime = computed(() =>
-	new Date(countdown.value * 1000).toLocaleTimeString('de-DE', { minute: 'numeric', second: 'numeric' }),
-)
 
 const onTimeoutOrCancel = () => {
 	sidebarEl.value?.close(() => {
@@ -128,7 +81,7 @@ const onConflict = (message: string) => {
 const onEditTable = async (id: string) => {
 	if (!isReleased.value) {
 		_showDialog(
-			`Bitte noch etwas Geduld!\nEintragung ab ${new Date(_releaseTime).toLocaleDateString('de-DE', {
+			`Noch ein bisschen Geduld\nEintragungen sind ab ${new Date(RELEASE_TIME).toLocaleDateString('de-DE', {
 				hour: 'numeric',
 				minute: 'numeric',
 			})} Uhr möglich.`,
@@ -140,10 +93,7 @@ const onEditTable = async (id: string) => {
 
 	itemId.value = id // now `selectedItem` will be set
 	/* await */ updateDocument(id, { locked_by: uuid.value, locked_at: serverTimestamp() })
-	_editTimeoutId = window.setTimeout(onTimeoutOrCancel, EDIT_TIMEOUT)
-	isTimerRunning.value = true
-	countdown.value = EDIT_TIMEOUT / 1000
-	_countdownIntervalId = window.setInterval(_decreaseCountdown, 1000)
+	setTimer(onTimeoutOrCancel)
 }
 
 const isSaving = ref(false)
@@ -163,12 +113,6 @@ watch(
 		}
 	},
 )
-
-const clearTimer = () => {
-	clearTimeout(_editTimeoutId)
-	isTimerRunning.value = false
-	clearInterval(_countdownIntervalId)
-}
 
 const _clearEditState = () => {
 	if (!selectedItem.value) return
@@ -195,14 +139,14 @@ const onUnlockTable = (id: string) => {
 }
 
 onMounted(() => {
-	_fetchTime()
+	fetchTime()
 	// 🔺 especially on mobile, the `beforeunload` event is not reliably fired
 	// https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event#usage_notes
 	window.addEventListener('beforeunload', _clearAndUnlock)
 })
 onBeforeUnmount(() => {
 	_clearAndUnlock()
-	clearInterval(_releaseIntervalId)
+	clearReleaseInterval()
 })
 
 // unlock table if user reloads page on mobile (see `beforeunload` section)
@@ -252,23 +196,30 @@ onBeforeUnmount(() => {
 
 	<main class="px-4 py-5">
 		<h1 class="text-2xl font-semibold">{{ title }}</h1>
-		<div v-if="tables">{{ reservations }}</div>
 
-		<div class="my-10">
-			<TableGrid
-				v-if="tables"
-				:tables="tables"
-				:uuid="uuid"
-				:is-logged-in="isAuthenticated"
-				:is-form-open="!!selectedItem"
-				@edit="onEditTable"
-				@unlock="onUnlockTable"
-			/>
-			<div v-else>Lade Daten …</div>
-		</div>
+		<template v-if="tables">
+			<div>{{ reservations }}</div>
+
+			<div class="my-10">
+				<TableGrid
+					:tables="tables"
+					:uuid="uuid"
+					:is-logged-in="isAuthenticated"
+					:is-form-open="!!selectedItem"
+					@edit="onEditTable"
+					@unlock="onUnlockTable"
+				/>
+			</div>
+		</template>
+		<div v-else>Lade Daten …</div>
 	</main>
 
-	<AppSidebar ref="sidebarEl" :headline="!!selectedItem ? `Tisch ${selectedItem.name}` : ''" @closing="clearTimer">
+	<AppSidebar
+		v-if="tables"
+		ref="sidebarEl"
+		:headline="!!selectedItem ? `Tisch ${selectedItem.name}` : ''"
+		@closing="clearTimer"
+	>
 		<TableForm
 			v-if="!!selectedItem"
 			:entry="selectedItem"
