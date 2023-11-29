@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { refDebounced } from '@vueuse/core'
+import SearchBar from '@/components/SearchBar.vue'
 import type { SortableReservation } from '@/types/Reservation.type'
 import { PROVIDE_TABLES } from '@/keys'
 import { formatCount, sortByName, injectStrict } from '@/use/helper'
@@ -30,15 +30,12 @@ const reservations = computed(() => {
 })
 
 const search = ref('')
-const searchDebounced = refDebounced(search, 240)
-const resetSearch = () => {
-	search.value = ''
+const onUpdateSearch = (input: string) => {
+	search.value = input
 }
-
 const filteredReservations = computed(() => {
-	if (searchDebounced.value.length < 3) return reservations.value
-
-	return reservations.value.filter(item => item.name.toLowerCase().indexOf(searchDebounced.value.toLowerCase()) !== -1)
+	if (search.value.length < 3) return reservations.value
+	return reservations.value.filter(item => item.name.toLowerCase().indexOf(search.value.toLowerCase()) !== -1)
 })
 </script>
 
@@ -50,18 +47,7 @@ const filteredReservations = computed(() => {
 			<div>{{ formatCount(reservations.length, ['Person', 'Personen']) }}</div>
 
 			<div class="mb-10 mt-6">
-				<div class="sticky top-0 z-10 -mx-3 mb-3 border-b border-b-black bg-white px-3 py-4 sm:-mx-4 sm:px-4">
-					<label class="mr-2" for="search">Suche</label>
-					<input
-						v-model.trim="search"
-						type="text"
-						id="search"
-						autocorrect="off"
-						autocomplete="off"
-						@keyup.esc="resetSearch"
-					/>
-					<button type="button" :class="{ hidden: !search.length }" @click="resetSearch">reset</button>
-				</div>
+				<SearchBar class="mb-3" @update="onUpdateSearch" />
 
 				<table class="re__list-table -mx-2">
 					<thead>

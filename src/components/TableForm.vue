@@ -10,7 +10,7 @@ import { injectStrict } from '@/use/helper'
 const tables = injectStrict(PROVIDE_TABLES)
 const updateDocument = injectStrict(PROVIDE_UPDATE_DOCUMENT)
 
-const { isSubmitLocked, beforeSubmit, handleSubmitError, unlockSubmit, validationErrors, validateName } =
+const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, unlockSubmit, validationErrors, validateName } =
 	useErrorHandling()
 
 const emit = defineEmits<{
@@ -86,7 +86,7 @@ const resetValue = (key: string) => {
 }
 
 const onSubmit = async () => {
-	if (isSubmitLocked.value) return
+	if (isSubmitLocked.value || isEmpty(form.name)) return
 
 	beforeSubmit()
 
@@ -169,38 +169,35 @@ const cancel = () => {
 			</div>
 		</template>
 
-		<div>
-			<div>Sitzplätze</div>
-			<ol class="list-decimal pl-4">
-				<li v-for="n in form.seats" :key="`seat-${n}`" class="my-2" data-test-seat>
-					<div class="grid w-fit grid-cols-2 gap-2">
-						<label :for="`seat_${n}`">Vor- und Nachname</label>
-						<input
-							v-model.trim="form[`seat_${n}`]"
-							type="text"
-							:id="`seat_${n}`"
-							autocomplete="off"
-							maxlength="36"
-							enterkeyhint="done"
-							@change="onChange(`seat_${n}`, $event.target as HTMLInputElement)"
-						/>
-					</div>
-					<template v-if="validationErrors.has(`seat_${n}`)">
-						<template v-if="Array.isArray(validationErrors.get(`seat_${n}`))">
-							<div class="text-red-500">Ist diese Person identisch mit:</div>
-							<ul class="re__comma-separated">
-								<li v-for="(hit, i) in validationErrors.get(`seat_${n}`)" :key="`${n}-${i}`">{{ hit }}</li>
-							</ul>
-							<div class="mt-2 grid w-fit grid-cols-2 gap-x-2">
-								<button type="button" class="re__secondary-button" @click="resetValue(`seat_${n}`)">ja</button>
-								<button type="button" class="re__secondary-button" @click="resetValidation(`seat_${n}`)">nein</button>
-							</div>
-						</template>
-						<div v-else class="text-red-500">{{ validationErrors.get(`seat_${n}`) }}</div>
+		<ol>
+			<li v-for="n in form.seats" :key="`seat-${n}`" class="mb-4" data-test-seat>
+				<div class="grid w-fit grid-cols-2 gap-2">
+					<label :for="`seat_${n}`">Vor- und Nachname</label>
+					<input
+						v-model.trim="form[`seat_${n}`]"
+						type="text"
+						:id="`seat_${n}`"
+						autocomplete="off"
+						maxlength="36"
+						enterkeyhint="done"
+						@change="onChange(`seat_${n}`, $event.target as HTMLInputElement)"
+					/>
+				</div>
+				<template v-if="validationErrors.has(`seat_${n}`)">
+					<template v-if="Array.isArray(validationErrors.get(`seat_${n}`))">
+						<div class="text-red-500">Ist diese Person identisch mit:</div>
+						<ul class="re__comma-separated">
+							<li v-for="(hit, i) in validationErrors.get(`seat_${n}`)" :key="`${n}-${i}`">{{ hit }}</li>
+						</ul>
+						<div class="mt-2 grid w-fit grid-cols-2 gap-x-2">
+							<button type="button" class="re__secondary-button" @click="resetValue(`seat_${n}`)">ja</button>
+							<button type="button" class="re__secondary-button" @click="resetValidation(`seat_${n}`)">nein</button>
+						</div>
 					</template>
-				</li>
-			</ol>
-		</div>
+					<div v-else class="text-red-500">{{ validationErrors.get(`seat_${n}`) }}</div>
+				</template>
+			</li>
+		</ol>
 
 		<div class="mt-5 grid w-fit grid-cols-2 gap-x-2">
 			<button type="submit" class="re__primary-button" :disabled="isSubmitLocked">Speichern</button>

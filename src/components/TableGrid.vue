@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { refDebounced } from '@vueuse/core'
+import SearchBar from '@/components/SearchBar.vue'
 import SkateboardSpinner from '@/components/SkateboardSpinner.vue'
 import type { TableDoc } from '@/types/TableDoc.type'
 import type { SortableReservation } from '@/types/Reservation.type'
@@ -37,29 +37,22 @@ const formatEmptySeats = (table: TableDoc) => {
 }
 
 const _sortByEmptySeats = (a: TableDoc, b: TableDoc) => countTakenSeats(a) - countTakenSeats(b)
-// const sortedTables = computed(() => {
-// 	const _tables = [...(props.tables ?? [])]
-// 	_tables.sort(_sortByEmptySeats)
-// 	return _tables
-// })
 
 const search = ref('')
-const searchDebounced = refDebounced(search, 240)
-const resetSearch = () => {
-	search.value = ''
+const onUpdateSearch = (input: string) => {
+	search.value = input
 }
-
 const filteredTables = computed(() => {
 	const _tables = [...(props.tables ?? [])]
 	_tables.sort(_sortByEmptySeats)
 
-	if (searchDebounced.value.length < 3) return _tables
+	if (search.value.length < 3) return _tables
 
 	return _tables.filter(table => {
 		let found = false
 		for (let i = 0; i < table.seats; i++) {
 			const key = `seat_${i + 1}`
-			if ((table[key] as string).toLowerCase().indexOf(searchDebounced.value.toLowerCase()) !== -1) {
+			if ((table[key] as string).toLowerCase().indexOf(search.value.toLowerCase()) !== -1) {
 				found = true
 				break
 			}
@@ -90,18 +83,7 @@ const sortedSeats = (table: TableDoc) => {
 </script>
 
 <template>
-	<div class="sticky top-0 z-10 -mx-3 mb-6 border-b border-b-black bg-white px-3 py-4 sm:-mx-4 sm:px-4">
-		<label class="mr-2" for="search">Suche</label>
-		<input
-			v-model.trim="search"
-			type="text"
-			id="search"
-			autocorrect="off"
-			autocomplete="off"
-			@keyup.esc="resetSearch"
-		/>
-		<button type="button" :class="{ hidden: !search.length }" @click="resetSearch">reset</button>
-	</div>
+	<SearchBar class="mb-6" @update="onUpdateSearch" />
 
 	<div
 		class="w-3xl grid max-w-full grid-cols-[10.5rem_1fr] items-start gap-x-4 gap-y-6 sm:grid-cols-[12rem_1fr] sm:gap-6"
@@ -174,7 +156,7 @@ const sortedSeats = (table: TableDoc) => {
 }
 
 .re__grid-table-number {
-	@apply grid h-12 w-12  rounded-[50%] border border-black text-xl font-semibold; /* text-dark-500 */
+	@apply rounded-50% grid h-12  w-12 border border-black text-xl font-semibold; /* text-dark-500 */
 }
 
 .re__grid-table-number-wrapper {

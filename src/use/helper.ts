@@ -41,4 +41,8 @@ const injectStrict = <T>(key: InjectionKey<T>, fallback?: T) => {
 	return resolved
 }
 
-export { formatDateTime, formatTime, formatCount, createUuid, sortByName, injectStrict }
+const blurInput = ({ target }: Event) => {
+	;(target as HTMLInputElement).blur()
+}
+
+export { formatDateTime, formatTime, formatCount, createUuid, sortByName, injectStrict, blurInput }

@@ -40,26 +40,23 @@ td {
 	text-decoration: underline;
 }
 
-/* dev only */
 input {
-	border: 1px solid canvasText;
-	padding: 0.125rem 0.25rem;
+	@apply h-9 border border-current px-1.5;
 }
 
 input:user-invalid,
 select:user-invalid,
 textarea:user-invalid {
-	border-color: red;
+	@apply border-red-500;
 }
 
 @supports not selector(:user-invalid) {
 	input:invalid,
 	select:invalid,
 	textarea:invalid {
-		border-color: red;
+		@apply border-red-500;
 	}
 }
-/* END dev only */
 
 .re__primary-button {
 	@apply rounded-4.5 inline-block h-9 bg-slate-800 px-5 text-white; /* bg-gray-800 bg-sky-600 */
