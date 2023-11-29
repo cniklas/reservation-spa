@@ -124,7 +124,7 @@ const cancel = () => {
 
 <template>
 	<!-- <div class="timer-radial relative h-20 w-20 rounded-full bg-rose-500 bg-blend-multiply" /> -->
-	<div class="my-2 font-semibold empty:hidden"><slot /></div>
+	<div class="mb-2 font-semibold empty:hidden"><slot /></div>
 
 	<form novalidate @submit.prevent="onSubmit">
 		<template v-if="isLoggedIn">

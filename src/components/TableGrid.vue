@@ -90,7 +90,7 @@ const sortedSeats = (table: TableDoc) => {
 </script>
 
 <template>
-	<div class="sticky top-0 z-10 -mx-4 mb-10 border-b border-b-black bg-white p-4">
+	<div class="sticky top-0 z-10 -mx-3 mb-6 border-b border-b-black bg-white px-3 py-4 sm:-mx-4 sm:px-4">
 		<label class="mr-2" for="search">Suche</label>
 		<input
 			v-model.trim="search"
@@ -104,7 +104,7 @@ const sortedSeats = (table: TableDoc) => {
 	</div>
 
 	<div
-		class="w-2xl grid max-w-full grid-cols-[10.5rem_1fr] items-start gap-x-4 gap-y-6 sm:grid-cols-[12rem_1fr] sm:gap-6"
+		class="w-3xl grid max-w-full grid-cols-[10.5rem_1fr] items-start gap-x-4 gap-y-6 sm:grid-cols-[12rem_1fr] sm:gap-6"
 	>
 		<template v-for="table in filteredTables" :key="table.id">
 			<div class="re__grid-table-button-wrapper">
@@ -146,7 +146,7 @@ const sortedSeats = (table: TableDoc) => {
 				</div>
 			</div>
 
-			<ol class="re__dot-separated text-sm">
+			<ol class="re__dot-separated __text-sm">
 				<li v-for="(seat, n) in sortedSeats(table)" :key="`${table.id}-${n}`">
 					{{ seat.name }}
 				</li>
@@ -186,7 +186,7 @@ const sortedSeats = (table: TableDoc) => {
 }
 
 .re__dot-separated {
-	@apply sm:flex sm:flex-wrap;
+	@apply leading-[1.375] sm:flex sm:flex-wrap sm:leading-normal;
 
 	> :not(:last-child)::after {
 		@apply mx-1 hidden content-['•'] sm:inline-block;

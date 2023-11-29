@@ -1,5 +1,6 @@
 body {
 	color: theme('colors.dark.700');
+	background-color: theme('colors.amber.50');
 	min-height: 100vh;
 	min-height: 100dvh;
 }

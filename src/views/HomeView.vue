@@ -194,13 +194,13 @@ onBeforeUnmount(() => {
 		:style="{ '--edit-timeout': `${EDIT_TIMEOUT}ms` }"
 	/>
 
-	<main class="px-4 py-5">
-		<h1 class="text-2xl font-semibold">{{ title }}</h1>
+	<main class="px-3 py-5 sm:px-4">
+		<h1 class="mb-1 text-3xl font-semibold">{{ title }}</h1>
 
 		<template v-if="tables">
 			<div>{{ reservations }}</div>
 
-			<div class="my-10">
+			<div class="mb-10 mt-6">
 				<TableGrid
 					:tables="tables"
 					:uuid="uuid"

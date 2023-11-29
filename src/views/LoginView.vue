@@ -23,8 +23,8 @@ const onSubmit = /* async */ () => {
 </script>
 
 <template>
-	<main class="px-4 py-5">
-		<h1 class="text-2xl font-semibold">Login</h1>
+	<main class="px-3 py-5 sm:px-4">
+		<h1 class="mb-1 text-3xl font-semibold">Login</h1>
 
 		<form novalidate @submit.prevent="onSubmit">
 			<div>

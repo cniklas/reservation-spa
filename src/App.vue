@@ -44,7 +44,7 @@ watch(isLoggedIn, val => {
 
 <template>
 	<!-- <img alt="Vue logo" src="@/assets/logo.svg" width="125" height="125" /> -->
-	<header v-if="isLoggedIn" class="px-4 py-5">
+	<header v-if="isLoggedIn" class="px-3 py-5 sm:px-4">
 		<nav class="flex items-center gap-2">
 			<RouterLink to="/">Home</RouterLink>
 			<RouterLink to="/liste">Liste</RouterLink>
@@ -56,7 +56,7 @@ watch(isLoggedIn, val => {
 	<RouterView />
 
 	<Teleport to="body">
-		<footer class="sticky top-[100vh] px-4 py-5">
+		<footer class="sticky top-[100vh] px-3 py-5 sm:px-4">
 			<details class="font-mono text-sm">
 				<summary class="inline-block cursor-help">{{ version }}</summary>
 				<div>{{ buildTime }}</div>

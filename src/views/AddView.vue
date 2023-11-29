@@ -65,8 +65,8 @@ const onSubmit = async () => {
 </script>
 
 <template>
-	<main class="px-4 py-5">
-		<h1 class="text-2xl font-semibold">Add</h1>
+	<main class="px-3 py-5 sm:px-4">
+		<h1 class="mb-1 text-3xl font-semibold">Add</h1>
 
 		<form novalidate @submit.prevent="onSubmit">
 			<div>
@@ -100,7 +100,9 @@ const onSubmit = async () => {
 				</label>
 			</div>
 			<div>
-				<button type="submit" class="re__primary-button" :disabled="isEmpty(form.name) || isSubmitLocked">Speichern</button>
+				<button type="submit" class="re__primary-button" :disabled="isEmpty(form.name) || isSubmitLocked">
+					Speichern
+				</button>
 			</div>
 		</form>
 	</main>

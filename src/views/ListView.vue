@@ -43,40 +43,42 @@ const filteredReservations = computed(() => {
 </script>
 
 <template>
-	<main class="px-4 py-5">
-		<h1 class="text-2xl font-semibold">Liste</h1>
+	<main class="px-3 py-5 sm:px-4">
+		<h1 class="mb-1 text-3xl font-semibold">Liste</h1>
 
-		<div v-if="reservations.length > 0">
+		<template v-if="reservations.length > 0">
 			<div>{{ formatCount(reservations.length, ['Person', 'Personen']) }}</div>
-			<div class="sticky top-0 z-10 -mx-4 bg-white p-4">
-				<label class="mr-2" for="search">Suche</label>
-				<input
-					v-model.trim="search"
-					type="text"
-					id="search"
-					autocorrect="off"
-					autocomplete="off"
-					@keyup.esc="resetSearch"
-				/>
-				<button type="button" :class="{ hidden: !search.length }" @click="resetSearch">reset</button>
+
+			<div class="mb-10 mt-6">
+				<div class="sticky top-0 z-10 -mx-3 mb-3 border-b border-b-black bg-white px-3 py-4 sm:-mx-4 sm:px-4">
+					<label class="mr-2" for="search">Suche</label>
+					<input
+						v-model.trim="search"
+						type="text"
+						id="search"
+						autocorrect="off"
+						autocomplete="off"
+						@keyup.esc="resetSearch"
+					/>
+					<button type="button" :class="{ hidden: !search.length }" @click="resetSearch">reset</button>
+				</div>
+
+				<table class="re__list-table -mx-2">
+					<thead>
+						<tr>
+							<th class="text-left font-semibold">Name</th>
+							<th class="text-left font-semibold">Tisch</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(entry, i) in filteredReservations" :key="i">
+							<td>{{ entry.sortableName }}</td>
+							<td>{{ entry.table }}</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
-
-			<table class="re__list-table -mx-2">
-				<thead>
-					<tr>
-						<th class="text-left font-semibold">Name</th>
-						<th class="text-left font-semibold">Tisch</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="(entry, i) in filteredReservations" :key="i">
-						<td>{{ entry.sortableName }}</td>
-						<td>{{ entry.table }}</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-
+		</template>
 		<div v-else>keine Einträge</div>
 	</main>
 </template>
