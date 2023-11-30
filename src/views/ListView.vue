@@ -7,6 +7,8 @@ import { formatCount, sortByName, injectStrict } from '@/use/helper'
 
 const tables = injectStrict(PROVIDE_TABLES)
 
+const title: string = import.meta.env.VITE_APP_NAME
+
 const reservations = computed(() => {
 	const reservations: SortableReservation[] = []
 	tables.value?.forEach(table => {
@@ -41,7 +43,7 @@ const filteredReservations = computed(() => {
 
 <template>
 	<main class="px-3 py-5 sm:px-4">
-		<h1 class="mb-1 text-3xl font-semibold">Liste</h1>
+		<h1 class="mb-1 text-3xl font-semibold">{{ title }}</h1>
 
 		<template v-if="reservations.length > 0">
 			<div>{{ formatCount(reservations.length, ['Person', 'Personen']) }}</div>

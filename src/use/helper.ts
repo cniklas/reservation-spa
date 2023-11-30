@@ -45,4 +45,17 @@ const blurInput = ({ target }: Event) => {
 	;(target as HTMLInputElement).blur()
 }
 
-export { formatDateTime, formatTime, formatCount, createUuid, sortByName, injectStrict, blurInput }
+const firstWord = (str: string = '') => str.split(' ')[0]
+const remainingWords = (str: string = '') => str.split(' ').slice(1).join(' ')
+
+export {
+	formatDateTime,
+	formatTime,
+	formatCount,
+	createUuid,
+	sortByName,
+	injectStrict,
+	blurInput,
+	firstWord,
+	remainingWords,
+}

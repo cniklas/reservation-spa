@@ -4,7 +4,7 @@ import SearchBar from '@/components/SearchBar.vue'
 import SkateboardSpinner from '@/components/SkateboardSpinner.vue'
 import type { TableDoc } from '@/types/TableDoc.type'
 import type { SortableReservation } from '@/types/Reservation.type'
-import { formatTime, formatCount, sortByName } from '@/use/helper'
+import { formatTime, formatCount, sortByName, firstWord, remainingWords } from '@/use/helper'
 
 defineEmits<{
 	(event: 'edit', id: string): void
@@ -16,9 +16,6 @@ const props = defineProps<{
 	isLoggedIn: boolean
 	isFormOpen: boolean
 }>()
-
-const firstWord = (str: string) => str.split(' ')[0]
-const restOfWords = (str: string) => str.split(' ').slice(1).join(' ')
 
 const countTakenSeats = (table: TableDoc) => {
 	let n = 0,
@@ -100,6 +97,7 @@ const sortedSeats = (table: TableDoc) => {
 					<dl class="re__grid-table" :class="{ 'is-available': table.seats - countTakenSeats(table) }">
 						<dt class="re__grid-table-number">
 							<div class="re__grid-table-number-wrapper">
+								<span class="sr-only">Tisch</span>
 								{{ firstWord(table.name) }}
 							</div>
 							<Transition name="fade" mode="out-in">
@@ -110,7 +108,7 @@ const sortedSeats = (table: TableDoc) => {
 						</dt>
 						<dd>
 							<div class="re__grid-table-label">
-								{{ restOfWords(table.name) }}
+								{{ remainingWords(table.name) }}
 							</div>
 							<TransitionGroup name="exchange">
 								<div v-if="table.locked_at" class="text-sm leading-[1.5rem]">wird bearbeitet</div>

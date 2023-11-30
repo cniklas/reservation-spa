@@ -58,7 +58,7 @@ watch(isLoggedIn, val => {
 	<Teleport to="body">
 		<footer class="sticky top-[100vh] px-3 py-5 sm:px-4">
 			<details class="font-mono text-sm">
-				<summary class="inline-block cursor-help">{{ version }}</summary>
+				<summary class="inline-block cursor-help">© 2023 Christian Niklas v{{ version }}</summary>
 				<div>{{ buildTime }}</div>
 				<div id="debug-info"></div>
 				<a href="https://github.com/cniklas/reservation-spa" class="mt-2 inline-block h-6 w-6" rel="noopener">

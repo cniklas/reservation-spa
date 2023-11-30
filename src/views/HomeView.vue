@@ -7,7 +7,7 @@ import { auth } from '@/firebase'
 import TableGrid from '@/components/TableGrid.vue'
 import AppSidebar from '@/components/AppSidebar.vue'
 import { PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '@/keys'
-import { formatCount, createUuid, injectStrict } from '@/use/helper'
+import { formatCount, createUuid, injectStrict, firstWord } from '@/use/helper'
 import { ONE_MINUTE, EDIT_TIMEOUT, RELEASE_TIME, useTimeout } from '@/use/timeout'
 
 const tables = injectStrict(PROVIDE_TABLES)
@@ -81,7 +81,7 @@ const onConflict = (message: string) => {
 const onEditTable = async (id: string) => {
 	if (!isReleased.value) {
 		_showDialog(
-			`Noch ein bisschen Geduld\nEintragungen sind ab ${new Date(RELEASE_TIME).toLocaleDateString('de-DE', {
+			`Noch ein bisschen Geduld.\nEintragungen sind ab ${new Date(RELEASE_TIME).toLocaleDateString('de-DE', {
 				hour: 'numeric',
 				minute: 'numeric',
 			})} Uhr möglich.`,
@@ -102,14 +102,13 @@ watch(
 	(lockedBy: string | undefined) => {
 		// another user owned the table at the same moment
 		if (lockedBy && lockedBy !== uuid.value) {
-			console.warn('Conflict')
-			onConflict('Conflict')
+			onConflict('Entschuldigung!\nEin anderer Benutzer hat diesen Tisch einen Augenblick früher geöffnet als du.')
 			return
 		}
 
 		// if table is unlocked by admin user the open form needs to be closed
 		if (!lockedBy && itemId.value !== null && !isSaving.value) {
-			onConflict('Unlocked by admin user')
+			onConflict(`Tisch ${firstWord(selectedItem.value?.name)} wurde wieder freigegeben.`)
 		}
 	},
 )
@@ -195,7 +194,12 @@ onBeforeUnmount(() => {
 	/>
 
 	<main class="px-3 py-5 sm:px-4">
-		<h1 class="mb-1 text-3xl font-semibold">{{ title }}</h1>
+		<h1 class="relative mb-1 w-fit text-3xl font-semibold">
+			{{ title }}
+			<svg class="-top-4.5 -right-10.5 absolute h-10 w-10" aria-hidden="true" width="40" height="40">
+				<use href="@/assets/app.svg#star-doodle" />
+			</svg>
+		</h1>
 
 		<template v-if="tables">
 			<div>{{ reservations }}</div>
@@ -232,9 +236,17 @@ onBeforeUnmount(() => {
 		</TableForm>
 	</AppSidebar>
 
-	<dialog ref="dialogEl" tabindex="-1">
-		<div class="whitespace-pre-line">{{ dialogMessage }}</div>
-		<button type="button" class="re__primary-button" @click="dialogEl?.close()">schließen</button>
+	<dialog ref="dialogEl">
+		<div class="whitespace-pre-line first-line:font-semibold">{{ dialogMessage }}</div>
+		<button
+			type="button"
+			class="rounded-50% absolute right-0 top-0 inline-grid h-8 w-8 -translate-x-1/4 translate-y-1/4 place-content-center bg-slate-800 text-white"
+			@click="dialogEl?.close()"
+		>
+			<svg class="re__close-icon" aria-hidden="true" width="14" height="14">
+				<use href="@/assets/app.svg#plus" />
+			</svg>
+		</button>
 	</dialog>
 
 	<Teleport to="#debug-info">Client Offset: {{ clientOffset }}</Teleport>

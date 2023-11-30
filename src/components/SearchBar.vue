@@ -39,7 +39,7 @@ watch(searchDebounced, val => {
 				aria-label="Reset"
 				@click="resetSearch"
 			>
-				<svg class="re__search-button-icon" aria-hidden="true" width="16" height="16">
+				<svg class="re__close-icon" aria-hidden="true" width="14" height="14">
 					<use href="@/assets/app.svg#plus" />
 				</svg>
 			</button>
@@ -57,10 +57,6 @@ watch(searchDebounced, val => {
 }
 
 .re__search-button {
-	@apply rounded-3.5 absolute right-1 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center bg-slate-800 text-white;
-}
-
-.re__search-button-icon {
-	@apply h-3.5 w-3.5 rotate-45 fill-current;
+	@apply rounded-50% absolute right-1 top-1/2 inline-grid h-7 w-7 -translate-y-1/2 place-content-center bg-slate-800 text-white;
 }
 </style>
