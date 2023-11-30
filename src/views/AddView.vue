@@ -30,7 +30,7 @@ watch(
 )
 
 const _tableNames = computed(() => tables.value?.map(item => item.name) ?? [])
-const onUpdate = (e: Event) => {
+const checkTableName = (e: Event) => {
 	validateTableName(form.name, _tableNames.value)
 	;(e.target as HTMLInputElement).setCustomValidity(validationErrors.has('name') ? 'Eingabe ungültig' : '')
 }
@@ -69,8 +69,8 @@ const onSubmit = async () => {
 		<h1 class="mb-1 text-3xl font-semibold">Add</h1>
 
 		<form novalidate @submit.prevent="onSubmit">
-			<div>
-				<label for="name">Name</label>
+			<div class="mb-4">
+				<label for="name" class="mr-3">Name</label>
 				<input
 					v-model.trim="form.name"
 					type="text"
@@ -78,28 +78,28 @@ const onSubmit = async () => {
 					autocomplete="off"
 					maxlength="16"
 					required
-					@input="onUpdate"
+					@input="checkTableName"
 				/>
 				<div class="text-red-600">{{ validationErrors.get('name') }}</div>
 			</div>
-			<!-- <div>
+			<!-- <div class="mb-4">
 				<div>Block</div>
 				<template v-for="[key, block] of blocks" :key="`block-${key}`">
 					<input v-model.number="form.block_id" type="radio" :id="`block_id_${key}`" name="block_id" :value="key" />
 					<label :for="`block_id_${key}`">{{ block }}</label>
 				</template>
 			</div> -->
-			<div>
-				<label for="seats">Anzahl Sitzplätze</label>
+			<div class="mb-4">
+				<label for="seats" class="mr-3">Anzahl Sitzplätze</label>
 				<input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="4" max="8" />
 			</div>
-			<div>
+			<div class="mb-4">
 				<label>
 					verfügbar
 					<input v-model="form.active" type="checkbox" id="active" />
 				</label>
 			</div>
-			<div>
+			<div class="mt-5">
 				<button type="submit" class="re__primary-button" :disabled="isEmpty(form.name) || isSubmitLocked">
 					Speichern
 				</button>

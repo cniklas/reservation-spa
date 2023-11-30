@@ -22,7 +22,6 @@ export const useTimeout = () => {
 	const fetchTime = async () => {
 		try {
 			// console.time('server time')
-			// const response = await fetch('https://worldtimeapi.org/api/timezone/Europe/Berlin')
 			// @ts-ignore
 			const response = await fetch(import.meta.env.VITE_GET_TIME_URL, { priority: 'low' })
 			if (!response.ok) throw new Error('Could not retrieve server time')
@@ -33,7 +32,6 @@ export const useTimeout = () => {
 			// clientTime.value = `${formatDateTime(clientNow)}.${new Date(clientNow).getMilliseconds()}`
 			clientTime.value = formatDateTime(clientNow)
 
-			// const { datetime } = await response.json()
 			const { atom, micro }: { atom: string; micro: number } = await response.json()
 			const serverNow = new Date(atom).getTime() + Math.round(micro / 1000)
 			serverTime.value = formatDateTime(serverNow)

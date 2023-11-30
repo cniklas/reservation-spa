@@ -21,11 +21,6 @@ const formatTime = (timestamp?: number) => {
 	return new Date(timestamp).toLocaleTimeString('de-DE')
 }
 
-// const _cardinalRules = new Intl.PluralRules('de-DE')
-// const formatCount = (count: number, noun: [string, string]) => {
-// 	const _rule = _cardinalRules.select(count)
-// 	return _rule === 'one' ? `${count} ${noun[0]}` : `${count} ${noun[1]}`
-// }
 const formatCount = (count: number, noun: [string, string]) =>
 	count === 1 ? `${count} ${noun[0]}` : `${count} ${noun[1]}`
 

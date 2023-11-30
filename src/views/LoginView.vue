@@ -27,12 +27,12 @@ const onSubmit = /* async */ () => {
 		<h1 class="mb-1 text-3xl font-semibold">Login</h1>
 
 		<form novalidate @submit.prevent="onSubmit">
-			<div>
-				<label for="username">Benutzername</label>
+			<div class="mb-4">
+				<label for="username" class="mr-3">Benutzername</label>
 				<input v-model.trim="email" type="email" id="username" autocomplete="username" />
 			</div>
-			<div>
-				<label for="password">Passwort</label>
+			<div class="mb-4">
+				<label for="password" class="mr-3">Passwort</label>
 				<input
 					v-model.trim="password"
 					type="password"
@@ -41,7 +41,7 @@ const onSubmit = /* async */ () => {
 					enterkeyhint="go"
 				/>
 			</div>
-			<div>
+			<div class="mt-5">
 				<button type="submit" class="re__primary-button" :disabled="isSubmitLocked">Login</button>
 			</div>
 		</form>

@@ -40,7 +40,7 @@ td {
 	text-decoration: underline;
 }
 
-input {
+input:where([type='text'], [type='email'], [type='password'], [type='number']) {
 	@apply h-9 border border-current px-1.5;
 }
 
@@ -71,7 +71,7 @@ textarea:user-invalid {
 }
 
 dialog {
-	@apply color-inherit rounded-2 w-sm relative max-w-[calc(100vw-1.5rem)] border border-black p-3 pt-14;
+	@apply color-inherit rounded-2 w-sm fixed max-w-[calc(100vw-1.5rem)] border border-black p-3 pt-14;
 
 	&::before {
 		content: '';

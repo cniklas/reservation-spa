@@ -10,8 +10,16 @@ import { injectStrict } from '@/use/helper'
 const tables = injectStrict(PROVIDE_TABLES)
 const updateDocument = injectStrict(PROVIDE_UPDATE_DOCUMENT)
 
-const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, unlockSubmit, validationErrors, validateName } =
-	useErrorHandling()
+const {
+	isSubmitLocked,
+	isEmpty,
+	beforeSubmit,
+	handleSubmitError,
+	unlockSubmit,
+	validationErrors,
+	validateName,
+	validateTableName,
+} = useErrorHandling()
 
 const emit = defineEmits<{
 	(event: 'cancel'): void
@@ -23,7 +31,6 @@ const props = defineProps<{
 	isLoggedIn: boolean
 }>()
 
-// eslint-disable-next-line vue/no-setup-props-destructure
 const form = reactive({ ...props.entry })
 const touchedSeats: Set<string> = reactive(new Set())
 const decrease = () => {
@@ -85,6 +92,12 @@ const resetValue = (key: string) => {
 	resetValidation(key)
 }
 
+const _tableNames = computed(() => tables.value?.map(item => item.name).filter(name => name !== props.entry.name) ?? [])
+const checkTableName = (e: Event) => {
+	validateTableName(form.name, _tableNames.value)
+	;(e.target as HTMLInputElement).setCustomValidity(validationErrors.has('name') ? 'Eingabe ungültig' : '')
+}
+
 const onSubmit = async () => {
 	if (isSubmitLocked.value || isEmpty(form.name)) return
 
@@ -130,15 +143,24 @@ const cancel = () => {
 
 	<form novalidate @submit.prevent="onSubmit">
 		<template v-if="isLoggedIn">
-			<div>
-				<label for="name">Name</label>
-				<input v-model.trim="form.name" type="text" id="name" autocomplete="off" maxlength="16" required />
+			<div class="mb-4">
+				<label for="name" class="mr-3">Name</label>
+				<input
+					v-model.trim="form.name"
+					type="text"
+					id="name"
+					autocomplete="off"
+					maxlength="16"
+					required
+					@input="checkTableName"
+				/>
+				<div class="mt-1 text-red-600 empty:hidden">{{ validationErrors.get('name') }}</div>
 			</div>
-			<div>
-				<span>Anzahl Sitzplätze</span>
+			<div class="mb-4">
+				<span class="mr-3">Anzahl Sitzplätze</span>
 				<button
 					type="button"
-					class="re__secondary-button"
+					class="re__secondary-button !p-unset w-9"
 					:disabled="form.seats === 4"
 					data-test-decrease-button
 					@click="decrease"
@@ -148,7 +170,7 @@ const cancel = () => {
 				<span class="w-1ch mx-2 inline-block">{{ form.seats }}</span>
 				<button
 					type="button"
-					class="re__secondary-button"
+					class="re__secondary-button !p-unset w-9"
 					:disabled="form.seats === 8"
 					data-test-increase-button
 					@click="increase"
@@ -156,14 +178,14 @@ const cancel = () => {
 					+
 				</button>
 			</div>
-			<!-- <div>
+			<!-- <div class="mb-4">
 				<div>Block</div>
 				<template v-for="[key, block] of blocks" :key="`block-${key}`">
 					<input v-model.number="form.block_id" type="radio" :id="`block_id_${key}`" name="block_id" :value="key" />
 					<label :for="`block_id_${key}`">{{ block }}</label>
 				</template>
 			</div> -->
-			<div>
+			<div class="mb-4">
 				<label>
 					verfügbar
 					<input v-model="form.active" type="checkbox" />
@@ -172,12 +194,7 @@ const cancel = () => {
 		</template>
 
 		<ol>
-			<li
-				v-for="n in form.seats"
-				:key="`seat-${n}`"
-				class="mb-4 grid grid-cols-[1ch_1fr] items-center gap-x-2.5"
-				data-test-seat
-			>
+			<li v-for="n in form.seats" :key="`seat-${n}`" class="re__input-seat mb-4" data-test-seat>
 				<label :for="`seat_${n}`" class="text-right text-lg font-semibold">
 					<span class="sr-only">Platz</span>
 					{{ n }}
@@ -194,7 +211,7 @@ const cancel = () => {
 					@change="onChange(`seat_${n}`, $event.target as HTMLInputElement)"
 				/>
 
-				<div v-if="validationErrors.has(`seat_${n}`)" class="col-start-2 mt-1 text-sm text-red-600">
+				<div v-if="validationErrors.has(`seat_${n}`)" class="col-start-2 mt-1 text-red-600">
 					<template v-if="Array.isArray(validationErrors.get(`seat_${n}`))">
 						<div class="mb-0.5">Ist diese Person identisch mit:</div>
 						<ul class="re__comma-separated text-dark-700">
@@ -220,6 +237,10 @@ const cancel = () => {
 </template>
 
 <style lang="postcss">
+.re__input-seat {
+	@apply grid grid-cols-[1ch_1fr] items-center gap-x-2.5;
+}
+
 .re__comma-separated {
 	@apply flex flex-wrap;
 
