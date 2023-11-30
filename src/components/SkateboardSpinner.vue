@@ -36,11 +36,6 @@
 	--hue: 223;
 }
 
-/* .pl__root {
-	width: 11em;
-	height: 10em;
-} */
-
 .pl__ring,
 .pl__worm1,
 .pl__worm2,

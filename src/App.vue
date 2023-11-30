@@ -43,7 +43,6 @@ watch(isLoggedIn, val => {
 </script>
 
 <template>
-	<!-- <img alt="Vue logo" src="@/assets/logo.svg" width="125" height="125" /> -->
 	<header v-if="isLoggedIn" class="px-3 py-5 sm:px-4">
 		<nav class="flex items-center gap-2">
 			<RouterLink to="/">Home</RouterLink>

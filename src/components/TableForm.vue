@@ -124,7 +124,9 @@ const cancel = () => {
 
 <template>
 	<!-- <div class="timer-radial relative h-20 w-20 rounded-full bg-rose-500 bg-blend-multiply" /> -->
-	<div class="mb-2 font-semibold empty:hidden"><slot /></div>
+	<div class="mb-3">
+		Bearbeitungszeit: <span class="font-semibold"><slot /></span>
+	</div>
 
 	<form novalidate @submit.prevent="onSubmit">
 		<template v-if="isLoggedIn">
@@ -170,36 +172,47 @@ const cancel = () => {
 		</template>
 
 		<ol>
-			<li v-for="n in form.seats" :key="`seat-${n}`" class="mb-4" data-test-seat>
-				<div class="grid w-fit grid-cols-2 gap-2">
-					<label :for="`seat_${n}`">Vor- und Nachname</label>
-					<input
-						v-model.trim="form[`seat_${n}`]"
-						type="text"
-						:id="`seat_${n}`"
-						autocomplete="off"
-						maxlength="36"
-						enterkeyhint="done"
-						@change="onChange(`seat_${n}`, $event.target as HTMLInputElement)"
-					/>
-				</div>
-				<template v-if="validationErrors.has(`seat_${n}`)">
+			<li
+				v-for="n in form.seats"
+				:key="`seat-${n}`"
+				class="mb-4 grid grid-cols-[1ch_1fr] items-center gap-x-2.5"
+				data-test-seat
+			>
+				<label :for="`seat_${n}`" class="text-right text-lg font-semibold">
+					<span class="sr-only">Platz</span>
+					{{ n }}
+				</label>
+				<input
+					v-model.trim="form[`seat_${n}`]"
+					type="text"
+					class="max-w-14rem w-full"
+					:id="`seat_${n}`"
+					placeholder="Vor- und Nachname"
+					autocomplete="off"
+					maxlength="36"
+					enterkeyhint="done"
+					@change="onChange(`seat_${n}`, $event.target as HTMLInputElement)"
+				/>
+
+				<div v-if="validationErrors.has(`seat_${n}`)" class="col-start-2 mt-1 text-sm text-red-600">
 					<template v-if="Array.isArray(validationErrors.get(`seat_${n}`))">
-						<div class="text-red-500">Ist diese Person identisch mit:</div>
-						<ul class="re__comma-separated">
-							<li v-for="(hit, i) in validationErrors.get(`seat_${n}`)" :key="`${n}-${i}`">{{ hit }}</li>
+						<div class="mb-0.5">Ist diese Person identisch mit:</div>
+						<ul class="re__comma-separated text-dark-700">
+							<li v-for="(hit, i) in validationErrors.get(`seat_${n}`)" v-html="hit" :key="`${n}-${i}`"></li>
 						</ul>
-						<div class="mt-2 grid w-fit grid-cols-2 gap-x-2">
+
+						<div class="my-2 grid w-fit grid-cols-2 gap-x-2.5">
 							<button type="button" class="re__secondary-button" @click="resetValue(`seat_${n}`)">ja</button>
 							<button type="button" class="re__secondary-button" @click="resetValidation(`seat_${n}`)">nein</button>
 						</div>
 					</template>
-					<div v-else class="text-red-500">{{ validationErrors.get(`seat_${n}`) }}</div>
-				</template>
+
+					<template v-else>{{ validationErrors.get(`seat_${n}`) }}</template>
+				</div>
 			</li>
 		</ol>
 
-		<div class="mt-5 grid w-fit grid-cols-2 gap-x-2">
+		<div class="mt-5 grid w-fit grid-cols-2 gap-x-2.5">
 			<button type="submit" class="re__primary-button" :disabled="isSubmitLocked">Speichern</button>
 			<button type="button" class="re__secondary-button" data-test-cancel-button @click="cancel">Abbrechen</button>
 		</div>

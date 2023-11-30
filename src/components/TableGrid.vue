@@ -154,7 +154,7 @@ const sortedSeats = (table: TableDoc) => {
 }
 
 .re__grid-table-number {
-	@apply rounded-50% grid h-12  w-12 border border-black text-xl font-semibold; /* text-dark-500 */
+	@apply rounded-50% grid h-12 w-12 border border-black text-xl font-semibold;
 }
 
 .re__grid-table-number-wrapper {

@@ -61,7 +61,10 @@ export const useErrorHandling = () => {
 			const similarity = compareTwoStrings(name.toLowerCase(), entry.name.toLowerCase())
 			// console.log(`${name} vs. ${entry.name}:\n${similarity}`)
 			if (similarity >= SIMILARITY_LIMIT) {
-				validationErrors.set(key, [...(validationErrors.get(key) ?? []), `${entry.name} an Tisch ${entry.table}`])
+				validationErrors.set(key, [
+					...(validationErrors.get(key) ?? []),
+					`<span class="font-semibold">${entry.name}</span> an Tisch ${entry.table}`,
+				])
 			}
 		})
 	}

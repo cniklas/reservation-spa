@@ -80,7 +80,7 @@ const onSubmit = async () => {
 					required
 					@input="onUpdate"
 				/>
-				<div class="text-red-500">{{ validationErrors.get('name') }}</div>
+				<div class="text-red-600">{{ validationErrors.get('name') }}</div>
 			</div>
 			<!-- <div>
 				<div>Block</div>
