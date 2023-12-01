@@ -18,7 +18,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@vueuse/core": "^10.3.0",
+    "@vueuse/core": "^10.6.1",
     "@vueuse/firebase": "^10.3.0",
     "firebase": "^10.1.0",
     "string-similarity": "^4.0.4",
