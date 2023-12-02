@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@vueuse/core": "^10.6.1",
-    "@vueuse/firebase": "^10.3.0",
+    "@vueuse/firebase": "^10.6.1",
     "firebase": "^10.1.0",
     "string-similarity": "^4.0.4",
     "vue": "^3.3.4",
