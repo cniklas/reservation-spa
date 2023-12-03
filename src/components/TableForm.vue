@@ -59,7 +59,7 @@ watch(
 const reservations = computed(() => {
 	const _reservations: Reservation[] = []
 	tables.value
-		?.filter(item => item.id !== props.entry.id)
+		?.filter(item => item.active && item.id !== props.entry.id)
 		?.forEach(_table => {
 			let n = 0
 			while (n < _table.seats) {

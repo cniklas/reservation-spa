@@ -11,21 +11,23 @@ const title: string = import.meta.env.VITE_APP_NAME
 
 const reservations = computed(() => {
 	const reservations: SortableReservation[] = []
-	tables.value?.forEach(table => {
-		let n = 0
-		while (n < table.seats) {
-			const key = `seat_${++n}`
-			if (!(table[key] as string).length) continue
+	tables.value
+		?.filter(item => item.active)
+		.forEach(table => {
+			let n = 0
+			while (n < table.seats) {
+				const key = `seat_${++n}`
+				if (!(table[key] as string).length) continue
 
-			const name = (table[key] as string).split(' ')
-			reservations.push({
-				name: name.join(' '),
-				// sortableName: name.length > 1 ? `${name.at(-1)}, ${name.slice(0, -1).join(' ')}` : name.at(0) ?? '',
-				sortableName: name.length > 1 ? `${name[name.length - 1]}, ${name.slice(0, -1).join(' ')}` : name[0] ?? '',
-				table: table.name,
-			})
-		}
-	})
+				const name = (table[key] as string).split(' ')
+				reservations.push({
+					name: name.join(' '),
+					// sortableName: name.length > 1 ? `${name.at(-1)}, ${name.slice(0, -1).join(' ')}` : name.at(0) ?? '',
+					sortableName: name.length > 1 ? `${name[name.length - 1]}, ${name.slice(0, -1).join(' ')}` : name[0] ?? '',
+					table: table.name,
+				})
+			}
+		})
 
 	reservations.sort(sortByName)
 	return reservations

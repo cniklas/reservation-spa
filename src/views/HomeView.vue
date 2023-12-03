@@ -41,13 +41,15 @@ const _showDialog = (message: string) => {
 
 const reservations = computed(() => {
 	let count = 0
-	tables.value?.forEach(table => {
-		let n = 0
-		while (n < table.seats) {
-			const key = `seat_${++n}`
-			if ((table[key] as string).length) count++
-		}
-	})
+	tables.value
+		?.filter(item => item.active)
+		.forEach(table => {
+			let n = 0
+			while (n < table.seats) {
+				const key = `seat_${++n}`
+				if ((table[key] as string).length) count++
+			}
+		})
 
 	return `${formatCount(count, ['Person', 'Personen'])} eingetragen`
 })

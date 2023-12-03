@@ -40,7 +40,7 @@ const onUpdateSearch = (input: string) => {
 	search.value = input
 }
 const filteredTables = computed(() => {
-	const _tables = [...(props.tables ?? [])]
+	const _tables = [...(props.tables ?? [])].filter(item => item.active || props.isLoggedIn)
 	_tables.sort(_sortByEmptySeats)
 
 	if (search.value.length < 3) return _tables
@@ -112,7 +112,8 @@ const sortedSeats = (table: TableDoc) => {
 							</div>
 							<TransitionGroup name="exchange">
 								<div v-if="table.locked_at" class="text-sm leading-[1.5rem]">wird bearbeitet</div>
-								<div v-else>{{ formatEmptySeats(table) }}</div>
+								<div v-else-if="table.active">{{ formatEmptySeats(table) }}</div>
+								<div v-else class="text-red-600">nicht verfügbar</div>
 							</TransitionGroup>
 						</dd>
 					</dl>
@@ -126,7 +127,7 @@ const sortedSeats = (table: TableDoc) => {
 				</div>
 			</div>
 
-			<ol class="re__dot-separated __text-sm">
+			<ol class="re__dot-separated" :class="{ 'line-through': !table.active }">
 				<li v-for="(seat, n) in sortedSeats(table)" :key="`${table.id}-${n}`">
 					{{ seat.name }}
 				</li>
