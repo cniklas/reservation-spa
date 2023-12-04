@@ -40,26 +40,27 @@ td {
 	text-decoration: underline;
 }
 
-input:where([type='text'], [type='email'], [type='password'], [type='number']) {
-	@apply h-9 border border-current px-1.5;
+:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
 }
 
-input:user-invalid,
-select:user-invalid,
-textarea:user-invalid {
-	@apply border-red-600;
+input:where([type='text'], [type='email'], [type='password'], [type='number']) {
+	@apply focus-visible:outline-1px h-9 border border-current px-1.5 focus-visible:outline-offset-0;
+}
+
+:is(input, select, textarea):user-invalid {
+	@apply border-red-600 focus-visible:outline-red-600;
 }
 
 @supports not selector(:user-invalid) {
-	input:invalid,
-	select:invalid,
-	textarea:invalid {
-		@apply border-red-600;
+	:is(input, select, textarea):invalid {
+		@apply border-red-600 focus-visible:outline-red-600;
 	}
 }
 
 .re__primary-button {
-	@apply rounded-4.5 text-1rem inline-block h-9 bg-slate-800 px-5 text-white;
+	@apply rounded-4.5 text-1rem inline-block h-9 bg-slate-800 px-5 text-white focus-visible:outline-slate-800;
 }
 
 .re__secondary-button {

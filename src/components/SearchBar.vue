@@ -19,13 +19,13 @@ watch(searchDebounced, val => {
 </script>
 
 <template>
-	<div class="re__search-bar">
+	<div class="sticky top-0 z-10 -mx-3 flex items-center border-b border-b-black bg-white px-3 py-3 sm:-mx-4 sm:px-4">
 		<label class="mr-3" for="search">Suche</label>
 		<div class="max-w-14rem relative grow">
 			<input
 				v-model.trim="search"
 				type="text"
-				class="re__search-input"
+				class="rounded-4.5 h-9 w-full pl-3 pr-9"
 				id="search"
 				autocorrect="off"
 				autocomplete="off"
@@ -34,7 +34,7 @@ watch(searchDebounced, val => {
 			/>
 			<button
 				type="button"
-				class="re__search-button"
+				class="rounded-50% absolute right-1 top-1/2 inline-grid h-7 w-7 -translate-y-1/2 place-content-center bg-slate-800 text-white focus-visible:outline-slate-800"
 				:class="{ '!hidden': !search.length }"
 				aria-label="Reset"
 				@click="resetSearch"
@@ -46,17 +46,3 @@ watch(searchDebounced, val => {
 		</div>
 	</div>
 </template>
-
-<style lang="postcss">
-.re__search-bar {
-	@apply sticky top-0 z-10 -mx-3 flex items-center border-b border-b-black bg-white px-3 py-3 sm:-mx-4 sm:px-4;
-}
-
-.re__search-input {
-	@apply rounded-4.5 h-9 w-full pl-3 pr-9;
-}
-
-.re__search-button {
-	@apply rounded-50% absolute right-1 top-1/2 inline-grid h-7 w-7 -translate-y-1/2 place-content-center bg-slate-800 text-white;
-}
-</style>
