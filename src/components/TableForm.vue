@@ -245,8 +245,8 @@ const cancel = () => {
 	@apply flex flex-wrap;
 
 	> :not(:last-child)::after {
-		@apply white-space-pre-wrap;
 		content: ', ';
+		white-space: pre-wrap;
 	}
 
 	> :nth-last-child(2)::after {
