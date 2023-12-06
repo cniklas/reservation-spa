@@ -32,7 +32,7 @@ describe('SearchBar.vue', () => {
 	it('resets the input field if the reset button is clicked', async () => {
 		const inputElement = getInputElement()
 		const button = getButton()
-		await inputElement.setValue(inputValue)
+		inputElement.setValue(inputValue)
 		expect(inputElement.element.value).toBe(inputValue)
 
 		await button.trigger('click')
