@@ -35,21 +35,21 @@ const formatEmptySeats = (table: TableDoc) => {
 
 const _sortByEmptySeats = (a: TableDoc, b: TableDoc) => countTakenSeats(a) - countTakenSeats(b)
 
-const search = ref('')
+const _search = ref('')
 const onUpdateSearch = (input: string) => {
-	search.value = input
+	_search.value = input
 }
 const filteredTables = computed(() => {
 	const _tables = [...(props.tables ?? [])].filter(item => item.active || props.isLoggedIn)
 	_tables.sort(_sortByEmptySeats)
 
-	if (search.value.length < 3) return _tables
+	if (_search.value.length < 3) return _tables
 
 	return _tables.filter(table => {
 		let found = false
 		for (let i = 0; i < table.seats; i++) {
 			const key = `seat_${i + 1}`
-			if ((table[key] as string).toLowerCase().indexOf(search.value.toLowerCase()) !== -1) {
+			if ((table[key] as string).toLowerCase().indexOf(_search.value.toLowerCase()) !== -1) {
 				found = true
 				break
 			}
@@ -86,17 +86,16 @@ const sortedSeats = (table: TableDoc) => {
 		class="w-3xl grid max-w-full grid-cols-[10.5rem_1fr] items-start gap-x-4 gap-y-6 sm:grid-cols-[12rem_1fr] sm:gap-6"
 	>
 		<template v-for="table in filteredTables" :key="table.id">
-			<div class="re__grid-table-button-wrapper">
+			<div class="grid gap-4">
 				<button
 					type="button"
-					class="re__grid-table-button"
+					class="rounded-[1.8125rem] text-left"
 					:disabled="isFormOpen || !!table.locked_at"
-					data-test-edit-button
 					@click="$emit('edit', table.id)"
 				>
 					<dl class="re__grid-table" :class="{ 'is-available': table.seats - countTakenSeats(table) }">
 						<dt class="re__grid-table-number">
-							<div class="re__grid-table-number-wrapper">
+							<div class="re__grid-table-number-content">
 								<span class="sr-only">Tisch</span>
 								{{ firstWord(table.name) }}
 							</div>
@@ -127,7 +126,7 @@ const sortedSeats = (table: TableDoc) => {
 				</div>
 			</div>
 
-			<ol class="re__dot-separated" :class="{ 'line-through': !table.active }">
+			<ol class="re__dot-separated <sm:leading-[1.375]" :class="{ 'line-through': !table.active }">
 				<li v-for="(seat, n) in sortedSeats(table)" :key="`${table.id}-${n}`">
 					{{ seat.name }}
 				</li>
@@ -137,14 +136,6 @@ const sortedSeats = (table: TableDoc) => {
 </template>
 
 <style lang="postcss">
-.re__grid-table-button-wrapper {
-	@apply grid gap-4;
-}
-
-.re__grid-table-button {
-	@apply rounded-[1.8125rem] text-left;
-}
-
 .re__grid-table {
 	@apply grid grid-cols-[3rem_1fr] items-center gap-x-2.5 rounded-[1.8125rem] border border-black bg-white p-1;
 	box-shadow: 0 4px 0 -1px theme('colors.dark.50');
@@ -158,24 +149,29 @@ const sortedSeats = (table: TableDoc) => {
 	@apply rounded-50% grid h-12 w-12 border border-black text-xl font-semibold;
 }
 
-.re__grid-table-number-wrapper {
-	@apply col-start-1 col-end-1 row-start-1 row-end-1 grid place-content-center;
+.re__grid-table-number-content {
+	grid-area: 1 / 1 / 1 / 1;
+	display: grid;
+	place-content: center;
 }
 
 .re__grid-table-label {
 	@apply rounded-3 min-h-6 grid w-fit items-center bg-gray-200 px-2.5 text-sm empty:hidden;
 }
 
-.re__dot-separated {
-	@apply leading-[1.375] sm:flex sm:flex-wrap sm:leading-normal;
+@screen sm {
+	.re__dot-separated {
+		@apply flex flex-wrap;
 
-	> :not(:last-child)::after {
-		@apply mx-1 hidden content-['•'] sm:inline-block;
+		> :not(:last-child)::after {
+			@apply mx-1 content-['•'];
+		}
 	}
 }
 
 .re__spinner-wrapper {
-	@apply relative col-start-1 col-end-1 row-start-1 row-end-1;
+	grid-area: 1 / 1 / 1 / 1;
+	position: relative;
 }
 
 .re__spinner {
@@ -184,7 +180,7 @@ const sortedSeats = (table: TableDoc) => {
 }
 
 .pl__ring {
-	@apply hidden;
+	display: none;
 }
 
 .fade-enter-active,
@@ -198,10 +194,10 @@ const sortedSeats = (table: TableDoc) => {
 .fade-leave-to,
 .exchange-enter-from,
 .exchange-leave-to {
-	@apply opacity-0;
+	opacity: 0;
 }
 
 .exchange-leave-active {
-	@apply absolute;
+	position: absolute;
 }
 </style>

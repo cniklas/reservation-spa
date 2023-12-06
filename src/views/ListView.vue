@@ -33,13 +33,13 @@ const reservations = computed(() => {
 	return reservations
 })
 
-const search = ref('')
+const _search = ref('')
 const onUpdateSearch = (input: string) => {
-	search.value = input
+	_search.value = input
 }
 const filteredReservations = computed(() => {
-	if (search.value.length < 3) return reservations.value
-	return reservations.value.filter(item => item.name.toLowerCase().indexOf(search.value.toLowerCase()) !== -1)
+	if (_search.value.length < 3) return reservations.value
+	return reservations.value.filter(item => item.name.toLowerCase().indexOf(_search.value.toLowerCase()) !== -1)
 })
 </script>
 

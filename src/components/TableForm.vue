@@ -194,7 +194,12 @@ const cancel = () => {
 		</template>
 
 		<ol>
-			<li v-for="n in form.seats" :key="`seat-${n}`" class="re__input-seat mb-4" data-test-seat>
+			<li
+				v-for="n in form.seats"
+				:key="`seat-${n}`"
+				class="mb-4 grid grid-cols-[1ch_1fr] items-center gap-x-2.5"
+				data-test-seat
+			>
 				<label :for="`seat_${n}`" class="text-right text-lg font-semibold">
 					<span class="sr-only">Platz</span>
 					{{ n }}
@@ -236,13 +241,10 @@ const cancel = () => {
 	</form>
 </template>
 
-<style lang="postcss">
-.re__input-seat {
-	@apply grid grid-cols-[1ch_1fr] items-center gap-x-2.5;
-}
-
+<style>
 .re__comma-separated {
-	@apply flex flex-wrap;
+	display: flex;
+	flex-wrap: wrap;
 
 	> :not(:last-child)::after {
 		content: ', ';
