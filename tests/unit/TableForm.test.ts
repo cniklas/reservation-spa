@@ -1,5 +1,5 @@
 import { mount, flushPromises } from '@vue/test-utils'
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, afterEach } from 'vitest'
 import TableForm from '../../src/components/TableForm.vue'
 import type { TableDoc } from '../../src/types/TableDoc.type'
 import { PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '../../src/keys'
@@ -77,9 +77,6 @@ const factory = (props?: any) =>
 describe('TableForm.vue', () => {
 	let wrapper = null
 
-	// beforeEach(() => {
-	// 	wrapper = factory()
-	// })
 	afterEach(() => {
 		wrapper.unmount()
 	})
@@ -110,26 +107,22 @@ describe('TableForm.vue', () => {
 
 		// decrease
 		const decreaseButton = wrapper.find('[data-test-decrease-button]')
-		decreaseButton.trigger('click')
-		await flushPromises()
+		await decreaseButton.trigger('click')
 		expect(wrapper.findAll(seatsSelector).length).toBe(entry.seats - 1)
 
 		for (let i = 0; i < 5; i++) {
-			decreaseButton.trigger('click')
+			await decreaseButton.trigger('click')
 		}
-		await flushPromises()
 		expect(wrapper.findAll(seatsSelector).length).toBe(minSeats)
 
 		// increase
 		const increaseButton = wrapper.find('[data-test-increase-button]')
-		increaseButton.trigger('click')
-		await flushPromises()
+		await increaseButton.trigger('click')
 		expect(wrapper.findAll(seatsSelector).length).toBe(minSeats + 1)
 
 		for (let i = 0; i < 5; i++) {
-			increaseButton.trigger('click')
+			await increaseButton.trigger('click')
 		}
-		await flushPromises()
 		expect(wrapper.findAll(seatsSelector).length).toBe(maxSeats)
 	})
 

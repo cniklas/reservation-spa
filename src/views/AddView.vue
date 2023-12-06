@@ -12,7 +12,7 @@ const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, validationErro
 	useErrorHandling()
 
 const tables = injectStrict(PROVIDE_TABLES)
-const _getNextIndex = () => Math.max(...(tables.value?.map(item => item.index) ?? [-1])) + 1
+const _getNextIndex = () => Math.max(...(tables.value?.map(item => item.index) ?? [0])) + 1
 
 const form = reactive({
 	active: true,

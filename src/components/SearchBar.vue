@@ -29,6 +29,7 @@ watch(searchDebounced, val => {
 				id="search"
 				autocorrect="off"
 				autocomplete="off"
+				data-test-search-input
 				@keyup.esc="resetSearch"
 				@keyup.enter="blurInput"
 			/>
@@ -37,6 +38,7 @@ watch(searchDebounced, val => {
 				class="rounded-50% absolute right-1 top-1/2 inline-grid h-7 w-7 -translate-y-1/2 place-content-center bg-slate-800 text-white focus-visible:outline-slate-800"
 				:class="{ '!hidden': !search.length }"
 				aria-label="Reset"
+				data-test-search-button
 				@click="resetSearch"
 			>
 				<svg class="re__close-icon" aria-hidden="true" width="14" height="14">
