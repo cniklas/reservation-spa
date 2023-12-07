@@ -37,7 +37,7 @@ watch(searchDebounced, val => {
 				type="button"
 				class="rounded-50% absolute right-1 top-1/2 inline-grid h-7 w-7 -translate-y-1/2 place-content-center bg-slate-800 text-white focus-visible:outline-slate-800"
 				:class="{ '!hidden': !search.length }"
-				aria-label="Reset"
+				aria-label="Suche zurücksetzen"
 				data-test-search-button
 				@click="resetSearch"
 			>
