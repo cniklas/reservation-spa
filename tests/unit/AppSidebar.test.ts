@@ -5,7 +5,7 @@ import AppSidebar from '../../src/components/AppSidebar.vue'
 const headline = 'Test AppSidebar headline'
 const factory = () =>
 	mount(AppSidebar, {
-		props: {
+		slots: {
 			headline,
 		},
 	})
@@ -20,8 +20,7 @@ describe('AppSidebar.vue', () => {
 
 	it('renders correctly', () => {
 		expect(AppSidebar).toBeTruthy()
-
-		expect(wrapper.text()).toMatch(headline)
+		expect(wrapper.find('[data-test-headline]').text()).toMatch(headline)
 	})
 
 	it('sets ref "slideIn" to `true` if the "open" method is called', async () => {

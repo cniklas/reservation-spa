@@ -221,14 +221,10 @@ onBeforeUnmount(() => {
 		<div v-else>Lade Daten …</div>
 	</main>
 
-	<AppSidebar
-		v-if="tables"
-		ref="sidebarEl"
-		:headline="!!selectedItem ? `Tisch ${selectedItem.name}` : ''"
-		@closing="clearTimer"
-	>
+	<AppSidebar v-if="tables" ref="sidebarEl" @closing="clearTimer">
+		<template v-if="selectedItem" #headline>{{ `Tisch ${selectedItem.name}` }}</template>
 		<TableForm
-			v-if="!!selectedItem"
+			v-if="selectedItem"
 			:entry="selectedItem"
 			:is-logged-in="isAuthenticated"
 			@cancel="onTimeoutOrCancel"
