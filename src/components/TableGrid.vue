@@ -28,7 +28,7 @@ const countTakenSeats = (table: TableDoc) => {
 	return count
 }
 
-const formatEmptySeats = (table: TableDoc) => {
+const emptySeats = (table: TableDoc) => {
 	const count = table.seats - countTakenSeats(table)
 	return count ? `${formatCount(count, ['Platz', 'Plätze'])} frei` : 'belegt'
 }
@@ -91,9 +91,10 @@ const sortedSeats = (table: TableDoc) => {
 					type="button"
 					class="rounded-[1.8125rem] text-left"
 					:disabled="isFormOpen || !!table.locked_at"
+					data-test-edit-button
 					@click="$emit('edit', table.id)"
 				>
-					<dl class="re__grid-table" :class="{ 'is-available': table.seats - countTakenSeats(table) }">
+					<dl class="re__grid-table" :class="{ 'is-available': table.seats - countTakenSeats(table) }" data-test-table>
 						<dt class="re__grid-table-number">
 							<div class="re__grid-table-number-content">
 								<span class="sr-only">Tisch</span>
@@ -111,7 +112,7 @@ const sortedSeats = (table: TableDoc) => {
 							</div>
 							<TransitionGroup name="exchange">
 								<div v-if="table.locked_at" class="text-sm leading-[1.5rem]">wird bearbeitet</div>
-								<div v-else-if="table.active">{{ formatEmptySeats(table) }}</div>
+								<div v-else-if="table.active">{{ emptySeats(table) }}</div>
 								<div v-else class="text-red-600">nicht verfügbar</div>
 							</TransitionGroup>
 						</dd>
@@ -120,7 +121,12 @@ const sortedSeats = (table: TableDoc) => {
 
 				<div v-if="isLoggedIn && table.locked_at && table.locked_by !== uuid" class="text-center">
 					<div class="text-sm">seit {{ formatTime(table.locked_at.seconds * 1000) }} Uhr</div>
-					<button type="button" class="re__primary-button mt-1" @click="$emit('unlock', table.id)">
+					<button
+						type="button"
+						class="re__primary-button mt-1"
+						data-test-unlock-button
+						@click="$emit('unlock', table.id)"
+					>
 						🔑 entsperren
 					</button>
 				</div>
