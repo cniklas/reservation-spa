@@ -30,9 +30,9 @@ watch(
 )
 
 const _tableNames = computed(() => tables.value?.map(item => item.name) ?? [])
-const checkTableName = (e: Event) => {
+const checkTableName = ({ target }: Event) => {
 	validateTableName(form.name, _tableNames.value)
-	;(e.target as HTMLInputElement).setCustomValidity(validationErrors.has('name') ? 'Eingabe ungültig' : '')
+	;(target as HTMLInputElement).setCustomValidity(validationErrors.has('name') ? 'Eingabe ungültig' : '')
 }
 
 const onSubmit = async () => {

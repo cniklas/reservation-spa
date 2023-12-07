@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, computed, watch, toRaw } from 'vue'
 import { deleteField, serverTimestamp } from 'firebase/firestore'
-import type { TableDoc } from '@/types/TableDoc.type'
+import type { SeatKey, TableDoc } from '@/types/TableDoc.type'
 import type { Reservation } from '@/types/Reservation.type'
 import { PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '@/keys'
 import { useErrorHandling } from '@/use/errorHandling'
@@ -47,7 +47,7 @@ watch(
 		if (diff > 0) {
 			let n = props.entry.seats
 			while (n > form.seats) {
-				const key = `seat_${n--}`
+				const key = `seat_${n--}` as SeatKey
 				form[key] = ''
 				touchedSeats.delete(key)
 				validationErrors.delete(key)
@@ -63,11 +63,11 @@ const reservations = computed(() => {
 		?.forEach(_table => {
 			let n = 0
 			while (n < _table.seats) {
-				const key = `seat_${++n}`
-				if (!(_table[key] as string).length) continue
+				const key = `seat_${++n}` as SeatKey
+				if (!_table[key].length) continue
 
 				_reservations.push({
-					name: _table[key] as string,
+					name: _table[key],
 					table: _table.name,
 				})
 			}
@@ -78,7 +78,7 @@ const reservations = computed(() => {
 
 const onChange = (key: string, el: HTMLInputElement) => {
 	touchedSeats.add(key)
-	validateName(key, form[key] as string, reservations.value)
+	validateName(key, form[key as SeatKey], reservations.value)
 	el.setCustomValidity(validationErrors.has(key) ? 'Eingabe ungültig' : '')
 }
 
@@ -88,14 +88,14 @@ const resetValidation = (key: string) => {
 	;(document.querySelector(`#${key}`) as HTMLInputElement).setCustomValidity('')
 }
 const resetValue = (key: string) => {
-	form[key] = ''
+	form[key as SeatKey] = ''
 	resetValidation(key)
 }
 
 const _tableNames = computed(() => tables.value?.map(item => item.name).filter(name => name !== props.entry.name) ?? [])
-const checkTableName = (e: Event) => {
+const checkTableName = ({ target }: Event) => {
 	validateTableName(form.name, _tableNames.value)
-	;(e.target as HTMLInputElement).setCustomValidity(validationErrors.has('name') ? 'Eingabe ungültig' : '')
+	;(target as HTMLInputElement).setCustomValidity(validationErrors.has('name') ? 'Eingabe ungültig' : '')
 }
 
 const onSubmit = async () => {
@@ -116,7 +116,7 @@ const onSubmit = async () => {
 
 		// validate
 		touchedSeats.forEach(key => {
-			validateName(key, formData[key] as string, reservations.value)
+			validateName(key, formData[key as SeatKey], reservations.value)
 		})
 		if (validationErrors.size) return
 
@@ -205,7 +205,7 @@ const cancel = () => {
 					{{ n }}
 				</label>
 				<input
-					v-model.trim="form[`seat_${n}`]"
+					v-model.trim="form[`seat_${n}` as SeatKey]"
 					type="text"
 					class="max-w-14rem w-full"
 					:id="`seat_${n}`"

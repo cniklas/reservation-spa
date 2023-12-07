@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import SearchBar from '@/components/SearchBar.vue'
+import type { SeatKey } from '@/types/TableDoc.type'
 import type { SortableReservation } from '@/types/Reservation.type'
 import { PROVIDE_TABLES } from '@/keys'
 import { formatCount, sortByName, injectStrict } from '@/use/helper'
@@ -16,10 +17,10 @@ const reservations = computed(() => {
 		.forEach(table => {
 			let n = 0
 			while (n < table.seats) {
-				const key = `seat_${++n}`
-				if (!(table[key] as string).length) continue
+				const key = `seat_${++n}` as SeatKey
+				if (!table[key].length) continue
 
-				const name = (table[key] as string).split(' ')
+				const name = table[key].split(' ')
 				reservations.push({
 					name: name.join(' '),
 					// sortableName: name.length > 1 ? `${name.at(-1)}, ${name.slice(0, -1).join(' ')}` : name.at(0) ?? '',

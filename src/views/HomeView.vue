@@ -6,6 +6,7 @@ import { useAuth } from '@vueuse/firebase/useAuth'
 import { auth } from '@/firebase'
 import TableGrid from '@/components/TableGrid.vue'
 import AppSidebar from '@/components/AppSidebar.vue'
+import type { SeatKey } from '@/types/TableDoc.type'
 import { PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '@/keys'
 import { formatCount, createUuid, injectStrict, firstWord } from '@/use/helper'
 import { ONE_MINUTE, EDIT_TIMEOUT, RELEASE_TIME, useTimeout } from '@/use/timeout'
@@ -46,8 +47,8 @@ const reservations = computed(() => {
 		.forEach(table => {
 			let n = 0
 			while (n < table.seats) {
-				const key = `seat_${++n}`
-				if ((table[key] as string).length) count++
+				const key = `seat_${++n}` as SeatKey
+				if (table[key].length) count++
 			}
 		})
 

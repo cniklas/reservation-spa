@@ -3,8 +3,8 @@ export type Timestamp = {
 	nanoseconds: number
 }
 
+export type SeatKey = 'seat_1' | 'seat_2' | 'seat_3' | 'seat_4' | 'seat_5' | 'seat_6' | 'seat_7' | 'seat_8'
 export type TableDoc = {
-	[index: string]: boolean | number | string | undefined | Timestamp
 	active: boolean
 	block_id: number
 	id: string

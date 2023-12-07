@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import SearchBar from '@/components/SearchBar.vue'
 import SkateboardSpinner from '@/components/SkateboardSpinner.vue'
-import type { TableDoc } from '@/types/TableDoc.type'
+import type { SeatKey, TableDoc } from '@/types/TableDoc.type'
 import type { SortableReservation } from '@/types/Reservation.type'
 import { formatTime, formatCount, sortByName, firstWord, remainingWords } from '@/use/helper'
 
@@ -21,8 +21,8 @@ const countTakenSeats = (table: TableDoc) => {
 	let n = 0,
 		count = 0
 	while (n < table.seats) {
-		const key = `seat_${++n}`
-		if ((table[key] as string).length) count++
+		const key = `seat_${++n}` as SeatKey
+		if (table[key].length) count++
 	}
 
 	return count
@@ -48,8 +48,8 @@ const filteredTables = computed(() => {
 	return _tables.filter(table => {
 		let found = false
 		for (let i = 0; i < table.seats; i++) {
-			const key = `seat_${i + 1}`
-			if ((table[key] as string).toLowerCase().indexOf(_search.value.toLowerCase()) !== -1) {
+			const key = `seat_${i + 1}` as SeatKey
+			if (table[key].toLowerCase().indexOf(_search.value.toLowerCase()) !== -1) {
 				found = true
 				break
 			}
@@ -62,10 +62,10 @@ const sortedSeats = (table: TableDoc) => {
 	const reservations: SortableReservation[] = []
 	let n = 0
 	while (n < table.seats) {
-		const key = `seat_${++n}`
-		if (!(table[key] as string).length) continue
+		const key = `seat_${++n}` as SeatKey
+		if (!table[key].length) continue
 
-		const name = (table[key] as string).split(' ')
+		const name = table[key].split(' ')
 		reservations.push({
 			name: name.join(' '),
 			// sortableName: name.length > 1 ? `${name.at(-1)}, ${name.slice(0, -1).join(' ')}` : name.at(0) ?? '',
