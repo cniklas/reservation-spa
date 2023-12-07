@@ -21,8 +21,7 @@ const formatTime = (timestamp?: number) => {
 	return new Date(timestamp).toLocaleTimeString('de-DE')
 }
 
-const formatCount = (count: number, noun: [string, string]) =>
-	count === 1 ? `${count} ${noun[0]}` : `${count} ${noun[1]}`
+const formatCount = (count: number, noun: [string, string]) => `${count} ${noun[count === 1 ? 0 : 1]}`
 
 const createUuid = () => `_${Math.random().toString(36).substring(2, 10)}`
 
