@@ -85,7 +85,7 @@ const onConflict = (message: string) => {
 	_showDialog(message)
 }
 const onEditTable = async (id: string) => {
-	if (!isReleased.value) {
+	if (!isReleased.value && !isAuthenticated.value) {
 		_showDialog(
 			`Noch ein bisschen Geduld.\nEintragungen sind ab ${new Date(RELEASE_TIME).toLocaleDateString('de-DE', {
 				hour: 'numeric',
