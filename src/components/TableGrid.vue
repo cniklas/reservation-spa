@@ -86,7 +86,7 @@ const sortedSeats = (table: TableDoc) => {
 		class="w-3xl grid max-w-full grid-cols-[10.5rem_1fr] items-start gap-x-4 gap-y-6 sm:grid-cols-[12rem_1fr] sm:gap-6"
 	>
 		<template v-for="table in filteredTables" :key="table.id">
-			<div class="grid gap-4">
+			<div class="grid scroll-m-20 gap-4" :id="`table-${table.index}`">
 				<button
 					type="button"
 					class="rounded-[1.8125rem] text-left"

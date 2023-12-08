@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount, defineAsyncComponent, nextTick } from 'vue'
 import { deleteField, serverTimestamp } from 'firebase/firestore'
 import { useAuth } from '@vueuse/firebase/useAuth'
 // import { isSafari } from '@firebase/util'
@@ -71,8 +71,11 @@ const onTimeoutOrCancel = () => {
 	})
 }
 const onSaved = () => {
-	sidebarEl.value?.close(() => {
+	sidebarEl.value?.close(async () => {
+		const id = selectedItem.value?.index
 		_clearEditState()
+		await nextTick()
+		document.querySelector(`#table-${id}`)?.scrollIntoView({ block: 'start', behavior: 'smooth' })
 	})
 }
 const onConflict = (message: string) => {
