@@ -202,7 +202,7 @@ onBeforeUnmount(() => {
 	<main class="px-3 py-5 sm:px-4">
 		<h1 class="relative mb-1 w-fit text-3xl font-semibold">
 			{{ title }}
-			<svg class="-top-4.5 -right-10.5 absolute h-10 w-10" aria-hidden="true" width="40" height="40">
+			<svg class="re__doodle -top-4.5 -right-10.5 absolute h-10 w-10" aria-hidden="true" width="40" height="40">
 				<use href="@/assets/app.svg#star-doodle" />
 			</svg>
 		</h1>
@@ -274,6 +274,12 @@ onBeforeUnmount(() => {
 			transition-duration: var(--edit-timeout);
 			transition-timing-function: linear;
 		}
+	}
+}
+
+@media not all and (min-width: 21em) {
+	.re__doodle {
+		display: none;
 	}
 }
 </style>
