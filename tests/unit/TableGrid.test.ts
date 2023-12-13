@@ -11,7 +11,7 @@ const _timestamp: Timestamp = { seconds: 1691082706, nanoseconds: 0 }
 const factory = () =>
 	mount(TableGrid, {
 		props: {
-			tables: undefined,
+			tables: mockTables(),
 			uuid: _uuid,
 			isLoggedIn: false,
 			isFormOpen: false,
@@ -31,24 +31,17 @@ describe('TableGrid.vue', () => {
 	})
 
 	it('renders correctly', async () => {
-		const tableSelector = '[data-test-table]'
 		expect(TableGrid).toBeTruthy()
-		expect(wrapper.find(tableSelector).exists()).toBe(false)
-
-		wrapper.setProps({ tables })
-		await flushPromises()
-
-		expect(wrapper.findAll(tableSelector).length).toBe(tables.length)
 
 		const firstTable = wrapper.vm.filteredTables.at(0)
 		const emptySeats = wrapper.vm.emptySeats(firstTable)
-		expect(wrapper.find(tableSelector).text()).toContain(
+		expect(wrapper.find('[data-test-table]').text()).toContain(
 			`Tisch ${firstWord(firstTable.name)}${remainingWords(firstTable.name)}${emptySeats}`,
 		)
 	})
 
 	it('has all edit buttons to be disabled when form is open', async () => {
-		wrapper.setProps({ tables, isFormOpen: true })
+		wrapper.setProps({ isFormOpen: true })
 		await flushPromises()
 
 		editButtons = getEditButtons()
@@ -71,9 +64,6 @@ describe('TableGrid.vue', () => {
 
 	it('emits a custom event "edit" when edit button is clicked', async () => {
 		const index = 1
-		wrapper.setProps({ tables })
-		await flushPromises()
-
 		editButtons = getEditButtons()
 		editButtons.at(index).trigger('click')
 		// check that 1 occurrence of the event has been emitted
@@ -97,7 +87,7 @@ describe('TableGrid.vue', () => {
 		unlockButtons = getUnlockButtons()
 		expect(unlockButtons.length).toBe(0)
 
-		wrapper.setProps({ tables, isLoggedIn: true })
+		wrapper.setProps({ isLoggedIn: true })
 		await flushPromises()
 
 		unlockButtons = getUnlockButtons()

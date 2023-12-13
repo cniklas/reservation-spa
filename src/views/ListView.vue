@@ -10,6 +10,11 @@ const tables = injectStrict(PROVIDE_TABLES)
 
 const title: string = import.meta.env.VITE_APP_NAME
 
+const _search = ref('')
+const onUpdateSearch = (input: string) => {
+	_search.value = input
+}
+
 const reservations = computed(() => {
 	const reservations: SortableReservation[] = []
 	tables.value
@@ -26,21 +31,13 @@ const reservations = computed(() => {
 					// sortableName: name.length > 1 ? `${name.at(-1)}, ${name.slice(0, -1).join(' ')}` : name.at(0) ?? '',
 					sortableName: name.length > 1 ? `${name[name.length - 1]}, ${name.slice(0, -1).join(' ')}` : name[0] ?? '',
 					table: table.name,
+					hidden: _search.value.length >= 3 && table[key].toLowerCase().indexOf(_search.value.toLowerCase()) === -1,
 				})
 			}
 		})
 
 	reservations.sort(sortByName)
 	return reservations
-})
-
-const _search = ref('')
-const onUpdateSearch = (input: string) => {
-	_search.value = input
-}
-const filteredReservations = computed(() => {
-	if (_search.value.length < 3) return reservations.value
-	return reservations.value.filter(item => item.name.toLowerCase().indexOf(_search.value.toLowerCase()) !== -1)
 })
 </script>
 
@@ -62,7 +59,7 @@ const filteredReservations = computed(() => {
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="(entry, i) in filteredReservations" :key="i">
+						<tr v-for="(entry, i) in reservations" :key="i" :class="{ hidden: entry.hidden }">
 							<td>{{ entry.sortableName }}</td>
 							<td>{{ entry.table }}</td>
 						</tr>

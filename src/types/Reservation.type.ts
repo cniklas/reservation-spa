@@ -6,5 +6,6 @@ export type Reservation = {
 export type SortableReservation = {
 	name: string
 	sortableName: string
-	table: string
+	table?: string
+	hidden?: boolean
 }

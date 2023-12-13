@@ -11,7 +11,7 @@ defineEmits<{
 	(event: 'unlock', id: string): void
 }>()
 const props = defineProps<{
-	tables: TableDoc[] | undefined
+	tables: TableDoc[]
 	uuid: string
 	isLoggedIn: boolean
 	isFormOpen: boolean
@@ -40,7 +40,7 @@ const onUpdateSearch = (input: string) => {
 	_search.value = input
 }
 const filteredTables = computed(() => {
-	const _tables = [...(props.tables ?? [])].filter(item => item.active || props.isLoggedIn)
+	const _tables = props.tables.filter(item => item.active || props.isLoggedIn)
 	_tables.sort(_sortByEmptySeats)
 
 	if (_search.value.length < 3) return _tables
@@ -70,7 +70,6 @@ const sortedSeats = (table: TableDoc) => {
 			name: name.join(' '),
 			// sortableName: name.length > 1 ? `${name.at(-1)}, ${name.slice(0, -1).join(' ')}` : name.at(0) ?? '',
 			sortableName: name.length > 1 ? `${name[name.length - 1]}, ${name.slice(0, -1).join(' ')}` : name[0] ?? '',
-			table: '',
 		})
 	}
 
