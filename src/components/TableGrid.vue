@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import SearchBar from '@/components/SearchBar.vue'
 import SkateboardSpinner from '@/components/SkateboardSpinner.vue'
 import type { SeatKey, TableDoc } from '@/types/TableDoc.type'
 import type { SortableReservation } from '@/types/Reservation.type'
 import { formatTime, formatCount, sortByName, firstWord, remainingWords } from '@/use/helper'
+import { useHighlight } from '@/use/highlight'
 
 defineEmits<{
 	(event: 'edit', id: string): void
@@ -56,6 +57,10 @@ const filteredTables = computed(() => {
 		}
 		return found
 	})
+})
+
+onMounted(() => {
+	useHighlight('.js-search-list', 'search-result', _search)
 })
 
 const sortedSeats = (table: TableDoc) => {
@@ -131,7 +136,7 @@ const sortedSeats = (table: TableDoc) => {
 				</div>
 			</div>
 
-			<ol class="re__dot-separated <sm:leading-[1.375]" :class="{ 'line-through': !table.active }">
+			<ol class="js-search-list re__dot-separated <sm:leading-[1.375]" :class="{ 'line-through': !table.active }">
 				<li v-for="(seat, n) in sortedSeats(table)" :key="`${table.id}-${n}`">
 					{{ seat.name }}
 				</li>
@@ -204,5 +209,11 @@ const sortedSeats = (table: TableDoc) => {
 
 .exchange-leave-active {
 	position: absolute;
+}
+
+::highlight(search-result) {
+	background-color: theme('colors.lime.500');
+	color: theme('colors.dark.700');
+	padding: 0.625rem;
 }
 </style>
