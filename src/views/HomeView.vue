@@ -4,7 +4,6 @@ import { deleteField, serverTimestamp } from 'firebase/firestore'
 import { useAuth } from '@vueuse/firebase/useAuth'
 // import { isSafari } from '@firebase/util'
 import { auth } from '@/firebase'
-import TableGrid from '@/components/TableGrid.vue'
 import AppSidebar from '@/components/AppSidebar.vue'
 import type { SeatKey } from '@/types/TableDoc.type'
 import { PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '@/keys'
@@ -14,6 +13,7 @@ import { ONE_MINUTE, EDIT_TIMEOUT, RELEASE_TIME, useTimeout } from '@/use/timeou
 const tables = injectStrict(PROVIDE_TABLES)
 const updateDocument = injectStrict(PROVIDE_UPDATE_DOCUMENT)
 
+const TableGrid = defineAsyncComponent(() => import('@/components/TableGrid.vue'))
 const TableForm = defineAsyncComponent(() => import('@/components/TableForm.vue'))
 
 const title: string = import.meta.env.VITE_APP_NAME
