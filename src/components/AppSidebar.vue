@@ -32,7 +32,7 @@ defineExpose({ open, close })
 
 <template>
 	<section
-		class="fixed bottom-0 right-0 top-0 z-20 w-full max-w-sm overflow-y-auto overscroll-y-contain bg-white px-3 pb-12 pt-5 shadow-[-1px_0_0_#000] transition-transform duration-[--sidebar-duration] sm:px-4"
+		class="fixed bottom-0 right-0 top-0 z-20 w-full max-w-sm overflow-y-auto overscroll-y-contain border-l border-l-black bg-white px-3 pb-12 pt-5 transition-transform duration-[--sidebar-duration] sm:px-4"
 		:class="{ 'translate-x-full': !slideIn }"
 		:style="{ '--sidebar-duration': `${SLIDE_DURATION}ms` }"
 		aria-label="Sidebar"

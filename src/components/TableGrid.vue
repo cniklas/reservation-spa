@@ -87,7 +87,7 @@ const sortedSeats = (table: TableDoc) => {
 	<SearchBar class="mb-6" @update="onUpdateSearch" />
 
 	<div
-		class="w-3xl grid max-w-full grid-cols-[10.5rem_1fr] items-start gap-x-4 gap-y-6 sm:grid-cols-[12rem_1fr] sm:gap-6"
+		class="container grid grid-cols-[10.5rem_1fr] items-start gap-x-4 gap-y-6 sm:grid-cols-[12rem_minmax(auto,34.5rem)] sm:gap-6"
 	>
 		<template v-for="table in filteredTables" :key="table.id">
 			<div class="grid scroll-m-20 gap-4" :id="`table-${table.index}`">

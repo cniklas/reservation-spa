@@ -65,8 +65,8 @@ const onSubmit = async () => {
 </script>
 
 <template>
-	<main class="px-3 py-5 sm:px-4">
-		<h1 class="mb-1 text-3xl font-semibold">Add</h1>
+	<main class="container py-5">
+		<h1 class="mb-3 text-3xl font-semibold">Neuer Tisch</h1>
 
 		<form novalidate @submit.prevent="onSubmit">
 			<div class="mb-4">

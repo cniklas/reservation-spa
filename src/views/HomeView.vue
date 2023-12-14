@@ -199,29 +199,27 @@ onBeforeUnmount(() => {
 		:style="{ '--edit-timeout': `${EDIT_TIMEOUT}ms` }"
 	/>
 
-	<main class="px-3 py-5 sm:px-4">
-		<h1 class="relative mb-1 w-fit text-3xl font-semibold">
-			{{ title }}
-			<svg class="re__doodle -top-4.5 -right-10.5 absolute h-10 w-10" aria-hidden="true" width="40" height="40">
-				<use href="@/assets/app.svg#star-doodle" />
-			</svg>
-		</h1>
+	<main class="py-5">
+		<div class="container">
+			<h1 class="relative mb-1 w-fit text-3xl font-semibold">
+				{{ title }}
+				<svg class="re__doodle -top-4.5 -right-10.5 absolute h-10 w-10" aria-hidden="true" width="40" height="40">
+					<use href="@/assets/app.svg#star-doodle" />
+				</svg>
+			</h1>
+			<div>{{ tables ? reservations : 'Lade Daten …' }}</div>
+		</div>
 
-		<template v-if="tables">
-			<div>{{ reservations }}</div>
-
-			<div class="mb-10 mt-6">
-				<TableGrid
-					:tables="tables"
-					:uuid="uuid"
-					:is-logged-in="isAuthenticated"
-					:is-form-open="!!selectedItem"
-					@edit="onEditTable"
-					@unlock="onUnlockTable"
-				/>
-			</div>
-		</template>
-		<div v-else>Lade Daten …</div>
+		<div v-if="tables" class="mb-10 mt-6">
+			<TableGrid
+				:tables="tables"
+				:uuid="uuid"
+				:is-logged-in="isAuthenticated"
+				:is-form-open="!!selectedItem"
+				@edit="onEditTable"
+				@unlock="onUnlockTable"
+			/>
+		</div>
 	</main>
 
 	<AppSidebar v-if="tables" ref="sidebarEl" @closing="clearTimer">

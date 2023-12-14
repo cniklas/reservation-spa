@@ -42,15 +42,23 @@ const reservations = computed(() => {
 </script>
 
 <template>
-	<main class="px-3 py-5 sm:px-4">
-		<h1 class="mb-1 text-3xl font-semibold">{{ title }}</h1>
+	<main class="py-5">
+		<div class="container">
+			<h1 class="relative mb-1 w-fit text-3xl font-semibold">
+				{{ title }}
+				<svg class="re__doodle -top-4.5 -right-10.5 absolute h-10 w-10" aria-hidden="true" width="40" height="40">
+					<use href="@/assets/app.svg#star-doodle" />
+				</svg>
+			</h1>
+			<div>
+				{{ reservations.length > 0 ? formatCount(reservations.length, ['Person', 'Personen']) : 'keine Einträge' }}
+			</div>
+		</div>
 
-		<template v-if="reservations.length > 0">
-			<div>{{ formatCount(reservations.length, ['Person', 'Personen']) }}</div>
+		<div v-if="reservations.length > 0" class="mb-10 mt-6">
+			<SearchBar class="mb-3" @update="onUpdateSearch" />
 
-			<div class="mb-10 mt-6">
-				<SearchBar class="mb-3" @update="onUpdateSearch" />
-
+			<div class="container">
 				<table class="re__list-table -mx-2">
 					<thead>
 						<tr>
@@ -66,8 +74,7 @@ const reservations = computed(() => {
 					</tbody>
 				</table>
 			</div>
-		</template>
-		<div v-else>keine Einträge</div>
+		</div>
 	</main>
 </template>
 

@@ -43,11 +43,11 @@ watch(isLoggedIn, val => {
 </script>
 
 <template>
-	<header v-if="isLoggedIn" class="px-3 py-5 sm:px-4">
+	<header v-if="isLoggedIn" class="container py-5">
 		<nav class="flex items-center gap-2">
 			<RouterLink to="/">Home</RouterLink>
 			<RouterLink to="/liste">Liste</RouterLink>
-			<RouterLink v-if="isLoggedIn" to="/add">Add</RouterLink>
+			<RouterLink v-if="isLoggedIn" to="/add">Neuer Tisch</RouterLink>
 			<button v-if="isLoggedIn" type="button" class="re__primary-button" @click="logout">Logout</button>
 		</nav>
 	</header>
@@ -55,7 +55,7 @@ watch(isLoggedIn, val => {
 	<RouterView />
 
 	<Teleport to="body">
-		<footer class="sticky top-[100vh] px-3 py-5 sm:px-4">
+		<footer class="container sticky top-[100vh] py-5">
 			<details class="font-mono text-sm">
 				<summary class="inline-block cursor-help">© 2023 Christian Niklas v{{ version }}</summary>
 				<div>{{ buildTime }}</div>
