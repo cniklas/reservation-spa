@@ -93,7 +93,7 @@ const sortedSeats = (table: TableDoc) => {
 			<div class="grid scroll-m-20 gap-4" :id="`table-${table.index}`">
 				<button
 					type="button"
-					class="rounded-1.8125rem text-left"
+					class="rounded-1.8125rem z-1 relative text-left"
 					:disabled="isFormOpen || !!table.locked_at"
 					data-test-edit-button
 					@click="$emit('edit', table.id)"
