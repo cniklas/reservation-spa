@@ -55,7 +55,7 @@ watch(isLoggedIn, val => {
 	<RouterView />
 
 	<Teleport to="body">
-		<footer class="container sticky top-[100vh] py-5">
+		<footer class="top-100vh container sticky py-5">
 			<details class="font-mono text-sm">
 				<summary class="inline-block cursor-help">© 2023 Christian Niklas v{{ version }}</summary>
 				<div>{{ buildTime }}</div>

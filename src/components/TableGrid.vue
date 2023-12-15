@@ -93,7 +93,7 @@ const sortedSeats = (table: TableDoc) => {
 			<div class="grid scroll-m-20 gap-4" :id="`table-${table.index}`">
 				<button
 					type="button"
-					class="rounded-[1.8125rem] text-left"
+					class="rounded-1.8125rem text-left"
 					:disabled="isFormOpen || !!table.locked_at"
 					data-test-edit-button
 					@click="$emit('edit', table.id)"
@@ -115,7 +115,7 @@ const sortedSeats = (table: TableDoc) => {
 								{{ remainingWords(table.name) }}
 							</div>
 							<TransitionGroup name="exchange">
-								<div v-if="table.locked_at" class="text-sm leading-[1.5rem]">wird bearbeitet</div>
+								<div v-if="table.locked_at" class="text-sm/1.5rem">wird bearbeitet</div>
 								<div v-else-if="table.active">{{ emptySeats(table) }}</div>
 								<div v-else class="text-red-600">nicht verfügbar</div>
 							</TransitionGroup>
@@ -136,7 +136,7 @@ const sortedSeats = (table: TableDoc) => {
 				</div>
 			</div>
 
-			<ol class="js-search-list re__dot-separated <sm:leading-[1.375]" :class="{ 'line-through': !table.active }">
+			<ol class="js-search-list re__dot-separated <sm:leading-1.375rem" :class="{ 'line-through': !table.active }">
 				<li v-for="(seat, n) in sortedSeats(table)" :key="`${table.id}-${n}`">
 					{{ seat.name }}
 				</li>
@@ -147,7 +147,7 @@ const sortedSeats = (table: TableDoc) => {
 
 <style lang="postcss">
 .re__grid-table {
-	@apply grid grid-cols-[3rem_1fr] items-center gap-x-2.5 rounded-[1.8125rem] border border-black bg-white p-1;
+	@apply rounded-1.8125rem grid grid-cols-[3rem_1fr] items-center gap-x-2.5 border border-black bg-white p-1;
 	box-shadow: 0 4px 0 -1px theme('colors.dark.50');
 
 	&.is-available {

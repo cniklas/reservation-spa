@@ -5,6 +5,7 @@ import { useAuth } from '@vueuse/firebase/useAuth'
 // import { isSafari } from '@firebase/util'
 import { auth } from '@/firebase'
 import AppSidebar from '@/components/AppSidebar.vue'
+import AppDialog from '@/components/AppDialog.vue'
 import type { SeatKey } from '@/types/TableDoc.type'
 import { PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '@/keys'
 import { formatCount, createUuid, injectStrict, firstWord } from '@/use/helper'
@@ -31,13 +32,11 @@ const {
 } = useTimeout()
 
 const sidebarEl = ref<InstanceType<typeof AppSidebar> | null>(null)
-const dialogEl = ref<HTMLDialogElement | null>(null)
+const dialogEl = ref<InstanceType<typeof AppDialog> | null>(null)
 const dialogMessage = ref('')
 const _showDialog = (message: string) => {
 	dialogMessage.value = message
-	dialogEl.value?.showModal()
-	// https://www.matuzo.at/blog/2023/focus-dialog/#conclusion
-	dialogEl.value?.focus()
+	dialogEl.value?.open()
 }
 
 const reservations = computed(() => {
@@ -236,19 +235,9 @@ onBeforeUnmount(() => {
 		</TableForm>
 	</AppSidebar>
 
-	<dialog ref="dialogEl">
-		<div class="whitespace-pre-line first-line:font-semibold">{{ dialogMessage }}</div>
-		<button
-			type="button"
-			class="rounded-50% absolute right-0 top-0 inline-grid h-8 w-8 -translate-x-1/4 translate-y-1/4 place-content-center bg-slate-800 text-white focus-visible:outline-slate-800"
-			aria-label="Dialog schließen"
-			@click="dialogEl?.close()"
-		>
-			<svg class="re__close-icon" aria-hidden="true" width="14" height="14">
-				<use href="@/assets/app.svg#plus" />
-			</svg>
-		</button>
-	</dialog>
+	<AppDialog ref="dialogEl">
+		{{ dialogMessage }}
+	</AppDialog>
 
 	<Teleport to="#debug-info">Client Offset: {{ clientOffset }}</Teleport>
 </template>

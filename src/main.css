@@ -70,16 +70,3 @@ input:where([type='text'], [type='email'], [type='password'], [type='number']) {
 .re__close-icon {
 	@apply h-3.5 w-3.5 rotate-45 fill-current;
 }
-
-dialog {
-	@apply color-inherit rounded-2 w-sm fixed max-w-[calc(100vw-1.5rem)] border border-black p-3 pt-14;
-
-	&::before {
-		content: '';
-		@apply rounded-t-2 absolute left-0 top-0 h-12 w-full border-b border-b-black bg-gray-200;
-	}
-
-	&::backdrop {
-		@apply fixed inset-0 bg-black/30;
-	}
-}
