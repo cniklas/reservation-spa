@@ -24,7 +24,8 @@ const form = reactive({
 watch(
 	() => form.seats,
 	val => {
-		if (val < 1) form.seats = 1
+		if (typeof val !== 'number') return
+		if (val < 4) form.seats = 4
 		else if (val > 8) form.seats = 8
 	},
 )
@@ -35,8 +36,10 @@ const checkTableName = ({ target }: Event) => {
 	;(target as HTMLInputElement).setCustomValidity(validationErrors.has('name') ? 'Eingabe ungültig' : '')
 }
 
+const isSubmitDisabled = computed(() => isSubmitLocked.value || isEmpty(form.name) || !Number.isInteger(form.seats))
+
 const onSubmit = async () => {
-	if (isSubmitLocked.value || isEmpty(form.name)) return
+	if (isSubmitDisabled.value) return
 	if (validationErrors.size) return
 
 	beforeSubmit()
@@ -91,7 +94,16 @@ const onSubmit = async () => {
 			</div> -->
 			<div class="mb-4">
 				<label for="seats" class="mr-3">Anzahl Sitzplätze</label>
-				<input v-model.number="form.seats" type="number" inputmode="numeric" id="seats" min="4" max="8" />
+				<input
+					v-model.number="form.seats"
+					type="text"
+					class="w-9"
+					id="seats"
+					inputmode="numeric"
+					autocomplete="off"
+					pattern="[4-8]"
+					required
+				/>
 			</div>
 			<div class="mb-4">
 				<label>
@@ -100,9 +112,7 @@ const onSubmit = async () => {
 				</label>
 			</div>
 			<div class="mt-5">
-				<button type="submit" class="re__primary-button" :disabled="isEmpty(form.name) || isSubmitLocked">
-					Speichern
-				</button>
+				<button type="submit" class="re__primary-button" :disabled="isSubmitDisabled">Speichern</button>
 			</div>
 		</form>
 	</main>
