@@ -18,6 +18,7 @@ const TableGrid = defineAsyncComponent(() => import('@/components/TableGrid.vue'
 const TableForm = defineAsyncComponent(() => import('@/components/TableForm.vue'))
 
 const title: string = import.meta.env.VITE_APP_NAME
+const sitePlanImage = import.meta.env.VITE_SITE_PLAN_IMAGE?.split(',') // url,width,height
 
 const { isAuthenticated } = useAuth(auth)
 const {
@@ -207,6 +208,16 @@ onBeforeUnmount(() => {
 				</svg>
 			</h1>
 			<div>{{ tables ? reservations : 'Lade Daten …' }}</div>
+
+			<img
+				v-if="tables && sitePlanImage"
+				class="mt-5 w-full"
+				:src="sitePlanImage[0]"
+				:width="sitePlanImage[1]"
+				:height="sitePlanImage[2]"
+				alt="Aufstellung der Tische"
+				fetchpriority="low"
+			/>
 		</div>
 
 		<div v-if="tables" class="mb-10 mt-6">
