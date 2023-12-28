@@ -115,7 +115,7 @@ const sortedSeats = (table: TableDoc) => {
 								{{ remainingWords(table.name) }}
 							</div>
 							<TransitionGroup name="exchange">
-								<div v-if="table.locked_at" class="text-sm/1.5rem">wird bearbeitet</div>
+								<div v-if="table.locked_at" class="text-sm/6">wird bearbeitet</div>
 								<div v-else-if="table.active">{{ emptySeats(table) }}</div>
 								<div v-else class="text-red-600">nicht verfügbar</div>
 							</TransitionGroup>
