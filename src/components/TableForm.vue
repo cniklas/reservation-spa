@@ -136,7 +136,6 @@ const cancel = () => {
 </script>
 
 <template>
-	<!-- <div class="timer-radial relative h-20 w-20 rounded-full bg-rose-500 bg-blend-multiply" /> -->
 	<div class="mb-3">
 		Bearbeitungszeit: <span class="font-semibold"><slot /></span>
 	</div>
@@ -178,13 +177,6 @@ const cancel = () => {
 					+
 				</button>
 			</div>
-			<!-- <div class="mb-4">
-				<div>Block</div>
-				<template v-for="[key, block] of blocks" :key="`block-${key}`">
-					<input v-model.number="form.block_id" type="radio" :id="`block_id_${key}`" name="block_id" :value="key" />
-					<label :for="`block_id_${key}`">{{ block }}</label>
-				</template>
-			</div> -->
 			<div class="mb-4">
 				<label>
 					verfügbar
@@ -259,33 +251,4 @@ const cancel = () => {
 		content: '?';
 	}
 }
-
-/* https://web.dev/at-property/ */
-/* https://dev.to/afif/we-can-finally-animate-css-gradient-kdk */
-/* Chrome only, see https://caniuse.com/?search=%40property */
-/* https://css-tricks.com/making-a-real-time-clock-with-a-conic-gradient-face/ */
-/* @supports (background: paint(something)) {
-	@property --angle {
-		syntax: '<angle>';
-		inherits: false;
-		initial-value: 0deg;
-	}
-
-	.timer-radial {
-		--angle: 0deg;
-		background-image: conic-gradient(
-			from 0deg,
-			rgb(255 255 255) 2deg,
-			rgb(0 0 0 / 0.5) var(--angle),
-			rgb(255 255 255) 2deg,
-			rgb(0 0 0 / 0.7)
-		);
-		transform: translateZ(0);
-
-		.is-running > & {
-			--angle: 360deg;
-			transition: --angle var(--edit-timeout) linear;
-		}
-	}
-} */
 </style>

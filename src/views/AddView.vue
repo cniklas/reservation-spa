@@ -16,7 +16,6 @@ const _getNextIndex = () => Math.max(...(tables.value?.map(item => item.index) ?
 
 const form = reactive({
 	active: true,
-	block_id: 1,
 	name: '',
 	seats: 8,
 })
@@ -85,13 +84,6 @@ const onSubmit = async () => {
 				/>
 				<div class="text-red-600">{{ validationErrors.get('name') }}</div>
 			</div>
-			<!-- <div class="mb-4">
-				<div>Block</div>
-				<template v-for="[key, block] of blocks" :key="`block-${key}`">
-					<input v-model.number="form.block_id" type="radio" :id="`block_id_${key}`" name="block_id" :value="key" />
-					<label :for="`block_id_${key}`">{{ block }}</label>
-				</template>
-			</div> -->
 			<div class="mb-4">
 				<label for="seats" class="mr-3">Anzahl Sitzplätze</label>
 				<input

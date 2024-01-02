@@ -11,11 +11,6 @@ import App from './App.vue'
 import router from './router'
 import { db } from './firebase'
 
-// const blocks = new Map([
-// 	[1, 'Linker Block'],
-// 	[2, 'Mittelblock'],
-// 	[3, 'Rechter Block'],
-// ])
 const PATH = 'tables'
 const tables = useFirestore(query(collection(db, PATH), orderBy('index')))
 
@@ -25,7 +20,6 @@ const updateDocument = async (id: string, data: DocumentData) => {
 }
 
 const app = createApp(App)
-// app.provide(PROVIDE_BLOCKS, blocks)
 app.provide(PROVIDE_TABLES, tables)
 app.provide(PROVIDE_UPDATE_DOCUMENT, updateDocument)
 app.use(router)

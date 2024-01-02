@@ -3,7 +3,6 @@ import type { TableDoc } from '../src/types/TableDoc.type'
 export const mockTables = (): TableDoc[] => [
 	{
 		active: true,
-		block_id: 1,
 		id: 'test_table_id-1',
 		index: 1,
 		name: 'Test Table 1',
@@ -20,7 +19,6 @@ export const mockTables = (): TableDoc[] => [
 	},
 	{
 		active: true,
-		block_id: 1,
 		id: 'test_table_id-2',
 		index: 2,
 		name: 'Test Table 2',
@@ -37,7 +35,6 @@ export const mockTables = (): TableDoc[] => [
 	},
 	{
 		active: true,
-		block_id: 1,
 		id: 'test_table_id-3',
 		index: 3,
 		name: 'Test Table 3',

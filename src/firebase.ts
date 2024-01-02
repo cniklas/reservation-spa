@@ -9,6 +9,6 @@ const firebaseApp = initializeApp({
 	appId: import.meta.env.VITE_APP_ID,
 })
 const auth = getAuth(firebaseApp)
-const db = getFirestore(/* firebaseApp */)
+const db = getFirestore()
 
 export { auth, db }
