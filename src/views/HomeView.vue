@@ -97,7 +97,7 @@ const onEditTable = async (id: string) => {
 
 	if (selectedItem.value) return
 
-	itemId.value = id // now `selectedItem` will be set
+	itemId.value = id // `selectedItem` will be set
 	/* await */ updateDocument(id, { locked_by: uuid.value, locked_at: serverTimestamp() })
 	setTimer(onTimeoutOrCancel)
 }
@@ -123,7 +123,7 @@ const _clearEditState = () => {
 	if (!selectedItem.value) return
 
 	clearTimer()
-	itemId.value = null // now `selectedItem` will be unset
+	itemId.value = null // `selectedItem` will be unset
 	isSaving.value = false
 }
 
@@ -222,9 +222,9 @@ onBeforeUnmount(() => {
 
 		<div v-if="tables" class="mb-10 mt-6">
 			<TableGrid
-				:tables="tables"
-				:uuid="uuid"
-				:is-logged-in="isAuthenticated"
+				:tables
+				:uuid
+				:isAuthenticated
 				:is-form-open="!!selectedItem"
 				@edit="onEditTable"
 				@unlock="onUnlockTable"
@@ -237,7 +237,7 @@ onBeforeUnmount(() => {
 		<TableForm
 			v-if="selectedItem"
 			:entry="selectedItem"
-			:is-logged-in="isAuthenticated"
+			:isAuthenticated
 			@cancel="onTimeoutOrCancel"
 			@saving="isSaving = true"
 			@saved="onSaved"
@@ -250,7 +250,7 @@ onBeforeUnmount(() => {
 		{{ dialogMessage }}
 	</AppDialog>
 
-	<Teleport to="#debug-info">Client Offset: {{ clientOffset }}</Teleport>
+	<!-- <Teleport to="#debug-info">Client Offset: {{ clientOffset }}</Teleport> -->
 </template>
 
 <style lang="postcss">

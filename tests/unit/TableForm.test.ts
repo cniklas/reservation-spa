@@ -17,7 +17,7 @@ const factory = (props?: any) =>
 		},
 		props: {
 			entry,
-			isLoggedIn: false,
+			isAuthenticated: false,
 			...props,
 		},
 	})
@@ -37,7 +37,7 @@ describe('TableForm.vue', () => {
 		const increaseButtonSelector = '[data-test-increase-button]'
 		expect(wrapper.find(increaseButtonSelector).exists()).toBe(false)
 
-		wrapper.setProps({ isLoggedIn: true })
+		wrapper.setProps({ isAuthenticated: true })
 		await flushPromises()
 
 		expect(wrapper.find(increaseButtonSelector).exists()).toBe(true)
@@ -51,7 +51,7 @@ describe('TableForm.vue', () => {
 		const minSeats = 4
 		const maxSeats = 8
 		const seatsSelector = '[data-test-seat]'
-		wrapper = factory({ isLoggedIn: true })
+		wrapper = factory({ isAuthenticated: true })
 
 		// decrease
 		const decreaseButton = wrapper.find('[data-test-decrease-button]')

@@ -13,7 +13,7 @@ const factory = () =>
 		props: {
 			tables: mockTables(),
 			uuid: _uuid,
-			isLoggedIn: false,
+			isAuthenticated: false,
 			isFormOpen: false,
 		},
 	})
@@ -87,7 +87,7 @@ describe('TableGrid.vue', () => {
 		unlockButtons = getUnlockButtons()
 		expect(unlockButtons.length).toBe(0)
 
-		wrapper.setProps({ isLoggedIn: true })
+		wrapper.setProps({ isAuthenticated: true })
 		await flushPromises()
 
 		unlockButtons = getUnlockButtons()
@@ -101,7 +101,7 @@ describe('TableGrid.vue', () => {
 			table.locked_by = table.id === id ? _uuid : createUuid()
 			table.locked_at = _timestamp
 		})
-		wrapper.setProps({ tables, isLoggedIn: true })
+		wrapper.setProps({ tables, isAuthenticated: true })
 		await flushPromises()
 
 		unlockButtons = getUnlockButtons()
@@ -112,7 +112,7 @@ describe('TableGrid.vue', () => {
 		const index = 1
 		tables[index].locked_by = createUuid()
 		tables[index].locked_at = _timestamp
-		wrapper.setProps({ tables, isLoggedIn: true })
+		wrapper.setProps({ tables, isAuthenticated: true })
 		await flushPromises()
 
 		unlockButtons = getUnlockButtons()

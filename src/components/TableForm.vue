@@ -28,7 +28,7 @@ const emit = defineEmits<{
 }>()
 const props = defineProps<{
 	entry: TableDoc
-	isLoggedIn: boolean
+	isAuthenticated: boolean
 }>()
 
 const form = reactive({ ...props.entry })
@@ -141,7 +141,7 @@ const cancel = () => {
 	</div>
 
 	<form novalidate @submit.prevent="onSubmit">
-		<template v-if="isLoggedIn">
+		<template v-if="isAuthenticated">
 			<div class="mb-4">
 				<label for="name" class="mr-3">Name</label>
 				<input

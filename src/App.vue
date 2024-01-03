@@ -10,6 +10,8 @@ const router = useRouter()
 // @ts-ignore
 const version: string = __APP_VERSION__
 // @ts-ignore
+const buildYear = new Date(__BUILD_TIME__).getFullYear()
+// @ts-ignore
 const buildTime = `${new Date(__BUILD_TIME__).toLocaleDateString('de-DE', { hour: 'numeric', minute: 'numeric' })} Uhr`
 
 const logout = () => {
@@ -57,9 +59,9 @@ watch(isLoggedIn, val => {
 	<Teleport to="body">
 		<footer class="top-100vh container sticky py-5">
 			<details class="font-mono text-sm">
-				<summary class="inline-block cursor-help">© 2023 Christian Niklas v{{ version }}</summary>
+				<summary class="inline-block cursor-help">© 2023 - {{ buildYear }} Christian Niklas v{{ version }}</summary>
 				<div>{{ buildTime }}</div>
-				<div id="debug-info"></div>
+				<!-- <div id="debug-info"></div> -->
 				<a href="https://github.com/cniklas/reservation-spa" class="mt-2 inline-block h-6 w-6" rel="noopener">
 					<span class="sr-only">GitHub repo</span>
 					<svg aria-hidden="true" class="h-6 w-6 fill-current" viewBox="0 0 16 16" width="24" height="24">

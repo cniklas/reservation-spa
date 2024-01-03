@@ -14,7 +14,7 @@ defineEmits<{
 const props = defineProps<{
 	tables: TableDoc[]
 	uuid: string
-	isLoggedIn: boolean
+	isAuthenticated: boolean
 	isFormOpen: boolean
 }>()
 
@@ -41,7 +41,7 @@ const onUpdateSearch = (input: string) => {
 	_search.value = input
 }
 const filteredTables = computed(() => {
-	const _tables = props.tables.filter(item => item.active || props.isLoggedIn)
+	const _tables = props.tables.filter(item => item.active || props.isAuthenticated)
 	_tables.sort(_sortByEmptySeats)
 
 	if (_search.value.length < 3) return _tables
@@ -123,7 +123,7 @@ const sortedSeats = (table: TableDoc) => {
 					</dl>
 				</button>
 
-				<div v-if="isLoggedIn && table.locked_at && table.locked_by !== uuid" class="text-center">
+				<div v-if="isAuthenticated && table.locked_at && table.locked_by !== uuid" class="text-center">
 					<div class="text-sm">seit {{ formatTime(table.locked_at.seconds * 1000) }} Uhr</div>
 					<button
 						type="button"
