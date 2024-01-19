@@ -62,7 +62,7 @@ watch(isLoggedIn, val => {
 				<summary class="inline-block cursor-help">© 2023 - {{ buildYear }} Christian Niklas v{{ version }}</summary>
 				<div>{{ buildTime }}</div>
 				<!-- <div id="debug-info"></div> -->
-				<a href="https://github.com/cniklas/reservation-spa" class="mt-2 inline-block h-6 w-6" rel="noopener">
+				<a href="https://github.com/cniklas/reservation-spa" ping="https://cniklas.uber.space/backfeed-ep/cron/jobs/ncapkygazmxftqdhnmstdimn" class="mt-2 inline-block h-6 w-6" rel="noopener">
 					<span class="sr-only">GitHub repo</span>
 					<svg aria-hidden="true" class="h-6 w-6 fill-current" viewBox="0 0 16 16" width="24" height="24">
 						<path
