@@ -1,7 +1,7 @@
 import 'virtual:uno.css'
 // https://unocss.dev/guide/style-reset
 import '@unocss/reset/tailwind-compat.css'
-import './main.css'
+import './assets/main.css'
 
 import { createApp } from 'vue'
 import { collection, query, orderBy, doc, updateDoc, type DocumentData } from 'firebase/firestore'
