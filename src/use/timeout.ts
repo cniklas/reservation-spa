@@ -1,6 +1,8 @@
 import { ref, computed } from 'vue'
 import { formatDateTime } from '@/use/helper'
 
+const isDevMode = import.meta.env.DEV
+
 export const ONE_MINUTE = 60 * 1000
 export const EDIT_TIMEOUT = 4 * ONE_MINUTE
 export const RELEASE_TIME = new Date(import.meta.env.VITE_RELEASE_DATE).getTime()
@@ -17,6 +19,16 @@ export const useTimeout = () => {
 	let _releaseIntervalId: number
 	const clearReleaseInterval = () => {
 		clearInterval(_releaseIntervalId)
+	}
+	const _observeReleaseTime = () => {
+		isReleased.value = _isReleasedNow()
+		if (isReleased.value) return
+
+		_releaseIntervalId = window.setInterval(() => {
+			if (!_isReleasedNow()) return
+			clearReleaseInterval()
+			isReleased.value = true
+		}, 2000)
 	}
 
 	const fetchTime = async () => {
@@ -39,16 +51,10 @@ export const useTimeout = () => {
 			const _clientOffset = serverNow - clientNow
 			if (Math.abs(_clientOffset) > 2000) clientOffset.value = _clientOffset
 
-			isReleased.value = _isReleasedNow()
-			if (isReleased.value) return
-
-			_releaseIntervalId = window.setInterval(() => {
-				if (!_isReleasedNow()) return
-				clearReleaseInterval()
-				isReleased.value = true
-			}, 2000)
+			_observeReleaseTime()
 		} catch (error) {
 			console.error(error)
+			if (isDevMode) _observeReleaseTime()
 		}
 	}
 
