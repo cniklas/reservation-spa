@@ -19,7 +19,7 @@ defineExpose({ open })
 			@click="dialogEl?.close()"
 		>
 			<svg class="re__close-icon" aria-hidden="true" width="14" height="14">
-				<use href="@/assets/app.svg#plus" />
+				<use href="/app.svg#plus" />
 			</svg>
 		</button>
 		<div class="whitespace-pre-line first-line:font-semibold"><slot /></div>

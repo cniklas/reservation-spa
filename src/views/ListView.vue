@@ -47,7 +47,7 @@ const reservations = computed(() => {
 			<h1 class="relative mb-1 w-fit text-3xl font-semibold">
 				{{ title }}
 				<svg class="re__doodle -top-4.5 -right-10.5 absolute h-10 w-10" aria-hidden="true" width="40" height="40">
-					<use href="@/assets/app.svg#star-doodle" />
+					<use href="/app.svg#star-doodle" />
 				</svg>
 			</h1>
 			<div>

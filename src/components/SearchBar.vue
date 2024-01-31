@@ -43,7 +43,7 @@ watch(searchDebounced, val => {
 					@click="resetSearch"
 				>
 					<svg class="re__close-icon" aria-hidden="true" width="14" height="14">
-						<use href="@/assets/app.svg#plus" />
+						<use href="/app.svg#plus" />
 					</svg>
 				</button>
 			</div>
