@@ -166,7 +166,7 @@ const sortedSeats = (table: TableDoc) => {
 }
 
 .re__grid-table-label {
-	@apply rounded-3 min-h-6 grid w-fit items-center bg-gray-200 px-2.5 text-sm empty:hidden;
+	@apply rounded-3 grid min-h-6 w-fit items-center bg-gray-200 px-2.5 text-sm empty:hidden;
 }
 
 @screen sm {
