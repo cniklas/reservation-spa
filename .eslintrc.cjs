@@ -10,10 +10,21 @@ module.exports = {
 		'eslint:recommended',
 		'@vue/eslint-config-typescript',
 		'@vue/eslint-config-prettier/skip-formatting',
+		'plugin:vuejs-accessibility/recommended',
 	],
 	rules: {
 		'arrow-body-style': 'warn',
 		'prefer-arrow-callback': 'warn',
+		'vuejs-accessibility/label-has-for': [
+			'error',
+			{
+				required: {
+					some: ['nesting', 'id'], // either nesting (input within label) or for/id relation is required
+					// every: ['id'], // for/id relation is required
+				},
+			},
+		],
+		'vuejs-accessibility/no-redundant-roles': 'warn',
 	},
 	parserOptions: {
 		ecmaVersion: 'latest',

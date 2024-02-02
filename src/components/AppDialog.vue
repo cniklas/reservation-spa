@@ -14,7 +14,6 @@ defineExpose({ open })
 		<button
 			type="button"
 			class="rounded-50% absolute right-0 top-0 inline-grid h-8 w-8 -translate-x-1/4 translate-y-1/4 place-content-center bg-slate-800 text-white focus-visible:outline-slate-800"
-			autofocus
 			aria-label="Dialog schließen"
 			@click="dialogEl?.close()"
 		>
