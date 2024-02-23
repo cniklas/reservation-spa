@@ -199,7 +199,7 @@ const cancel = () => {
 				<input
 					v-model.trim="form[`seat_${n}` as SeatKey]"
 					type="text"
-					class="max-w-14rem w-full"
+					class="max-w-56 w-full"
 					:id="`seat_${n}`"
 					placeholder="Vor- und Nachname"
 					autocomplete="off"

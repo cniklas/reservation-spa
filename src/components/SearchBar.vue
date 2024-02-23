@@ -22,7 +22,7 @@ watch(searchDebounced, val => {
 	<div class="sticky top-0 z-10 border-b border-b-black bg-white py-3">
 		<div class="container flex items-center">
 			<label class="mr-3" for="search">Suche</label>
-			<div class="max-w-14rem relative grow">
+			<div class="max-w-56 relative grow">
 				<input
 					v-model.trim="search"
 					type="text"
