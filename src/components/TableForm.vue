@@ -153,7 +153,7 @@ const cancel = () => {
 					required
 					@input="checkTableName"
 				/>
-				<div class="mt-1 text-red-600 empty:hidden">{{ validationErrors.get('name') }}</div>
+				<div class="mt-1 text-[--validation-error] empty:hidden">{{ validationErrors.get('name') }}</div>
 			</div>
 			<div class="mb-4">
 				<span class="mr-3">Anzahl Sitzplätze</span>
@@ -199,7 +199,7 @@ const cancel = () => {
 				<input
 					v-model.trim="form[`seat_${n}` as SeatKey]"
 					type="text"
-					class="max-w-56 w-full"
+					class="w-full max-w-56"
 					:id="`seat_${n}`"
 					placeholder="Vor- und Nachname"
 					autocomplete="off"
@@ -208,10 +208,10 @@ const cancel = () => {
 					@change="onChange(`seat_${n}`, $event.target as HTMLInputElement)"
 				/>
 
-				<div v-if="validationErrors.has(`seat_${n}`)" class="col-start-2 mt-1 text-red-600">
+				<div v-if="validationErrors.has(`seat_${n}`)" class="col-start-2 mt-1 text-[--validation-error]">
 					<template v-if="Array.isArray(validationErrors.get(`seat_${n}`))">
 						<div class="mb-0.5">Ist diese Person identisch mit:</div>
-						<ul class="re__comma-separated text-dark-700">
+						<ul class="re__comma-separated text-[--dark]">
 							<li v-for="(hit, i) in validationErrors.get(`seat_${n}`)" v-html="hit" :key="`${n}-${i}`"></li>
 						</ul>
 

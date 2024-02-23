@@ -117,7 +117,7 @@ const sortedSeats = (table: TableDoc) => {
 							<TransitionGroup name="exchange">
 								<div v-if="table.locked_at" class="text-sm/6">wird bearbeitet</div>
 								<div v-else-if="table.active">{{ emptySeats(table) }}</div>
-								<div v-else class="text-red-600">nicht verfügbar</div>
+								<div v-else class="text-[--validation-error]">nicht verfügbar</div>
 							</TransitionGroup>
 						</dd>
 					</dl>
@@ -151,7 +151,7 @@ const sortedSeats = (table: TableDoc) => {
 	box-shadow: 0 4px 0 -1px theme('colors.dark.50');
 
 	&.is-available {
-		box-shadow: 0 7px 0 -1px theme('colors.lime.500');
+		box-shadow: 0 7px 0 -1px var(--lime);
 	}
 }
 
@@ -212,8 +212,8 @@ const sortedSeats = (table: TableDoc) => {
 }
 
 ::highlight(search-result) {
-	background-color: theme('colors.lime.500');
-	color: theme('colors.dark.700');
+	background-color: var(--lime);
+	color: var(--dark);
 	padding: 0.625rem;
 }
 </style>

@@ -82,7 +82,7 @@ const onSubmit = async () => {
 					required
 					@input="checkTableName"
 				/>
-				<div class="text-red-600">{{ validationErrors.get('name') }}</div>
+				<div class="text-[--validation-error]">{{ validationErrors.get('name') }}</div>
 			</div>
 			<div class="mb-4">
 				<label for="seats" class="mr-3">Anzahl Sitzplätze</label>

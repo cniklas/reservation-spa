@@ -22,7 +22,7 @@ watch(searchDebounced, val => {
 	<div class="sticky top-0 z-10 border-b border-b-black bg-white py-3">
 		<div class="container flex items-center">
 			<label class="mr-3" for="search">Suche</label>
-			<div class="max-w-56 relative grow">
+			<div class="relative max-w-56 grow">
 				<input
 					v-model.trim="search"
 					type="text"
@@ -36,7 +36,7 @@ watch(searchDebounced, val => {
 				/>
 				<button
 					type="button"
-					class="rounded-50% absolute right-1 top-1/2 inline-grid h-7 w-7 -translate-y-1/2 place-content-center bg-slate-800 text-white focus-visible:outline-slate-800"
+					class="rounded-50% absolute right-1 top-1/2 inline-grid h-7 w-7 -translate-y-1/2 place-content-center bg-[--slate] text-white focus-visible:outline-[--slate]"
 					:class="{ '!hidden': !search.length }"
 					aria-label="Suche zurücksetzen"
 					data-test-search-button

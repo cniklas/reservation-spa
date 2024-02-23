@@ -1,5 +1,12 @@
+:root {
+	--dark: theme('colors.dark.700');
+	--lime: theme('colors.lime.500');
+	--slate: theme('colors.slate.800');
+	--validation-error: theme('colors.red.600');
+}
+
 body {
-	color: theme('colors.dark.700');
+	color: var(--dark);
 	background-color: theme('colors.amber.50');
 	min-height: 100vh;
 	min-height: 100dvh;
@@ -54,21 +61,21 @@ input:where([type='text'], [type='email'], [type='password'], [type='number']) {
 }
 
 :is(input, select, textarea):user-invalid {
-	@apply border-red-600 focus-visible:outline-red-600;
+	@apply border-[--validation-error] focus-visible:outline-[--validation-error];
 }
 
 @supports not selector(:user-invalid) {
 	:is(input, select, textarea):invalid {
-		@apply border-red-600 focus-visible:outline-red-600;
+		@apply border-[--validation-error] focus-visible:outline-[--validation-error];
 	}
 }
 
 .re__primary-button {
-	@apply rounded-4.5 text-1rem inline-block h-9 bg-slate-800 px-5 text-white focus-visible:outline-slate-800;
+	@apply rounded-4.5 text-1rem inline-block h-9 bg-[--slate] px-5 text-white focus-visible:outline-[--slate];
 }
 
 .re__secondary-button {
-	@apply rounded-4.5 text-1rem inline-block h-9 border-2 border-current px-4 text-slate-800;
+	@apply rounded-4.5 text-1rem inline-block h-9 border-2 border-current px-4 text-[--slate];
 }
 
 .re__close-icon {
