@@ -24,7 +24,6 @@ module.exports = {
 				},
 			},
 		],
-		'vuejs-accessibility/no-redundant-roles': 'warn',
 	},
 	parserOptions: {
 		ecmaVersion: 'latest',

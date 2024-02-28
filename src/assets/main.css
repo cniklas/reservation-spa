@@ -12,6 +12,12 @@ body {
 	min-height: 100dvh;
 }
 
+ol,
+ul,
+menu {
+	list-style-type: '';
+}
+
 input[type='search']::-webkit-search-cancel-button,
 input[type='search']::-webkit-search-decoration {
 	-webkit-appearance: none;
