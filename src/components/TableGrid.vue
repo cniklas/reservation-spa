@@ -7,7 +7,7 @@ import type { SortableReservation } from '@/types/Reservation.type'
 import { formatTime, formatCount, sortByName, firstWord, remainingWords } from '@/use/helper'
 import { useHighlight } from '@/use/highlight'
 
-defineEmits<{
+const emit = defineEmits<{
 	(event: 'edit', id: string): void
 	(event: 'unlock', id: string): void
 }>()
@@ -80,6 +80,11 @@ const sortedSeats = (table: TableDoc) => {
 	reservations.sort(sortByName)
 	return reservations
 }
+
+const onEditTable = (table: TableDoc) => {
+	if (table.locked_at) return
+	emit('edit', table.id)
+}
 </script>
 
 <template>
@@ -93,9 +98,9 @@ const sortedSeats = (table: TableDoc) => {
 				<button
 					type="button"
 					class="rounded-1.8125rem z-1 relative text-left"
-					:disabled="!!table.locked_at"
+					:aria-disabled="!!table.locked_at"
 					data-test-edit-button
-					@click="$emit('edit', table.id)"
+					@click="onEditTable(table)"
 				>
 					<dl class="re__grid-table" :class="{ 'is-available': table.seats - countTakenSeats(table) }" data-test-table>
 						<dt class="re__grid-table-number">

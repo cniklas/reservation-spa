@@ -26,8 +26,8 @@ button[type='submit'] {
 	font-weight: 400;
 }
 
-:disabled {
-	cursor: default;
+[aria-disabled='true'] {
+	cursor: not-allowed;
 }
 
 summary {

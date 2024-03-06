@@ -58,8 +58,8 @@ describe('TableGrid.vue', () => {
 		await flushPromises()
 
 		editButtons = getEditButtons()
-		expect(editButtons.filter(button => button.isDisabled()).length).toBe(1)
-		expect(editButtons.at(index).isDisabled()).toBe(true)
+		expect(editButtons.filter(button => button.attributes('aria-disabled') === 'true').length).toBe(1)
+		expect(editButtons.at(index).attributes('aria-disabled')).toBe('true')
 	})
 
 	it('emits a custom event "edit" when edit button is clicked', async () => {
