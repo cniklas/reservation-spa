@@ -15,7 +15,6 @@ const props = defineProps<{
 	tables: TableDoc[]
 	uuid: string
 	isAuthenticated: boolean
-	isFormOpen: boolean
 }>()
 
 const countTakenSeats = (table: TableDoc) => {
@@ -94,7 +93,7 @@ const sortedSeats = (table: TableDoc) => {
 				<button
 					type="button"
 					class="rounded-1.8125rem z-1 relative text-left"
-					:disabled="isFormOpen || !!table.locked_at"
+					:disabled="!!table.locked_at"
 					data-test-edit-button
 					@click="$emit('edit', table.id)"
 				>

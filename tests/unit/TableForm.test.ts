@@ -23,7 +23,7 @@ const factory = (props?: any) =>
 	})
 
 describe('TableForm.vue', () => {
-	let wrapper = null
+	let wrapper
 
 	afterEach(() => {
 		wrapper.unmount()
@@ -47,7 +47,7 @@ describe('TableForm.vue', () => {
 		expect(checkbox.element.checked).toBe(entry.active)
 	})
 
-	it('it increases/decreases the number of seats if increase/decrease button is clicked', async () => {
+	it('increases/decreases the number of seats if increase/decrease button is clicked', async () => {
 		const minSeats = 4
 		const maxSeats = 8
 		const seatsSelector = '[data-test-seat]'

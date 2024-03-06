@@ -14,15 +14,15 @@ const factory = () =>
 			tables: mockTables(),
 			uuid: _uuid,
 			isAuthenticated: false,
-			isFormOpen: false,
+			// isFormOpen: false,
 		},
 	})
 
 describe('TableGrid.vue', () => {
-	let wrapper = null
+	let wrapper
 	let tables: TableDoc[] = []
-	let editButtons = null
-	let unlockButtons = null
+	let editButtons
+	let unlockButtons
 	const getEditButtons = () => wrapper.findAll('[data-test-edit-button]')
 	const getUnlockButtons = () => wrapper.findAll('[data-test-unlock-button]')
 	beforeEach(() => {
@@ -40,15 +40,15 @@ describe('TableGrid.vue', () => {
 		)
 	})
 
-	it('has all edit buttons to be disabled when form is open', async () => {
-		wrapper.setProps({ isFormOpen: true })
-		await flushPromises()
+	// it('has all edit buttons to be disabled when form is open', async () => {
+	// 	wrapper.setProps({ isFormOpen: true })
+	// 	await flushPromises()
 
-		editButtons = getEditButtons()
-		editButtons.forEach(button => {
-			expect(button.isDisabled()).toBe(true)
-		})
-	})
+	// 	editButtons = getEditButtons()
+	// 	editButtons.forEach(button => {
+	// 		expect(button.isDisabled()).toBe(true)
+	// 	})
+	// })
 
 	it('if a table is locked its edit button is disabled', async () => {
 		const index = 1
@@ -94,7 +94,7 @@ describe('TableGrid.vue', () => {
 		expect(unlockButtons.length).toBe(tables.length - 1)
 	})
 
-	it('it has no unlock button for a table locked by the logged-in user', async () => {
+	it('has no unlock button for a table locked by the logged-in user', async () => {
 		const id = tables.at(-1).id
 		tables.map(table => {
 			// one table is locked by the logged-in user

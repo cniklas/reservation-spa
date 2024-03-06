@@ -4,7 +4,7 @@ import { deleteField, serverTimestamp } from 'firebase/firestore'
 import { useAuth } from '@vueuse/firebase/useAuth'
 // import { isSafari } from '@firebase/util'
 import { auth } from '@/firebase'
-import AppSidebar from '@/components/AppSidebar.vue'
+import SidebarDialog from '@/components/SidebarDialog.vue'
 import AppDialog from '@/components/AppDialog.vue'
 import type { SeatKey } from '@/types/TableDoc.type'
 import { PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '@/keys'
@@ -32,7 +32,7 @@ const {
 	clearTimer,
 } = useTimeout()
 
-const sidebarEl = ref<InstanceType<typeof AppSidebar> | null>(null)
+const sidebarEl = ref<InstanceType<typeof SidebarDialog> | null>(null)
 const dialogEl = ref<InstanceType<typeof AppDialog> | null>(null)
 const dialogMessage = ref('')
 const _showDialog = (message: string) => {
@@ -221,18 +221,11 @@ onBeforeUnmount(() => {
 		</div>
 
 		<div v-if="tables" class="mb-10 mt-6">
-			<TableGrid
-				:tables
-				:uuid
-				:isAuthenticated
-				:is-form-open="!!selectedItem"
-				@edit="onEditTable"
-				@unlock="onUnlockTable"
-			/>
+			<TableGrid :tables :uuid :isAuthenticated @edit="onEditTable" @unlock="onUnlockTable" />
 		</div>
 	</main>
 
-	<AppSidebar v-if="tables" ref="sidebarEl" @closing="clearTimer">
+	<SidebarDialog v-if="tables" ref="sidebarEl" @cancel="onTimeoutOrCancel" @closing="clearTimer">
 		<template v-if="selectedItem" #headline>{{ `Tisch ${selectedItem.name}` }}</template>
 		<TableForm
 			v-if="selectedItem"
@@ -244,7 +237,7 @@ onBeforeUnmount(() => {
 		>
 			{{ countdownToTime }}
 		</TableForm>
-	</AppSidebar>
+	</SidebarDialog>
 
 	<AppDialog ref="dialogEl">
 		{{ dialogMessage }}

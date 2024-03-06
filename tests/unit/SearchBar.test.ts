@@ -6,7 +6,7 @@ const inputValue = 'test'
 const factory = () => mount(SearchBar)
 
 describe('SearchBar.vue', () => {
-	let wrapper = null
+	let wrapper
 
 	const getInputElement = () => wrapper.find('[data-test-search-input]')
 	const getButton = () => wrapper.find('[data-test-search-button]')
