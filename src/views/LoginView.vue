@@ -9,13 +9,14 @@ const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError } = useErrorHan
 const email = ref('')
 const password = ref('')
 
-const onSubmit = /* async */ () => {
+const onSubmit = async () => {
 	if (isSubmitLocked.value || isEmpty(email, password)) return
 
 	beforeSubmit()
 
 	try {
-		/* const { user } = await */ signInWithEmailAndPassword(auth, email.value, password.value)
+		// without `await` the error handling will not work
+		await signInWithEmailAndPassword(auth, email.value, password.value)
 	} catch (error) {
 		handleSubmitError(error)
 	}
