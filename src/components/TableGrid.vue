@@ -99,7 +99,7 @@ const sortedSeats = (table: TableDoc) => {
 				>
 					<dl class="re__grid-table" :class="{ 'is-available': table.seats - countTakenSeats(table) }" data-test-table>
 						<dt class="re__grid-table-number">
-							<div class="re__grid-table-number-content">
+							<div class="re__grid-table-number-content" :id="`table-${table.index}-label`">
 								<span class="sr-only">Tisch</span>
 								{{ firstWord(table.name) }}
 							</div>
@@ -135,7 +135,12 @@ const sortedSeats = (table: TableDoc) => {
 				</div>
 			</div>
 
-			<ol class="js-search-list re__dot-separated <sm:leading-1.375rem" :class="{ 'line-through': !table.active }">
+			<ol
+				class="js-search-list re__dot-separated <sm:leading-1.375rem"
+				:class="{ 'line-through': !table.active }"
+				role="list"
+				:aria-labelledby="`table-${table.index}-label`"
+			>
 				<li v-for="(seat, n) in sortedSeats(table)" :key="`${table.id}-${n}`">
 					{{ seat.name }}
 				</li>
@@ -173,7 +178,9 @@ const sortedSeats = (table: TableDoc) => {
 		@apply flex flex-wrap;
 
 		> :not(:last-child)::after {
-			@apply mx-1 content-['•'];
+			@apply mx-1;
+			content: '•';
+			content: '•' / '';
 		}
 	}
 }

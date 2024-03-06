@@ -24,6 +24,14 @@ module.exports = {
 				},
 			},
 		],
+		'vuejs-accessibility/no-redundant-roles': [
+			'error',
+			// allowed roles
+			{
+				nav: ['navigation'],
+				ol: ['list'],
+			},
+		],
 	},
 	parserOptions: {
 		ecmaVersion: 'latest',
