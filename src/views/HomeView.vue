@@ -193,17 +193,13 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-	<div
-		class="re__timer-bar fixed left-0 top-0 z-30 h-1 w-full"
-		:class="{ 'is-running': isTimerRunning }"
-		:style="{ '--edit-timeout': `${EDIT_TIMEOUT}ms` }"
-	/>
+	<div class="timer-bar" :class="{ 'is-running': isTimerRunning }" :style="{ '--edit-timeout': `${EDIT_TIMEOUT}ms` }" />
 
 	<main class="py-5">
 		<div class="container">
 			<h1 class="relative mb-1 w-fit text-3xl font-semibold">
 				{{ title }}
-				<svg class="re__doodle -top-4.5 -right-10.5 absolute h-10 w-10" aria-hidden="true" width="40" height="40">
+				<svg class="doodle -top-4.5 -right-10.5 absolute h-10 w-10" aria-hidden="true" width="40" height="40">
 					<use href="/app.svg#star-doodle" />
 				</svg>
 			</h1>
@@ -247,18 +243,26 @@ onBeforeUnmount(() => {
 </template>
 
 <style lang="postcss">
-.re__timer-bar {
+.timer-bar {
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 30;
+	height: 0.25rem;
+	width: 100%;
 	transition: background-color 240ms;
 
 	&::after {
-		@apply h-inherit block bg-rose-500;
 		content: '';
+		display: block;
+		height: inherit;
+		background-color: theme('colors.rose.500');
 		transform: translateX(-100%);
 		transition: transform 240ms;
 	}
 
 	&.is-running {
-		@apply bg-rose-50;
+		background-color: theme('colors.rose.50');
 
 		&::after {
 			transform: translateX(0);
@@ -269,7 +273,7 @@ onBeforeUnmount(() => {
 }
 
 @media not all and (min-width: 21em) {
-	.re__doodle {
+	.doodle {
 		display: none;
 	}
 }

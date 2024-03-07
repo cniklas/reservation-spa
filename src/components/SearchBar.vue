@@ -36,13 +36,13 @@ watch(searchDebounced, val => {
 				/>
 				<button
 					type="button"
-					class="rounded-50% absolute right-1 top-1/2 inline-grid h-7 w-7 -translate-y-1/2 place-content-center bg-[--slate] text-white focus-visible:outline-[--slate]"
+					class="close-button absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2"
 					:class="{ '!hidden': !search.length }"
 					aria-label="Suche zurücksetzen"
 					data-test-search-button
 					@click="resetSearch"
 				>
-					<svg class="re__close-icon" aria-hidden="true" width="14" height="14">
+					<svg class="close-icon" aria-hidden="true" width="14" height="14">
 						<use href="/app.svg#plus" />
 					</svg>
 				</button>

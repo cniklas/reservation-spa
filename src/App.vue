@@ -50,7 +50,7 @@ watch(isLoggedIn, val => {
 			<RouterLink to="/">Home</RouterLink>
 			<RouterLink to="/liste">Liste</RouterLink>
 			<RouterLink v-if="isLoggedIn" to="/add">Neuer Tisch</RouterLink>
-			<button v-if="isLoggedIn" type="button" class="re__primary-button" @click="logout">Logout</button>
+			<button v-if="isLoggedIn" type="button" class="primary-button" @click="logout">Logout</button>
 		</nav>
 	</header>
 

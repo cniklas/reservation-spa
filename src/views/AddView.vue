@@ -104,7 +104,7 @@ const onSubmit = async () => {
 				</label>
 			</div>
 			<div class="mt-5">
-				<button type="submit" class="re__primary-button" :disabled="isSubmitDisabled">Speichern</button>
+				<button type="submit" class="primary-button" :disabled="isSubmitDisabled">Speichern</button>
 			</div>
 		</form>
 	</main>

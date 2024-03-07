@@ -102,20 +102,20 @@ const onEditTable = (table: TableDoc) => {
 					data-test-edit-button
 					@click="onEditTable(table)"
 				>
-					<dl class="re__grid-table" :class="{ 'is-available': table.seats - countTakenSeats(table) }" data-test-table>
-						<dt class="re__grid-table-number">
-							<div class="re__grid-table-number-content" :id="`table-${table.index}-label`">
+					<dl class="grid-table" :class="{ 'is-available': table.seats - countTakenSeats(table) }" data-test-table>
+						<dt class="grid-table-number">
+							<div class="grid-table-number-content" :id="`table-${table.index}-label`">
 								<span class="sr-only">Tisch</span>
 								{{ firstWord(table.name) }}
 							</div>
 							<Transition name="fade" mode="out-in">
-								<div v-if="table.locked_at" class="re__spinner-wrapper">
-									<SkateboardSpinner class="re__spinner" />
+								<div v-if="table.locked_at" class="spinner-wrapper">
+									<SkateboardSpinner class="spinner" />
 								</div>
 							</Transition>
 						</dt>
 						<dd>
-							<div class="re__grid-table-label">
+							<div class="grid-table-label">
 								{{ remainingWords(table.name) }}
 							</div>
 							<TransitionGroup name="exchange">
@@ -129,19 +129,14 @@ const onEditTable = (table: TableDoc) => {
 
 				<div v-if="isAuthenticated && table.locked_at && table.locked_by !== uuid" class="text-center">
 					<div class="text-sm">seit {{ formatTime(table.locked_at.seconds * 1000) }} Uhr</div>
-					<button
-						type="button"
-						class="re__primary-button mt-1"
-						data-test-unlock-button
-						@click="$emit('unlock', table.id)"
-					>
+					<button type="button" class="primary-button mt-1" data-test-unlock-button @click="$emit('unlock', table.id)">
 						🔑 entsperren
 					</button>
 				</div>
 			</div>
 
 			<ol
-				class="js-search-list re__dot-separated <sm:leading-1.375rem"
+				class="js-search-list dot-separated <sm:leading-1.375rem"
 				:class="{ 'line-through': !table.active }"
 				role="list"
 				:aria-labelledby="`table-${table.index}-label`"
@@ -155,7 +150,7 @@ const onEditTable = (table: TableDoc) => {
 </template>
 
 <style lang="postcss">
-.re__grid-table {
+.grid-table {
 	@apply rounded-1.8125rem grid grid-cols-[3rem_1fr] items-center gap-x-2.5 border border-black bg-white p-1;
 	box-shadow: 0 4px 0 -1px theme('colors.dark.50');
 
@@ -164,23 +159,24 @@ const onEditTable = (table: TableDoc) => {
 	}
 }
 
-.re__grid-table-number {
+.grid-table-number {
 	@apply rounded-50% grid h-12 w-12 border border-black text-xl font-semibold;
 }
 
-.re__grid-table-number-content {
+.grid-table-number-content {
 	grid-area: 1 / 1 / 1 / 1;
 	display: grid;
 	place-content: center;
 }
 
-.re__grid-table-label {
+.grid-table-label {
 	@apply rounded-3 grid min-h-6 w-fit items-center bg-gray-200 px-2.5 text-sm empty:hidden;
 }
 
 @screen sm {
-	.re__dot-separated {
-		@apply flex flex-wrap;
+	.dot-separated {
+		display: flex;
+		flex-wrap: wrap;
 
 		> :not(:last-child)::after {
 			@apply mx-1;
@@ -190,13 +186,16 @@ const onEditTable = (table: TableDoc) => {
 	}
 }
 
-.re__spinner-wrapper {
+.spinner-wrapper {
 	grid-area: 1 / 1 / 1 / 1;
 	position: relative;
 }
 
-.re__spinner {
-	@apply absolute left-1/2 h-16 w-16;
+.spinner {
+	position: absolute;
+	left: 50%;
+	height: 4rem;
+	width: 4rem;
 	transform: translate(-50%, -15px);
 }
 

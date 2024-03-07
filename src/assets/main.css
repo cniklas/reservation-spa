@@ -70,14 +70,18 @@ input:where([type='text'], [type='email'], [type='password'], [type='number']) {
 	}
 }
 
-.re__primary-button {
+.primary-button {
 	@apply rounded-4.5 text-1rem inline-block h-9 bg-[--slate] px-5 text-white focus-visible:outline-[--slate];
 }
 
-.re__secondary-button {
+.secondary-button {
 	@apply rounded-4.5 text-1rem inline-block h-9 border-2 border-current px-4 text-[--slate];
 }
 
-.re__close-icon {
+.close-button {
+	@apply rounded-50% inline-grid place-content-center bg-[--slate] text-white focus-visible:outline-[--slate];
+}
+
+.close-icon {
 	@apply h-3.5 w-3.5 rotate-45 fill-current;
 }

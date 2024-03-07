@@ -159,7 +159,7 @@ const cancel = () => {
 				<span class="mr-3">Anzahl Sitzplätze</span>
 				<button
 					type="button"
-					class="re__secondary-button !p-unset w-9"
+					class="secondary-button !p-unset w-9"
 					:disabled="form.seats === 4"
 					data-test-decrease-button
 					@click="decrease"
@@ -169,7 +169,7 @@ const cancel = () => {
 				<span class="w-1ch mx-2 inline-block">{{ form.seats }}</span>
 				<button
 					type="button"
-					class="re__secondary-button !p-unset w-9"
+					class="secondary-button !p-unset w-9"
 					:disabled="form.seats === 8"
 					data-test-increase-button
 					@click="increase"
@@ -185,12 +185,7 @@ const cancel = () => {
 			</div>
 		</template>
 
-		<div
-			v-for="n in form.seats"
-			:key="`seat-${n}`"
-			class="mb-4 grid grid-cols-[1ch_1fr] items-center gap-x-2.5"
-			data-test-seat
-		>
+		<div v-for="n in form.seats" :key="`seat-${n}`" class="input-wrapper" data-test-seat>
 			<label :for="`seat_${n}`" class="text-right text-lg font-semibold">
 				<span class="sr-only">Platz</span>
 				{{ n }}
@@ -210,13 +205,13 @@ const cancel = () => {
 			<div v-if="validationErrors.has(`seat_${n}`)" class="col-start-2 mt-1 text-[--validation-error]">
 				<template v-if="Array.isArray(validationErrors.get(`seat_${n}`))">
 					<div class="mb-0.5">Ist diese Person identisch mit:</div>
-					<ul class="re__comma-separated text-[--dark]">
+					<ul class="comma-separated text-[--dark]">
 						<li v-for="(hit, i) in validationErrors.get(`seat_${n}`)" v-html="hit" :key="`${n}-${i}`"></li>
 					</ul>
 
-					<div class="my-2 grid w-fit grid-cols-2 gap-x-2.5">
-						<button type="button" class="re__secondary-button" @click="resetValue(`seat_${n}`)">ja</button>
-						<button type="button" class="re__secondary-button" @click="resetValidation(`seat_${n}`)">nein</button>
+					<div class="button-wrapper my-2">
+						<button type="button" class="secondary-button" @click="resetValue(`seat_${n}`)">ja</button>
+						<button type="button" class="secondary-button" @click="resetValidation(`seat_${n}`)">nein</button>
 					</div>
 				</template>
 
@@ -224,15 +219,25 @@ const cancel = () => {
 			</div>
 		</div>
 
-		<div class="mt-5 grid w-fit grid-cols-2 gap-x-2.5">
-			<button type="submit" class="re__primary-button" :disabled="isSubmitLocked">Speichern</button>
-			<button type="button" class="re__secondary-button" data-test-cancel-button @click="cancel">Abbrechen</button>
+		<div class="button-wrapper mt-5">
+			<button type="submit" class="primary-button" :disabled="isSubmitLocked">Speichern</button>
+			<button type="button" class="secondary-button" data-test-cancel-button @click="cancel">Abbrechen</button>
 		</div>
 	</form>
 </template>
 
+<style lang="postcss">
+.input-wrapper {
+	@apply mb-4 grid grid-cols-[1ch_1fr] items-center gap-x-2.5;
+}
+
+.button-wrapper {
+	@apply grid grid-cols-[repeat(2,min-content)] gap-x-2.5;
+}
+</style>
+
 <style>
-.re__comma-separated {
+.comma-separated {
 	display: flex;
 	flex-wrap: wrap;
 

@@ -43,7 +43,7 @@ const onSubmit = async () => {
 				/>
 			</div>
 			<div class="mt-5">
-				<button type="submit" class="re__primary-button" :aria-disabled="isSubmitLocked">Login</button>
+				<button type="submit" class="primary-button" :aria-disabled="isSubmitLocked">Login</button>
 			</div>
 		</form>
 	</main>

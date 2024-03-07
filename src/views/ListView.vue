@@ -46,7 +46,7 @@ const reservations = computed(() => {
 		<div class="container">
 			<h1 class="relative mb-1 w-fit text-3xl font-semibold">
 				{{ title }}
-				<svg class="re__doodle -top-4.5 -right-10.5 absolute h-10 w-10" aria-hidden="true" width="40" height="40">
+				<svg class="doodle -top-4.5 -right-10.5 absolute h-10 w-10" aria-hidden="true" width="40" height="40">
 					<use href="/app.svg#star-doodle" />
 				</svg>
 			</h1>
@@ -59,7 +59,7 @@ const reservations = computed(() => {
 			<SearchBar class="mb-3" @update="onUpdateSearch" />
 
 			<div class="container">
-				<table class="re__list-table -mx-2">
+				<table class="list-table -mx-2">
 					<thead>
 						<tr>
 							<th class="text-left font-semibold">Name</th>
@@ -79,7 +79,7 @@ const reservations = computed(() => {
 </template>
 
 <style>
-.re__list-table :is(th, td) {
+.list-table :is(th, td) {
 	padding: 0.125rem 0.5rem;
 }
 </style>

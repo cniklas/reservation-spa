@@ -42,7 +42,7 @@ defineExpose({ open, close })
 <template>
 	<dialog
 		ref="dialogEl"
-		class="re__sidebar-dialog top-1 w-full max-w-sm overflow-y-auto overscroll-y-contain border-l border-l-black bg-white px-3 pb-12 pt-4 transition-transform duration-[--sidebar-duration] sm:px-4"
+		class="sidebar-dialog"
 		:class="{ 'translate-x-full': !slideIn }"
 		:style="{ '--sidebar-duration': `${SLIDE_DURATION}ms` }"
 		@cancel="onCancel"
@@ -54,11 +54,27 @@ defineExpose({ open, close })
 	</dialog>
 </template>
 
-<style lang="postcss">
-.re__sidebar-dialog {
+<style>
+.sidebar-dialog {
 	height: unset;
 	max-height: unset;
 	left: unset;
+
+	top: 0.25rem;
+	width: 100%;
+	max-width: 24rem;
+	overflow-y: auto;
+	overscroll-behavior-y: contain;
+	border-left: 1px solid hsl(0, 0%, 0%);
+	background-color: hsl(0, 0%, 100%);
+	padding: 1rem 0.75rem 3rem;
+	transition: transform var(--sidebar-duration) cubic-bezier(0.4, 0, 0.2, 1);
+
+	@media (min-width: 40em) {
+		& {
+			padding-inline: 1rem;
+		}
+	}
 
 	&::backdrop {
 		background-color: transparent;
