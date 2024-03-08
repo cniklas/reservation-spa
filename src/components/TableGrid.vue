@@ -104,7 +104,7 @@ const onEditTable = (table: TableDoc) => {
 				>
 					<dl class="grid-table" :class="{ 'is-available': table.seats - countTakenSeats(table) }" data-test-table>
 						<dt class="grid-table-number">
-							<div class="grid-table-number-content" :id="`table-${table.index}-label`">
+							<div class="grid-table-number-content">
 								<span class="sr-only">Tisch</span>
 								{{ firstWord(table.name) }}
 							</div>
@@ -139,7 +139,6 @@ const onEditTable = (table: TableDoc) => {
 				class="js-search-list dot-separated <sm:leading-1.375rem"
 				:class="{ 'line-through': !table.active }"
 				role="list"
-				:aria-labelledby="`table-${table.index}-label`"
 			>
 				<li v-for="(seat, n) in sortedSeats(table)" :key="`${table.id}-${n}`">
 					{{ seat.name }}
