@@ -10,7 +10,7 @@ defineExpose({ open })
 </script>
 
 <template>
-	<dialog ref="dialogEl" class="dialog">
+	<dialog ref="dialogEl" class="dialog" role="alertdialog" aria-labelledby="js-dialog-content">
 		<button
 			type="button"
 			class="close-button absolute right-0 top-0 h-8 w-8 -translate-x-1/4 translate-y-1/4"
@@ -21,7 +21,7 @@ defineExpose({ open })
 				<use href="/app.svg#plus" />
 			</svg>
 		</button>
-		<div class="whitespace-pre-line first-line:font-semibold"><slot /></div>
+		<div class="whitespace-pre-line first-line:font-semibold" id="js-dialog-content"><slot /></div>
 	</dialog>
 </template>
 
