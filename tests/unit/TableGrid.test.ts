@@ -20,7 +20,7 @@ const factory = () =>
 
 describe('TableGrid.vue', () => {
 	let wrapper
-	let tables: TableDoc[] = []
+	let tables: TableDoc[]
 	let editButtons
 	let unlockButtons
 	const getEditButtons = () => wrapper.findAll('[data-test-edit-button]')
@@ -70,7 +70,7 @@ describe('TableGrid.vue', () => {
 		expect(wrapper.emitted('edit')).toBeTruthy()
 		expect(wrapper.emitted('edit').length).toBe(1)
 		// [ [ '_sh68eapb' ] ]
-		expect(wrapper.emitted('edit').at(0).at(0)).toBe(tables.at(index).id)
+		expect(wrapper.emitted('edit').at(0).at(0)).toBe(tables[index].id)
 	})
 
 	it('has an unlock button for each locked table if user is logged in ', async () => {
@@ -95,7 +95,7 @@ describe('TableGrid.vue', () => {
 	})
 
 	it('has no unlock button for a table locked by the logged-in user', async () => {
-		const id = tables.at(-1).id
+		const id = (tables.at(-1) as TableDoc).id
 		tables.map(table => {
 			// one table is locked by the logged-in user
 			table.locked_by = table.id === id ? _uuid : createUuid()
@@ -122,7 +122,7 @@ describe('TableGrid.vue', () => {
 		// check that 1 occurrence of the event has been emitted
 		expect(wrapper.emitted('unlock')).toBeTruthy()
 		expect(wrapper.emitted('unlock').length).toBe(1)
-		expect(wrapper.emitted('unlock').at(0).at(0)).toBe(tables.at(index).id)
+		expect(wrapper.emitted('unlock').at(0).at(0)).toBe(tables[index].id)
 		// console.log(wrapper.text());
 		// console.log(wrapper.html())
 	})

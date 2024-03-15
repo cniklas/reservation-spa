@@ -15,6 +15,7 @@ module.exports = {
 	rules: {
 		'arrow-body-style': 'warn',
 		'prefer-arrow-callback': 'warn',
+		"@typescript-eslint/no-explicit-any": "warn",
 		'vuejs-accessibility/label-has-for': [
 			'error',
 			{

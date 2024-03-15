@@ -217,7 +217,7 @@ onBeforeUnmount(() => {
 		</div>
 
 		<div v-if="tables" class="mb-10 mt-6">
-			<TableGrid :tables :uuid :isAuthenticated @edit="onEditTable" @unlock="onUnlockTable" />
+			<TableGrid :tables :uuid :is-authenticated="isAuthenticated" @edit="onEditTable" @unlock="onUnlockTable" />
 		</div>
 	</main>
 
@@ -226,7 +226,7 @@ onBeforeUnmount(() => {
 		<TableForm
 			v-if="selectedItem"
 			:entry="selectedItem"
-			:isAuthenticated
+			:is-authenticated="isAuthenticated"
 			@cancel="onTimeoutOrCancel"
 			@saving="isSaving = true"
 			@saved="onSaved"

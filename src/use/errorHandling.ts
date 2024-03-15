@@ -1,4 +1,4 @@
-import { ref, unref, reactive } from 'vue'
+import { ref, unref, reactive, type Ref } from 'vue'
 import { compareTwoStrings } from 'string-similarity'
 import type { Reservation } from '@/types/Reservation.type'
 
@@ -12,14 +12,14 @@ export const useErrorHandling = () => {
 		isSubmitLocked.value = false
 	}
 
-	const isEmpty = (...args: any[]) => args.some(val => !unref(val).length)
+	const isEmpty = (...args: (Ref<string> | string)[]) => args.some(val => !unref(val).length)
 
 	const beforeSubmit = () => {
 		isSubmitLocked.value = true
 		// errorCode.value = null
 	}
 
-	const handleSubmitError = (error: any) => {
+	const handleSubmitError = (error: unknown) => {
 		// 🔺 TODO error handling
 		console.log(error)
 		unlockSubmit()

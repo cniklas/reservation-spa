@@ -178,9 +178,9 @@ const onEditTable = (table: TableDoc) => {
 		flex-wrap: wrap;
 
 		> :not(:last-child)::after {
-			@apply mx-1;
 			content: '•';
 			content: '•' / '';
+			margin-inline: 0.25rem;
 		}
 	}
 }

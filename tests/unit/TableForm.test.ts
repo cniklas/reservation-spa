@@ -2,12 +2,13 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { describe, it, expect, afterEach } from 'vitest'
 import TableForm from '../../src/components/TableForm.vue'
 import { PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '../../src/keys'
+import type { TableDoc } from '../../src/types/TableDoc.type'
 import { mockTables } from '../mock.data'
 
 const tables = mockTables()
-const entry = tables.at(0)
+const entry = tables.at(0) as TableDoc
 
-const factory = (props?: any) =>
+const factory = (props?: object) =>
 	mount(TableForm, {
 		global: {
 			provide: {
