@@ -97,34 +97,35 @@ const onEditTable = (table: TableDoc) => {
 			<div class="grid scroll-m-20 gap-4" :id="`table-${table.index}`">
 				<button
 					type="button"
-					class="rounded-1.8125rem z-1 relative text-left"
+					class="grid-table z-1 relative text-left"
+					:class="{ 'is-available': table.seats - countTakenSeats(table) }"
 					:aria-disabled="!!table.locked_at"
 					data-test-edit-button
+					data-test-table
 					@click="onEditTable(table)"
 				>
-					<dl class="grid-table" :class="{ 'is-available': table.seats - countTakenSeats(table) }" data-test-table>
-						<dt class="grid-table-number">
-							<div class="grid-table-number-content">
-								<span class="sr-only">Tisch</span>
-								{{ firstWord(table.name) }}
-							</div>
-							<Transition name="fade" mode="out-in">
-								<div v-if="table.locked_at" class="spinner-wrapper">
-									<SkateboardSpinner class="spinner" />
-								</div>
-							</Transition>
-						</dt>
-						<dd>
-							<div class="grid-table-label">
-								{{ remainingWords(table.name) }}
-							</div>
-							<TransitionGroup name="exchange">
-								<div v-if="table.locked_at" class="text-sm/6">wird bearbeitet</div>
-								<div v-else-if="table.active">{{ emptySeats(table) }}</div>
-								<div v-else class="text-[--validation-error]">nicht verfügbar</div>
-							</TransitionGroup>
-						</dd>
-					</dl>
+					<span class="grid-table-number">
+						<span class="grid-table-number-content">
+							<span class="sr-only">Tisch</span>
+							{{ firstWord(table.name) }}
+						</span>
+						<Transition name="fade" mode="out-in">
+							<span v-if="table.locked_at" class="spinner-wrapper">
+								<SkateboardSpinner class="spinner" />
+							</span>
+						</Transition>
+					</span>
+
+					<span>
+						<span class="grid-table-label">
+							{{ remainingWords(table.name) }}
+						</span>
+						<TransitionGroup name="exchange">
+							<span v-if="table.locked_at" class="block text-sm/6">wird bearbeitet</span>
+							<span v-else-if="table.active" class="block">{{ emptySeats(table) }}</span>
+							<span v-else class="block text-[--validation-error]">nicht verfügbar</span>
+						</TransitionGroup>
+					</span>
 				</button>
 
 				<div v-if="isAuthenticated && table.locked_at && table.locked_by !== uuid" class="text-center">
