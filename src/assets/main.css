@@ -17,6 +17,15 @@ input[type='search']::-webkit-search-decoration {
 	-webkit-appearance: none;
 }
 
+/* https://frontendmasters.com/blog/you-want-border-color-transparent-not-border-none/ */
+@media (forced-colors: active) {
+	button,
+	input,
+	textarea {
+		border: 1px solid transparent;
+	}
+}
+
 button {
 	background-color: unset; /* https://unocss.dev/guide/style-reset#tailwind */
 }
