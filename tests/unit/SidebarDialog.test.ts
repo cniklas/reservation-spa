@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils'
+import { mount, flushPromises } from '@vue/test-utils'
 import { vi, describe, it, expect, beforeEach, beforeAll } from 'vitest'
 import SidebarDialog from '../../src/components/SidebarDialog.vue'
 
@@ -19,9 +19,9 @@ describe('SidebarDialog.vue', () => {
 	})
 	// https://github.com/jsdom/jsdom/issues/3294#issuecomment-1196577616
 	beforeAll(() => {
-		HTMLDialogElement.prototype.showModal = vi.fn();
-		HTMLDialogElement.prototype.close = vi.fn();
-	});
+		HTMLDialogElement.prototype.showModal = vi.fn()
+		HTMLDialogElement.prototype.close = vi.fn()
+	})
 
 	it('renders correctly', () => {
 		expect(SidebarDialog).toBeTruthy()
@@ -32,6 +32,8 @@ describe('SidebarDialog.vue', () => {
 		expect(wrapper.vm.slideIn).toBe(false)
 
 		wrapper.vm.open()
+		vi.runAllTimers()
+		await flushPromises()
 		expect(wrapper.vm.slideIn).toBe(true)
 	})
 
