@@ -19,6 +19,7 @@ const dialogEl = ref<HTMLDialogElement | null>(null)
 const open = async () => {
 	dialogEl.value?.showModal()
 	await new Promise(resolve => setTimeout(resolve, 0))
+	dialogEl.value?.scrollTo(0, 0)
 	slideIn.value = true
 }
 const close = (cb?: Function) => {

@@ -21,6 +21,8 @@ describe('SidebarDialog.vue', () => {
 	beforeAll(() => {
 		HTMLDialogElement.prototype.showModal = vi.fn()
 		HTMLDialogElement.prototype.close = vi.fn()
+		// @ts-ignore
+		HTMLDialogElement.prototype.scrollTo = vi.fn()
 	})
 
 	it('renders correctly', () => {
