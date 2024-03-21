@@ -17,6 +17,16 @@ input[type='search']::-webkit-search-decoration {
 	-webkit-appearance: none;
 }
 
+button,
+label,
+input,
+select,
+textarea,
+summary {
+	/* https://dbushell.com/2024/03/10/css-button-styles-you-might-not-know/#touch-actions */
+	touch-action: manipulation;
+}
+
 /* https://frontendmasters.com/blog/you-want-border-color-transparent-not-border-none/ */
 @media (forced-colors: active) {
 	button,
@@ -28,11 +38,6 @@ input[type='search']::-webkit-search-decoration {
 
 button {
 	background-color: unset; /* https://unocss.dev/guide/style-reset#tailwind */
-}
-
-/* iOS */
-button[type='submit'] {
-	font-weight: 400;
 }
 
 [aria-disabled='true'] {
