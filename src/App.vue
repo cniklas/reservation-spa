@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useRoute, useRouter, RouterLink, RouterView } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { auth } from '@/firebase'
 
