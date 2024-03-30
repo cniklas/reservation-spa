@@ -23,20 +23,20 @@ describe('AppSidebar.vue', () => {
 		expect(wrapper.find('[data-test-headline]').text()).toMatch(headline)
 	})
 
-	it('sets ref "slideIn" to `true` if the "open" method is called', async () => {
+	it('sets ref "slideIn" to `true` when the "open" method is called', async () => {
 		expect(wrapper.vm.slideIn).toBe(false)
 
 		wrapper.vm.open()
 		expect(wrapper.vm.slideIn).toBe(true)
 	})
 
-	it('emits a custom event "closing" if the "close" method is called', async () => {
+	it('emits a custom event "closing" when the "close" method is called', async () => {
 		wrapper.vm.close()
 		expect(wrapper.emitted('closing')).toBeTruthy()
 		expect(wrapper.emitted('closing').length).toBe(1)
 	})
 
-	it('emits a custom event "closed" after a certain time if the "close" method is called', async () => {
+	it('emits a custom event "closed" after a certain time when the "close" method is called', async () => {
 		wrapper.vm.close()
 		expect(wrapper.emitted('closed')).toBeFalsy()
 

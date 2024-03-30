@@ -16,11 +16,10 @@ onBeforeUnmount(() => {
 })
 
 const dialogEl = ref<HTMLDialogElement | null>(null)
-const open = async () => {
-	dialogEl.value?.showModal()
-	await new Promise(resolve => setTimeout(resolve, 0))
-	dialogEl.value?.scrollTo(0, 0)
+const open = () => {
 	slideIn.value = true
+	dialogEl.value?.showModal()
+	dialogEl.value?.scrollTo(0, 0)
 }
 const close = (cb?: Function) => {
 	slideIn.value = false

@@ -29,7 +29,7 @@ describe('SearchBar.vue', () => {
 		expect(button.attributes('class')).not.toContain(hiddenClass)
 	})
 
-	it('resets the input field if the reset button is clicked', async () => {
+	it('resets the input field when the reset button is clicked', async () => {
 		const inputElement = getInputElement()
 		const button = getButton()
 		inputElement.setValue(inputValue)
@@ -39,7 +39,7 @@ describe('SearchBar.vue', () => {
 		expect(inputElement.element.value).toBe('')
 	})
 
-	it('emits a custom event "update" after a certain time if the input value changes', async () => {
+	it('emits a custom event "update" after a certain time when the input value changes', async () => {
 		const inputElement = getInputElement()
 		await inputElement.setValue(inputValue)
 
