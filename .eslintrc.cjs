@@ -29,7 +29,6 @@ module.exports = {
 			'error',
 			// allowed roles
 			{
-				nav: ['navigation'],
 				ol: ['list'],
 			},
 		],
