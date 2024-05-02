@@ -11,12 +11,7 @@ defineExpose({ open })
 
 <template>
 	<dialog ref="dialogEl" class="dialog" role="alertdialog" aria-labelledby="js-dialog-content">
-		<button
-			type="button"
-			class="close-button absolute right-0 top-0 h-8 w-8 -translate-x-1/4 translate-y-1/4"
-			aria-label="Dialog schließen"
-			@click="dialogEl?.close()"
-		>
+		<button type="button" class="close-button" aria-label="Dialog schließen" @click="dialogEl?.close()">
 			<svg class="close-icon" aria-hidden="true" width="14" height="14">
 				<use href="/app.svg#plus" />
 			</svg>
@@ -48,6 +43,15 @@ defineExpose({ open })
 
 	&::backdrop {
 		background-color: hsla(0, 0%, 0%, 0.3);
+	}
+
+	.close-button {
+		position: absolute;
+		right: 0;
+		top: 0;
+		height: 2rem;
+		width: 2rem;
+		transform: translate(-25%, 25%);
 	}
 }
 </style>

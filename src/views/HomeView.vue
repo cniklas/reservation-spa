@@ -4,7 +4,7 @@ import { deleteField, serverTimestamp } from 'firebase/firestore'
 import { useAuth } from '@vueuse/firebase/useAuth'
 // import { isSafari } from '@firebase/util'
 import { auth } from '@/firebase'
-import SidebarDialog from '@/components/SidebarDialog.vue'
+import AppSidebar from '@/components/AppSidebar.vue'
 import TableForm from '@/components/TableForm.vue'
 import AppDialog from '@/components/AppDialog.vue'
 import type { SeatKey } from '@/types/TableDoc.type'
@@ -32,7 +32,7 @@ const {
 	clearTimer,
 } = useTimeout()
 
-const sidebarEl = ref<InstanceType<typeof SidebarDialog> | null>(null)
+const sidebarEl = ref<InstanceType<typeof AppSidebar> | null>(null)
 const dialogEl = ref<InstanceType<typeof AppDialog> | null>(null)
 const dialogMessage = ref('')
 const _showDialog = (message: string) => {
@@ -71,11 +71,8 @@ const onTimeoutOrCancel = () => {
 	})
 }
 const onSaved = () => {
-	sidebarEl.value?.close(async () => {
-		const id = selectedItem.value?.index
+	sidebarEl.value?.close(() => {
 		_clearEditState()
-		await nextTick()
-		document.querySelector(`#table-${id}`)?.scrollIntoView({ block: 'start', behavior: 'smooth' })
 	})
 }
 const onConflict = (message: string) => {
@@ -99,6 +96,7 @@ const onEditTable = async (id: string) => {
 
 	itemId.value = id // `selectedItem` will be set
 	/* await */ updateDocument(id, { locked_by: uuid.value, locked_at: serverTimestamp() })
+	sidebarEl.value?.focus()
 	setTimer(onTimeoutOrCancel)
 }
 
@@ -119,12 +117,16 @@ watch(
 	},
 )
 
-const _clearEditState = () => {
+const _clearEditState = async () => {
 	if (!selectedItem.value) return
 
 	clearTimer()
+	const id = selectedItem.value?.index
 	itemId.value = null // `selectedItem` will be unset
 	isSaving.value = false
+
+	await nextTick()
+	;(document.querySelector(`#table-${id} > [data-test-edit-button]`) as HTMLButtonElement | null)?.focus()
 }
 
 const _unlockTable = async (id: string) => {
@@ -195,7 +197,7 @@ onBeforeUnmount(() => {
 <template>
 	<div class="timer-bar" :class="{ 'is-running': isTimerRunning }" :style="{ '--edit-timeout': `${EDIT_TIMEOUT}ms` }" />
 
-	<main class="py-5">
+	<main class="py-5" :inert="!!selectedItem">
 		<div class="container">
 			<h1 class="relative mb-1 w-fit text-3xl font-semibold">
 				{{ title }}
@@ -221,19 +223,23 @@ onBeforeUnmount(() => {
 		</div>
 	</main>
 
-	<SidebarDialog v-if="tables" ref="sidebarEl" @cancel="onTimeoutOrCancel" @closing="clearTimer">
-		<template v-if="selectedItem" #headline>{{ `Tisch ${selectedItem.name}` }}</template>
-		<TableForm
-			v-if="selectedItem"
-			:entry="selectedItem"
-			:is-authenticated="isAuthenticated"
-			@cancel="onTimeoutOrCancel"
-			@saving="isSaving = true"
-			@saved="onSaved"
-		>
-			{{ countdownToTime }}
-		</TableForm>
-	</SidebarDialog>
+	<AppSidebar v-if="tables" ref="sidebarEl" tabindex="-1" @closing="clearTimer">
+		<template v-if="selectedItem">
+			<h2 class="mb-4 text-2xl font-semibold empty:hidden">
+				{{ `Tisch ${selectedItem.name}` }}
+			</h2>
+			<div class="mb-3">
+				Bearbeitungszeit: <span class="font-semibold">{{ countdownToTime }}</span>
+			</div>
+			<TableForm
+				:entry="selectedItem"
+				:is-authenticated="isAuthenticated"
+				@cancel="onTimeoutOrCancel"
+				@saving="isSaving = true"
+				@saved="onSaved"
+			/>
+		</template>
+	</AppSidebar>
 
 	<AppDialog ref="dialogEl">
 		{{ dialogMessage }}
@@ -242,7 +248,7 @@ onBeforeUnmount(() => {
 	<!-- <Teleport to="#debug-info">Client Offset: {{ clientOffset }}</Teleport> -->
 </template>
 
-<style lang="postcss">
+<style>
 .timer-bar {
 	position: fixed;
 	left: 0;

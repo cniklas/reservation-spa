@@ -2,13 +2,8 @@ import { mount } from '@vue/test-utils'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import AppSidebar from '../../src/components/AppSidebar.vue'
 
-const headline = 'Test AppSidebar headline'
 const factory = () =>
-	mount(AppSidebar, {
-		slots: {
-			headline,
-		},
-	})
+	mount(AppSidebar)
 
 describe('AppSidebar.vue', () => {
 	let wrapper
@@ -20,7 +15,6 @@ describe('AppSidebar.vue', () => {
 
 	it('renders correctly', () => {
 		expect(AppSidebar).toBeTruthy()
-		expect(wrapper.find('[data-test-headline]').text()).toMatch(headline)
 	})
 
 	it('sets ref "slideIn" to `true` when the "open" method is called', async () => {

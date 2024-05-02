@@ -2,13 +2,7 @@ import { mount } from '@vue/test-utils'
 import { vi, describe, it, expect, beforeEach, beforeAll } from 'vitest'
 import SidebarDialog from '../../src/components/SidebarDialog.vue'
 
-const headline = 'Test SidebarDialog headline'
-const factory = () =>
-	mount(SidebarDialog, {
-		slots: {
-			headline,
-		},
-	})
+const factory = () => mount(SidebarDialog)
 
 describe('SidebarDialog.vue', () => {
 	let wrapper
@@ -27,7 +21,6 @@ describe('SidebarDialog.vue', () => {
 
 	it('renders correctly', () => {
 		expect(SidebarDialog).toBeTruthy()
-		expect(wrapper.find('[data-test-headline]').text()).toMatch(headline)
 	})
 
 	it('sets ref "slideIn" to `true` when the "open" method is called', async () => {

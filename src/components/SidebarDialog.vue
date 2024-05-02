@@ -32,11 +32,6 @@ const close = (cb?: Function) => {
 	}, SLIDE_DURATION)
 }
 
-const onCancel = (e: Event) => {
-	e.preventDefault()
-	emit('cancel')
-}
-
 defineExpose({ open, close })
 </script>
 
@@ -44,13 +39,10 @@ defineExpose({ open, close })
 	<dialog
 		ref="dialogEl"
 		class="sidebar-dialog"
-		:class="{ 'translate-x-full': !slideIn }"
-		:style="{ '--sidebar-duration': `${SLIDE_DURATION}ms` }"
-		@cancel="onCancel"
+		:class="{ 'slide-in': slideIn }"
+		:style="{ '--slide-duration': SLIDE_DURATION }"
+		@cancel.prevent="$emit('cancel')"
 	>
-		<h2 class="mb-4 text-2xl font-semibold empty:hidden" data-test-headline>
-			<slot name="headline" />
-		</h2>
 		<slot />
 	</dialog>
 </template>
@@ -69,12 +61,17 @@ defineExpose({ open, close })
 	border-left: 1px solid hsl(0, 0%, 0%);
 	background-color: hsl(0, 0%, 100%);
 	padding: 1rem 0.75rem 3rem;
-	transition: transform var(--sidebar-duration) cubic-bezier(0.4, 0, 0.2, 1);
+	translate: 100%;
+	transition: translate calc(var(--slide-duration, 360) * 1ms) cubic-bezier(0.4, 0, 0.2, 1);
 
 	@media (min-width: 40em) {
 		& {
 			padding-inline: 1rem;
 		}
+	}
+
+	&.slide-in {
+		translate: unset;
 	}
 
 	&::backdrop {

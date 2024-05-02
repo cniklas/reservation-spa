@@ -136,10 +136,6 @@ const cancel = () => {
 </script>
 
 <template>
-	<div class="mb-3">
-		Bearbeitungszeit: <span class="font-semibold"><slot /></span>
-	</div>
-
 	<form novalidate @submit.prevent="onSubmit">
 		<template v-if="isAuthenticated">
 			<div class="mb-4">
