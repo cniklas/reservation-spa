@@ -41,7 +41,7 @@ defineExpose({ focus, open, close })
 		class="sidebar"
 		:class="{ 'slide-in': slideIn }"
 		:style="{ '--slide-duration': SLIDE_DURATION }"
-		aria-label="Sidebar"
+		aria-labelledby="aria-section-heading"
 	>
 		<slot />
 	</section>

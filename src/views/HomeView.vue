@@ -225,8 +225,8 @@ onBeforeUnmount(() => {
 
 	<AppSidebar v-if="tables" ref="sidebarEl" tabindex="-1" @closing="clearTimer">
 		<template v-if="selectedItem">
-			<h2 class="mb-4 text-2xl font-semibold empty:hidden">
-				{{ `Tisch ${selectedItem.name}` }}
+			<h2 class="mb-4 text-2xl font-semibold empty:hidden" id="aria-section-heading">
+				{{ `Tisch ${selectedItem.name}` }} <span class="sr-only">bearbeiten</span>
 			</h2>
 			<div class="mb-3">
 				Bearbeitungszeit: <span class="font-semibold">{{ countdownToTime }}</span>
