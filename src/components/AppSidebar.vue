@@ -14,11 +14,6 @@ onBeforeUnmount(() => {
 	clearTimeout(_timeoutId)
 })
 
-const rootEl = ref<HTMLDivElement | null>(null)
-const focus = () => {
-	rootEl.value?.focus()
-}
-
 const open = () => {
 	slideIn.value = true
 }
@@ -32,12 +27,11 @@ const close = (cb?: Function) => {
 	}, SLIDE_DURATION)
 }
 
-defineExpose({ focus, open, close })
+defineExpose({ open, close })
 </script>
 
 <template>
 	<section
-		ref="rootEl"
 		class="sidebar"
 		:class="{ 'slide-in': slideIn }"
 		:style="{ '--slide-duration': SLIDE_DURATION }"

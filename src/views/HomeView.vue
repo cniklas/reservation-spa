@@ -96,7 +96,7 @@ const onEditTable = async (id: string) => {
 
 	itemId.value = id // `selectedItem` will be set
 	/* await */ updateDocument(id, { locked_by: uuid.value, locked_at: serverTimestamp() })
-	sidebarEl.value?.focus()
+	;(sidebarEl.value?.$el as HTMLDivElement | undefined)?.focus()
 	setTimer(onTimeoutOrCancel)
 }
 
