@@ -81,7 +81,8 @@ const onConflict = (message: string) => {
 	})
 	_showDialog(message)
 }
-const onEditTable = async (id: string) => {
+let triggerEl: HTMLElement | null = null
+const onEditTable = async (id: string, _triggerEl: HTMLElement) => {
 	if (!isReleased.value && !isAuthenticated.value) {
 		_showDialog(
 			`Noch ein bisschen Geduld.\nEintragungen sind ab ${new Date(RELEASE_TIME).toLocaleDateString('de-DE', {
@@ -97,6 +98,7 @@ const onEditTable = async (id: string) => {
 	itemId.value = id // `selectedItem` will be set
 	/* await */ updateDocument(id, { locked_by: uuid.value, locked_at: serverTimestamp() })
 	;(sidebarEl.value?.$el as HTMLDivElement | undefined)?.focus()
+	triggerEl = _triggerEl
 	setTimer(onTimeoutOrCancel)
 }
 
@@ -121,12 +123,11 @@ const _clearEditState = async () => {
 	if (!selectedItem.value) return
 
 	clearTimer()
-	const id = selectedItem.value?.index
 	itemId.value = null // `selectedItem` will be unset
 	isSaving.value = false
 
 	await nextTick()
-	;(document.querySelector(`#table-${id} > [data-test-edit-button]`) as HTMLButtonElement | null)?.focus()
+	triggerEl?.focus()
 }
 
 const _unlockTable = async (id: string) => {

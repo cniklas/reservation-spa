@@ -8,7 +8,7 @@ import { formatTime, formatCount, sortByName, firstWord, remainingWords } from '
 import { useHighlight } from '@/use/highlight'
 
 const emit = defineEmits<{
-	(event: 'edit', id: string): void
+	(event: 'edit', id: string, triggerEl: HTMLElement): void
 	(event: 'unlock', id: string): void
 }>()
 const props = defineProps<{
@@ -81,9 +81,9 @@ const sortedSeats = (table: TableDoc) => {
 	return reservations
 }
 
-const onEditTable = (table: TableDoc) => {
+const onEditTable = (table: TableDoc, triggerEl: HTMLElement) => {
 	if (table.locked_at) return
-	emit('edit', table.id)
+	emit('edit', table.id, triggerEl)
 }
 </script>
 
@@ -102,7 +102,7 @@ const onEditTable = (table: TableDoc) => {
 					:aria-disabled="!!table.locked_at"
 					data-test-edit-button
 					data-test-table
-					@click="onEditTable(table)"
+					@click="onEditTable(table, $event.target as HTMLButtonElement)"
 				>
 					<span class="grid-table-number">
 						<span class="grid-table-number-content">
