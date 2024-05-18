@@ -20,7 +20,7 @@ watch(searchDebounced, val => {
 
 <template>
 	<div class="sticky top-0 z-10 border-b border-b-black bg-white py-3">
-		<div class="container flex items-center">
+		<search class="container flex items-center">
 			<label class="mr-3" for="search">Suche</label>
 			<div class="relative max-w-56 grow">
 				<input
@@ -47,6 +47,6 @@ watch(searchDebounced, val => {
 					</svg>
 				</button>
 			</div>
-		</div>
+		</search>
 	</div>
 </template>
