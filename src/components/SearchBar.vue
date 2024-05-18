@@ -20,7 +20,7 @@ watch(searchDebounced, val => {
 
 <template>
 	<div class="sticky top-0 z-10 border-b border-b-black bg-white py-3">
-		<search class="container flex items-center">
+		<search class="search container flex items-center">
 			<label class="mr-3" for="search">Suche</label>
 			<div class="relative max-w-56 grow">
 				<input
@@ -36,8 +36,7 @@ watch(searchDebounced, val => {
 				/>
 				<button
 					type="button"
-					class="close-button absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2"
-					:class="{ '!hidden': !search.length }"
+					class="close-button"
 					aria-label="Suche zurücksetzen"
 					data-test-search-button
 					@click="resetSearch"
@@ -50,3 +49,16 @@ watch(searchDebounced, val => {
 		</search>
 	</div>
 </template>
+
+<style>
+.search {
+	.close-button {
+		position: absolute;
+		right: 0.25rem;
+		top: 50%;
+		height: 1.75rem;
+		aspect-ratio: 1;
+		translate: 0 -50%;
+	}
+}
+</style>

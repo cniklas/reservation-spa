@@ -50,8 +50,8 @@ defineExpose({ open })
 		right: 0;
 		top: 0;
 		height: 2rem;
-		width: 2rem;
-		transform: translate(-25%, 25%);
+		aspect-ratio: 1;
+		translate: -25% 25%;
 	}
 }
 </style>
