@@ -30,7 +30,8 @@ defineExpose({ open })
 
 	&::before {
 		content: '';
-		border-radius: 0.5rem 0.5rem 0 0;
+		border-top-left-radius: calc(0.5rem - 1px);
+		border-top-right-radius: calc(0.5rem - 1px);
 		border-bottom: 1px solid hsl(0, 0%, 0%);
 		height: 3rem;
 		width: 100%;
