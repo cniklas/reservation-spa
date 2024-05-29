@@ -1,25 +1,42 @@
+import { reactive } from 'vue'
 import { mount, flushPromises } from '@vue/test-utils'
-import { describe, it, expect, afterEach } from 'vitest'
+import { describe, vi, it, expect, afterEach } from 'vitest'
 import TableForm from '../../src/components/TableForm.vue'
-import { PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '../../src/keys'
-import type { TableDoc } from '../../src/types/TableDoc.type'
+// import { PROVIDE_TABLES, PROVIDE_UPDATE_ENTRY } from '../../src/keys'
 import { mockTables } from '../mock.data'
 
-const tables = mockTables()
-const entry = tables.at(0) as TableDoc
+const state = reactive<{
+	isAuthenticated: boolean
+}>({
+	isAuthenticated: false,
+})
+// vi.mock('../../src/use/store', async importOriginal => {
+// 	const mod = await importOriginal<typeof import('../../src/use/store')>()
+// 	return {
+// 		...mod,
+// 		useStore: () => ({
+// 			state: _state,
+// 		}),
+// 	}
+// })
+vi.mock('../../src/use/store', () => ({
+	useStore: () => ({ state }),
+}))
+// const tables = mockTables()
+const entry = mockTables()[0]
 
-const factory = (props?: object) =>
+const factory = (/* props?: object */) =>
 	mount(TableForm, {
-		global: {
-			provide: {
-				[PROVIDE_TABLES as symbol]: tables,
-				[PROVIDE_UPDATE_DOCUMENT as symbol]: () => {},
-			},
-		},
+		// global: {
+		// 	provide: {
+		// 		[PROVIDE_TABLES as symbol]: tables,
+		// 		[PROVIDE_UPDATE_ENTRY as symbol]: () => {},
+		// 	},
+		// },
 		props: {
 			entry,
-			isAuthenticated: false,
-			...props,
+			// isAuthenticated: false,
+			// ...props,
 		},
 	})
 
@@ -38,7 +55,8 @@ describe('TableForm.vue', () => {
 		const increaseButtonSelector = '[data-test-increase-button]'
 		expect(wrapper.find(increaseButtonSelector).exists()).toBe(false)
 
-		wrapper.setProps({ isAuthenticated: true })
+		// wrapper.setProps({ isAuthenticated: true })
+		state.isAuthenticated = true
 		await flushPromises()
 
 		expect(wrapper.find(increaseButtonSelector).exists()).toBe(true)
@@ -52,7 +70,8 @@ describe('TableForm.vue', () => {
 		const minSeats = 4
 		const maxSeats = 8
 		const seatsSelector = '[data-test-seat]'
-		wrapper = factory({ isAuthenticated: true })
+		// wrapper = factory({ isAuthenticated: true })
+		wrapper = factory()
 
 		// decrease
 		const decreaseButton = wrapper.find('[data-test-decrease-button]')

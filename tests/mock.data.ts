@@ -1,12 +1,13 @@
-import type { TableDoc } from '../src/types/TableDoc.type'
+import type { Table } from '../src/types/Table.type'
 
-export const mockTables = (): TableDoc[] => [
+export const mockTables = (): Table[] => [
 	{
 		active: true,
-		id: 'test_table_id-1',
+		id: 1,
 		index: 1,
 		name: 'Test Table 1',
-		modified: { seconds: 0, nanoseconds: 0 },
+		locked_at: null,
+		locked_by: null,
 		seat_1: 'Table 1, Test Person 1.1',
 		seat_2: 'Table 1, Test Person 1.2',
 		seat_3: 'Table 1, Test Person 1.3',
@@ -19,10 +20,11 @@ export const mockTables = (): TableDoc[] => [
 	},
 	{
 		active: true,
-		id: 'test_table_id-2',
+		id: 2,
 		index: 2,
 		name: 'Test Table 2',
-		modified: { seconds: 0, nanoseconds: 0 },
+		locked_at: null,
+		locked_by: null,
 		seat_1: 'Table 2, Test Person 2.1',
 		seat_2: 'Table 2, Test Person 2.2',
 		seat_3: '',
@@ -35,10 +37,11 @@ export const mockTables = (): TableDoc[] => [
 	},
 	{
 		active: true,
-		id: 'test_table_id-3',
+		id: 3,
 		index: 3,
 		name: 'Test Table 3',
-		modified: { seconds: 0, nanoseconds: 0 },
+		locked_at: null,
+		locked_by: null,
 		seat_1: '',
 		seat_2: '',
 		seat_3: '',

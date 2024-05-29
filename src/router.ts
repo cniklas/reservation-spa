@@ -1,9 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuth } from '@vueuse/firebase/useAuth'
-import { auth } from '@/firebase'
 import HomeView from '@/views/HomeView.vue'
+import { useStore } from './use/store'
 
-const { isAuthenticated } = useAuth(auth)
+const { state } = useStore()
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,7 +22,7 @@ const router = createRouter({
 			name: 'add',
 			component: () => import('./views/AddView.vue'),
 			beforeEnter: to => {
-				if (!isAuthenticated.value)
+				if (!state.isAuthenticated)
 					return {
 						name: 'login',
 						query: {
@@ -40,7 +39,7 @@ const router = createRouter({
 		{ path: '/:pathMatch(.*)*', redirect: { name: 'home' } },
 	],
 	scrollBehavior(_to, _from, savedPosition) {
-		return savedPosition ? savedPosition : { top: 0 }
+		return savedPosition ?? { top: 0 }
 	},
 })
 

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { onAuthStateChanged, signOut } from 'firebase/auth'
-import { auth } from '@/firebase'
+import { supabase } from './supabase'
+import { useStore } from './use/store'
 
 const route = useRoute()
 const router = useRouter()
+const { setAuthState } = useStore()
 
 // @ts-ignore
 const version: string = __APP_VERSION__
@@ -14,19 +15,23 @@ const buildYear = new Date(__BUILD_TIME__).getFullYear()
 // @ts-ignore
 const buildTime = `${new Date(__BUILD_TIME__).toLocaleDateString('de-DE', { hour: 'numeric', minute: 'numeric' })} Uhr`
 
-const logout = () => {
+const logout = async () => {
 	try {
-		signOut(auth)
+		let { error } = await supabase.auth.signOut()
+		if (error) throw error
 	} catch (error) {
-		console.log(error)
+		console.error(error)
 	}
 }
 
 const isLoggedIn = ref(false)
-onAuthStateChanged(auth, user => {
-	isLoggedIn.value = !!user
+supabase.auth.onAuthStateChange((_, session) => {
+	setAuthState(session !== null)
+	isLoggedIn.value = session !== null
 })
-watch(isLoggedIn, val => {
+watch(isLoggedIn, async val => {
+	await router.isReady()
+
 	if (!val && route.name === 'add') {
 		router.push('/')
 		return

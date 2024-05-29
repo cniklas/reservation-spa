@@ -1,26 +1,20 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount, defineAsyncComponent, nextTick } from 'vue'
-import { deleteField, serverTimestamp } from 'firebase/firestore'
-import { useAuth } from '@vueuse/firebase/useAuth'
 // import { isSafari } from '@firebase/util'
-import { auth } from '@/firebase'
 import AppSidebar from '@/components/AppSidebar.vue'
 import TableForm from '@/components/TableForm.vue'
 import AppDialog from '@/components/AppDialog.vue'
-import type { SeatKey } from '@/types/TableDoc.type'
-import { PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '@/keys'
-import { formatCount, createUuid, injectStrict, firstWord } from '@/use/helper'
+import type { SeatKey } from '@/types/Table.type'
+import { useStore } from '@/use/store'
+import { formatCount, createUuid, firstWord } from '@/use/helper'
 import { ONE_MINUTE, EDIT_TIMEOUT, RELEASE_TIME, useTimeout } from '@/use/timeout'
-
-const tables = injectStrict(PROVIDE_TABLES)
-const updateDocument = injectStrict(PROVIDE_UPDATE_DOCUMENT)
 
 const TableGrid = defineAsyncComponent(() => import('@/components/TableGrid.vue'))
 
 const title: string = import.meta.env.VITE_APP_NAME
 const sitePlanImage = import.meta.env.VITE_SITE_PLAN_IMAGE?.split(',') // url,width,height
 
-const { isAuthenticated } = useAuth(auth)
+const { state, realtimeSubscribe, realtimeUnsubscribe, fetchEntries, updateEntry } = useStore()
 const {
 	clientOffset,
 	isReleased,
@@ -32,6 +26,15 @@ const {
 	clearTimer,
 } = useTimeout()
 
+fetchTime()
+if (!state.subscribed) realtimeSubscribe()
+watch(
+	() => state.subscribed,
+	subscribed => {
+		if (subscribed) fetchEntries()
+	},
+)
+
 const sidebarEl = ref<InstanceType<typeof AppSidebar> | null>(null)
 const dialogEl = ref<InstanceType<typeof AppDialog> | null>(null)
 const dialogMessage = ref('')
@@ -42,8 +45,8 @@ const _showDialog = (message: string) => {
 
 const reservations = computed(() => {
 	let count = 0
-	tables.value
-		?.filter(item => item.active)
+	state.tables
+		.filter(item => item.active)
 		.forEach(table => {
 			let n = 0
 			while (n < table.seats) {
@@ -58,9 +61,9 @@ const reservations = computed(() => {
 const uuid = ref(sessionStorage.getItem('uuid') ?? createUuid())
 sessionStorage.setItem('uuid', uuid.value)
 
-const itemId = ref<string | null>(null)
+const itemId = ref<number | null>(null)
 // will always be in sync with the data source
-const selectedItem = computed(() => tables.value?.find(item => item.id === itemId.value))
+const selectedItem = computed(() => state.tables.find(item => item.id === itemId.value))
 watch(itemId, val => {
 	if (val) sidebarEl.value?.open()
 })
@@ -75,15 +78,15 @@ const onSaved = () => {
 		_clearEditState()
 	})
 }
-const onConflict = (message: string) => {
+const _onConflict = (message: string) => {
 	sidebarEl.value?.close(() => {
 		_clearEditState()
 	})
 	_showDialog(message)
 }
 let triggerEl: HTMLElement | null = null
-const onEditTable = async (id: string, _triggerEl: HTMLElement) => {
-	if (!isReleased.value && !isAuthenticated.value) {
+const onEditTable = async (id: number, _triggerEl: HTMLElement) => {
+	if (!isReleased.value && !state.isAuthenticated) {
 		_showDialog(
 			`Noch ein bisschen Geduld.\nEintragungen sind ab ${new Date(RELEASE_TIME).toLocaleDateString('de-DE', {
 				hour: 'numeric',
@@ -96,7 +99,7 @@ const onEditTable = async (id: string, _triggerEl: HTMLElement) => {
 	if (selectedItem.value) return
 
 	itemId.value = id // `selectedItem` will be set
-	/* await */ updateDocument(id, { locked_by: uuid.value, locked_at: serverTimestamp() })
+	/* await */ updateEntry(id, { locked_by: uuid.value, locked_at: Date.now() + clientOffset.value })
 	;(sidebarEl.value?.$el as HTMLDivElement | undefined)?.focus()
 	triggerEl = _triggerEl
 	setTimer(onTimeoutOrCancel)
@@ -105,16 +108,19 @@ const onEditTable = async (id: string, _triggerEl: HTMLElement) => {
 const isSaving = ref(false)
 watch(
 	() => selectedItem.value?.locked_by,
-	(lockedBy: string | undefined) => {
+	(lockedBy, previousState) => {
+		// when `selectedItem` is set/unset or `updateEntry` has run
+		if ([previousState, lockedBy].includes(undefined) || previousState === null) return
+
 		// another user owned the table at the same moment
 		if (lockedBy && lockedBy !== uuid.value) {
-			onConflict('Entschuldigung!\nEin anderer Benutzer hat diesen Tisch einen Augenblick früher geöffnet als du.')
+			_onConflict('Entschuldigung!\nEin anderer Benutzer hat diesen Tisch im selben Moment geöffnet wie du.')
 			return
 		}
 
-		// if table is unlocked by admin user the open form needs to be closed
+		// admin user unlocked the table
 		if (!lockedBy && itemId.value !== null && !isSaving.value) {
-			onConflict(`Tisch ${firstWord(selectedItem.value?.name)} wurde wieder freigegeben.`)
+			_onConflict(`Tisch ${firstWord(selectedItem.value?.name)} wurde wieder freigegeben.`)
 		}
 	},
 )
@@ -130,8 +136,8 @@ const _clearEditState = async () => {
 	triggerEl?.focus()
 }
 
-const _unlockTable = async (id: string) => {
-	await updateDocument(id, { locked_by: deleteField(), locked_at: deleteField() })
+const _unlockTable = async (id: number) => {
+	await updateEntry(id, { locked_by: null, locked_at: null })
 }
 
 const _clearAndUnlock = () => {
@@ -142,31 +148,34 @@ const _clearAndUnlock = () => {
 	_unlockTable(id)
 }
 
-const onUnlockTable = (id: string) => {
-	if (isAuthenticated.value) _unlockTable(id)
+const onUnlockTable = (id: number) => {
+	if (state.isAuthenticated) _unlockTable(id)
 }
 
 onMounted(() => {
-	fetchTime()
 	// 🔺 especially on mobile, the `beforeunload` event is not reliably fired
 	// https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event#usage_notes
 	window.addEventListener('beforeunload', _clearAndUnlock)
 })
 onBeforeUnmount(() => {
 	_clearAndUnlock()
+	realtimeUnsubscribe()
 	clearReleaseInterval()
 })
 
 // unlock table if user reloads page on mobile (see `beforeunload` section)
 const _unlockTableAfterPageReload = () => {
-	const abandonedTable = tables.value?.find(item => item.locked_by === uuid.value)
+	const abandonedTable = state.tables.find(item => item.locked_by === uuid.value)
 	if (abandonedTable) _unlockTable(abandonedTable.id)
 }
-// wait for firebase data to be fetched
-const _unwatchTables = watch(tables, (_, oldVal) => {
-	if (oldVal === undefined) _unlockTableAfterPageReload()
-	_unwatchTables() // stop watcher
-})
+// wait for supabase data to be fetched
+const _unwatchTables = watch(
+	() => state.tables,
+	(_, previousState) => {
+		if (!previousState.length) _unlockTableAfterPageReload()
+		_unwatchTables() // stop watcher
+	},
+)
 
 // On iOS (maybe also on other mobile devices) if the browser runs in the background,
 // because the user switches to another app, the edit timeout callback (closeForm) never gets called.
@@ -174,14 +183,14 @@ const _unwatchTables = watch(tables, (_, oldVal) => {
 let _expiredTablesIntervalId: number
 const _unlockExpiredTables = () => {
 	const dateNow = Date.now() + clientOffset.value
-	tables.value?.map(item => {
-		if (item.locked_at && item.locked_at.seconds * 1000 + EDIT_TIMEOUT + ONE_MINUTE < dateNow) {
+	state.tables.map(item => {
+		if (item.locked_at && item.locked_at + EDIT_TIMEOUT + ONE_MINUTE < dateNow) {
 			_unlockTable(item.id)
 		}
 	})
 }
 watch(
-	isAuthenticated,
+	() => state.isAuthenticated,
 	val => {
 		if (val) {
 			_unlockExpiredTables()
@@ -206,10 +215,10 @@ onBeforeUnmount(() => {
 					<use href="/app.svg#star-doodle" />
 				</svg>
 			</h1>
-			<div>{{ tables ? reservations : 'Lade Daten …' }}</div>
+			<div>{{ state.tables.length ? reservations : 'Lade Daten …' }}</div>
 
 			<img
-				v-if="tables && sitePlanImage"
+				v-if="state.tables.length && sitePlanImage"
 				class="mt-5 w-full"
 				:src="sitePlanImage[0]"
 				:width="sitePlanImage[1]"
@@ -219,12 +228,12 @@ onBeforeUnmount(() => {
 			/>
 		</div>
 
-		<div v-if="tables" class="mb-10 mt-6">
-			<TableGrid :tables :uuid :is-authenticated="isAuthenticated" @edit="onEditTable" @unlock="onUnlockTable" />
+		<div v-if="state.tables.length" class="mb-10 mt-6">
+			<TableGrid :uuid @edit="onEditTable" @unlock="onUnlockTable" />
 		</div>
 	</main>
 
-	<AppSidebar v-if="tables" ref="sidebarEl" tabindex="-1" @closing="clearTimer">
+	<AppSidebar v-if="state.tables.length" ref="sidebarEl" tabindex="-1" @closing="clearTimer">
 		<template v-if="selectedItem">
 			<h2 class="mb-4 text-2xl font-semibold empty:hidden" id="aria-section-heading">
 				{{ `Tisch ${selectedItem.name}` }} <span class="sr-only">bearbeiten</span>
@@ -232,13 +241,7 @@ onBeforeUnmount(() => {
 			<div class="mb-3">
 				Bearbeitungszeit: <span class="font-semibold" role="timer">{{ countdownToTime }}</span>
 			</div>
-			<TableForm
-				:entry="selectedItem"
-				:is-authenticated="isAuthenticated"
-				@cancel="onTimeoutOrCancel"
-				@saving="isSaving = true"
-				@saved="onSaved"
-			/>
+			<TableForm :entry="selectedItem" @cancel="onTimeoutOrCancel" @saving="isSaving = true" @saved="onSaved" />
 		</template>
 	</AppSidebar>
 

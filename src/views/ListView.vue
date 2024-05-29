@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import SearchBar from '@/components/SearchBar.vue'
-import type { SeatKey } from '@/types/TableDoc.type'
+import type { SeatKey } from '@/types/Table.type'
 import type { SortableReservation } from '@/types/Reservation.type'
-import { PROVIDE_TABLES } from '@/keys'
-import { formatCount, sortByName, injectStrict } from '@/use/helper'
-
-const tables = injectStrict(PROVIDE_TABLES)
+import { useStore } from '@/use/store'
+import { formatCount, sortByName } from '@/use/helper'
 
 const title: string = import.meta.env.VITE_APP_NAME
+
+const { state, fetchEntries } = useStore()
+fetchEntries()
 
 const _search = ref('')
 const onUpdateSearch = (input: string) => {
@@ -17,8 +18,8 @@ const onUpdateSearch = (input: string) => {
 
 const reservations = computed(() => {
 	const reservations: SortableReservation[] = []
-	tables.value
-		?.filter(item => item.active)
+	state.tables
+		.filter(item => item.active)
 		.forEach(table => {
 			let n = 0
 			while (n < table.seats) {
