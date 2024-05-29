@@ -1,15 +1,11 @@
 <script setup lang="ts">
 import { reactive, computed, watch, toRaw } from 'vue'
-import { deleteField, serverTimestamp } from 'firebase/firestore'
-import type { SeatKey, TableDoc } from '@/types/TableDoc.type'
+import type { SeatKey, Table } from '@/types/Table.type'
 import type { Reservation } from '@/types/Reservation.type'
-import { PROVIDE_TABLES, PROVIDE_UPDATE_DOCUMENT } from '@/keys'
+import { useStore } from '@/use/store'
 import { useErrorHandling } from '@/use/errorHandling'
-import { injectStrict } from '@/use/helper'
 
-const tables = injectStrict(PROVIDE_TABLES)
-const updateDocument = injectStrict(PROVIDE_UPDATE_DOCUMENT)
-
+const { state, updateEntry } = useStore()
 const {
 	isSubmitLocked,
 	isEmpty,
@@ -27,8 +23,7 @@ const emit = defineEmits<{
 	(event: 'saved'): void
 }>()
 const props = defineProps<{
-	entry: TableDoc
-	isAuthenticated: boolean
+	entry: Table
 }>()
 
 const form = reactive({ ...props.entry })
@@ -58,9 +53,9 @@ watch(
 
 const reservations = computed(() => {
 	const _reservations: Reservation[] = []
-	tables.value
-		?.filter(item => item.active && item.id !== props.entry.id)
-		?.forEach(_table => {
+	state.tables
+		.filter(item => item.active && item.id !== props.entry.id)
+		.forEach(_table => {
 			let n = 0
 			while (n < _table.seats) {
 				const key = `seat_${++n}` as SeatKey
@@ -92,7 +87,7 @@ const resetValue = (key: string) => {
 	resetValidation(key)
 }
 
-const _tableNames = computed(() => tables.value?.map(item => item.name).filter(name => name !== props.entry.name) ?? [])
+const _tableNames = computed(() => state.tables.map(item => item.name).filter(name => name !== props.entry.name))
 const checkTableName = ({ target }: Event) => {
 	validateTableName(form.name, _tableNames.value)
 	;(target as HTMLInputElement).setCustomValidity(validationErrors.has('name') ? 'Eingabe ungültig' : '')
@@ -104,14 +99,10 @@ const onSubmit = async () => {
 	beforeSubmit()
 
 	try {
-		const formData: TableDoc = {
+		const formData: Table = {
 			...toRaw(form),
-			// @ts-ignore
-			locked_by: deleteField(),
-			// @ts-ignore
-			locked_at: deleteField(),
-			// @ts-ignore
-			modified: serverTimestamp(),
+			locked_by: null,
+			locked_at: null,
 		}
 
 		// validate
@@ -121,7 +112,7 @@ const onSubmit = async () => {
 		if (validationErrors.size) return
 
 		emit('saving')
-		await updateDocument(props.entry.id, formData)
+		await updateEntry(props.entry.id, formData)
 		emit('saved')
 	} catch (error) {
 		handleSubmitError(error)
@@ -137,7 +128,7 @@ const cancel = () => {
 
 <template>
 	<form novalidate @submit.prevent="onSubmit">
-		<template v-if="isAuthenticated">
+		<template v-if="state.isAuthenticated">
 			<div class="mb-4">
 				<label for="name" class="mr-3">Name</label>
 				<input
@@ -156,7 +147,7 @@ const cancel = () => {
 				<button
 					type="button"
 					class="secondary-button !p-unset w-9"
-					:disabled="form.seats === 4"
+					:aria-disabled="form.seats === 4"
 					data-test-decrease-button
 					@click="decrease"
 				>
@@ -166,7 +157,7 @@ const cancel = () => {
 				<button
 					type="button"
 					class="secondary-button !p-unset w-9"
-					:disabled="form.seats === 8"
+					:aria-disabled="form.seats === 8"
 					data-test-increase-button
 					@click="increase"
 				>
@@ -216,7 +207,7 @@ const cancel = () => {
 		</div>
 
 		<div class="button-wrapper mt-5">
-			<button type="submit" class="primary-button" :disabled="isSubmitLocked">Speichern</button>
+			<button type="submit" class="primary-button" :aria-disabled="isSubmitLocked">Speichern</button>
 			<button type="button" class="secondary-button" data-test-cancel-button @click="cancel">Abbrechen</button>
 		</div>
 	</form>

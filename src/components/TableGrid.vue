@@ -2,22 +2,23 @@
 import { ref, computed, onMounted } from 'vue'
 import SearchBar from '@/components/SearchBar.vue'
 import SkateboardSpinner from '@/components/SkateboardSpinner.vue'
-import type { SeatKey, TableDoc } from '@/types/TableDoc.type'
+import type { SeatKey, Table } from '@/types/Table.type'
 import type { SortableReservation } from '@/types/Reservation.type'
+import { useStore } from '@/use/store'
 import { formatTime, formatCount, sortByName, firstWord, remainingWords } from '@/use/helper'
 import { useHighlight } from '@/use/highlight'
 
+const { state } = useStore()
+
 const emit = defineEmits<{
-	(event: 'edit', id: string, triggerEl: HTMLElement): void
-	(event: 'unlock', id: string): void
+	(event: 'edit', id: number, triggerEl: HTMLElement): void
+	(event: 'unlock', id: number): void
 }>()
-const props = defineProps<{
-	tables: TableDoc[]
+defineProps<{
 	uuid: string
-	isAuthenticated: boolean
 }>()
 
-const countTakenSeats = (table: TableDoc) => {
+const countTakenSeats = (table: Table) => {
 	let n = 0,
 		count = 0
 	while (n < table.seats) {
@@ -28,19 +29,19 @@ const countTakenSeats = (table: TableDoc) => {
 	return count
 }
 
-const emptySeats = (table: TableDoc) => {
+const emptySeats = (table: Table) => {
 	const count = table.seats - countTakenSeats(table)
 	return count ? `${formatCount(count, ['Platz', 'Plätze'])} frei` : 'belegt'
 }
 
-const _sortByEmptySeats = (a: TableDoc, b: TableDoc) => countTakenSeats(a) - countTakenSeats(b)
+const _sortByEmptySeats = (a: Table, b: Table) => countTakenSeats(a) - countTakenSeats(b)
 
 const _search = ref('')
 const onUpdateSearch = (input: string) => {
 	_search.value = input
 }
 const filteredTables = computed(() => {
-	const _tables = props.tables.filter(item => item.active || props.isAuthenticated)
+	const _tables = state.tables.filter(item => item.active || state.isAuthenticated)
 	_tables.sort(_sortByEmptySeats)
 
 	if (_search.value.length < 3) return _tables
@@ -62,7 +63,7 @@ onMounted(() => {
 	useHighlight('.js-search-list', 'search-result', _search)
 })
 
-const sortedSeats = (table: TableDoc) => {
+const sortedSeats = (table: Table) => {
 	const reservations: SortableReservation[] = []
 	let n = 0
 	while (n < table.seats) {
@@ -81,9 +82,9 @@ const sortedSeats = (table: TableDoc) => {
 	return reservations
 }
 
-const onEditTable = (table: TableDoc, triggerEl: HTMLElement) => {
-	if (table.locked_at) return
-	emit('edit', table.id, triggerEl)
+const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
+	if (locked_at) return
+	emit('edit', id, triggerEl)
 }
 </script>
 
@@ -128,8 +129,8 @@ const onEditTable = (table: TableDoc, triggerEl: HTMLElement) => {
 					</span>
 				</button>
 
-				<div v-if="isAuthenticated && table.locked_at && table.locked_by !== uuid" class="text-center">
-					<div class="text-sm">seit {{ formatTime(table.locked_at.seconds * 1000) }} Uhr</div>
+				<div v-if="state.isAuthenticated && table.locked_at && table.locked_by !== uuid" class="text-center">
+					<div class="text-sm">seit {{ formatTime(table.locked_at) }} Uhr</div>
 					<button type="button" class="primary-button mt-1" data-test-unlock-button @click="$emit('unlock', table.id)">
 						🔑 entsperren
 					</button>

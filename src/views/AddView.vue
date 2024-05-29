@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import { reactive, computed, watch, toRaw } from 'vue'
 import { useRouter } from 'vue-router'
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
-import { db } from '@/firebase'
-import { PROVIDE_TABLES } from '@/keys'
+import type { CreateTable } from '@/types/Table.type'
+import { useStore } from '@/use/store'
 import { useErrorHandling } from '@/use/errorHandling'
-import { injectStrict } from '@/use/helper'
 
 const router = useRouter()
+const { state, fetchEntries, addEntry } = useStore()
 const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, validationErrors, validateTableName } =
 	useErrorHandling()
 
-const tables = injectStrict(PROVIDE_TABLES)
-const _getNextIndex = () => Math.max(...(tables.value?.map(item => item.index) ?? [0])) + 1
+fetchEntries()
 
 const form = reactive({
 	active: true,
@@ -29,7 +27,7 @@ watch(
 	},
 )
 
-const _tableNames = computed(() => tables.value?.map(item => item.name) ?? [])
+const _tableNames = computed(() => state.tables.map(item => item.name))
 const checkTableName = ({ target }: Event) => {
 	validateTableName(form.name, _tableNames.value)
 	;(target as HTMLInputElement).setCustomValidity(validationErrors.has('name') ? 'Eingabe ungültig' : '')
@@ -44,10 +42,8 @@ const onSubmit = async () => {
 	beforeSubmit()
 
 	try {
-		const formData = {
+		const formData: CreateTable = {
 			...toRaw(form),
-			index: _getNextIndex(),
-			modified: serverTimestamp(),
 			seat_1: '',
 			seat_2: '',
 			seat_3: '',
@@ -58,7 +54,7 @@ const onSubmit = async () => {
 			seat_8: '',
 		}
 
-		await addDoc(collection(db, 'tables'), formData)
+		await addEntry(formData)
 		router.push({ name: 'home' })
 	} catch (error) {
 		handleSubmitError(error)
@@ -104,7 +100,7 @@ const onSubmit = async () => {
 				</label>
 			</div>
 			<div class="mt-5">
-				<button type="submit" class="primary-button" :disabled="isSubmitDisabled">Speichern</button>
+				<button type="submit" class="primary-button" :aria-disabled="isSubmitDisabled">Speichern</button>
 			</div>
 		</form>
 	</main>

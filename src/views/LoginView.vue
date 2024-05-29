@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '@/firebase'
+import { supabase } from '@/supabase'
 import { useErrorHandling } from '@/use/errorHandling'
 
 const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError } = useErrorHandling()
@@ -15,8 +14,8 @@ const onSubmit = async () => {
 	beforeSubmit()
 
 	try {
-		// without `await` the error handling will not work
-		await signInWithEmailAndPassword(auth, email.value, password.value)
+		const { error } = await supabase.auth.signInWithPassword({ email: email.value, password: password.value })
+		if (error) throw error
 	} catch (error) {
 		handleSubmitError(error)
 	}
