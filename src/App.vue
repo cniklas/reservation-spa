@@ -17,7 +17,7 @@ const buildTime = `${new Date(__BUILD_TIME__).toLocaleDateString('de-DE', { hour
 
 const logout = async () => {
 	try {
-		let { error } = await supabase.auth.signOut()
+		const { error } = await supabase.auth.signOut()
 		if (error) throw error
 	} catch (error) {
 		console.error(error)

@@ -33,6 +33,8 @@ const checkTableName = ({ target }: Event) => {
 	;(target as HTMLInputElement).setCustomValidity(validationErrors.has('name') ? 'Eingabe ungültig' : '')
 }
 
+const _getNextIndex = () => Math.max(...state.tables.map(item => item.index)) + 1
+
 const isSubmitDisabled = computed(() => isSubmitLocked.value || isEmpty(form.name) || !Number.isInteger(form.seats))
 
 const onSubmit = async () => {
@@ -44,6 +46,7 @@ const onSubmit = async () => {
 	try {
 		const formData: CreateTable = {
 			...toRaw(form),
+			index: _getNextIndex(),
 			seat_1: '',
 			seat_2: '',
 			seat_3: '',

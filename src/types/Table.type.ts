@@ -18,6 +18,6 @@ export type Table = {
 	seats: number
 }
 
-export type CreateTable = Omit<Table, 'id' | 'index' | 'locked_at' | 'locked_by'>
+export type CreateTable = Omit<Table, 'id' | 'locked_at' | 'locked_by'>
 
 export type LockedTable = Pick<Table, 'locked_at' | 'locked_by'>

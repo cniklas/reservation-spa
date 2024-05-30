@@ -62,14 +62,11 @@ const updateEntry = async (id: number, data: Table | LockedTable) => {
 	}
 }
 
-const _getNextIndex = () => Math.max(...state.tables.map(item => item.index)) + 1
-
-const addEntry = async (formData: CreateTable) => {
+const addEntry = async (data: CreateTable) => {
 	if (!state.isAuthenticated) return
-	if (!state.tables.length) await fetchEntries()
 
 	try {
-		const { error } = await supabase.from('tables').insert({ ...formData, index: _getNextIndex() }) /* .select() */
+		const { error } = await supabase.from('tables').insert(data) /* .select() */
 		if (error) throw error
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (error: any) {
