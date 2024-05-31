@@ -23,6 +23,8 @@ const _onUpdate = (payload: RealtimePostgresUpdatePayload<{ [key: string]: unkno
 }
 
 const realtimeSubscribe = () => {
+	if (state.subscribed) return
+
 	supabase
 		.channel('schema-db-changes')
 		.on('postgres_changes', { event: 'UPDATE', schema: 'public' }, _onUpdate)

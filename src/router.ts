@@ -25,9 +25,7 @@ const router = createRouter({
 				if (!state.isAuthenticated)
 					return {
 						name: 'login',
-						query: {
-							redirectTo: to.fullPath,
-						},
+						query: { redirectTo: to.fullPath },
 					}
 			},
 		},

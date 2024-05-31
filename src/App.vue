@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { supabase } from './supabase'
 import { useStore } from './use/store'
 
 const route = useRoute()
 const router = useRouter()
-const { setAuthState } = useStore()
+const { state, setAuthState } = useStore()
 
 // @ts-ignore
 const version: string = __APP_VERSION__
@@ -24,24 +24,26 @@ const logout = async () => {
 	}
 }
 
-const isLoggedIn = ref(false)
 supabase.auth.onAuthStateChange((_, session) => {
 	setAuthState(session !== null)
-	isLoggedIn.value = session !== null
 })
-watch(isLoggedIn, async val => {
-	await router.isReady()
 
-	if (!val && route.name === 'add') {
-		router.push('/')
-		return
-	}
+watch(
+	() => state.isAuthenticated,
+	async isLoggedIn => {
+		await router.isReady()
 
-	if (val && route.name === 'login') {
-		router.replace((route.query.redirectTo as string) ?? '/')
-		return
-	}
-})
+		if (!isLoggedIn && route.name === 'add') {
+			router.push('/')
+			return
+		}
+
+		if (isLoggedIn && route.name === 'login') {
+			router.replace((route.query.redirectTo as string) ?? '/')
+			return
+		}
+	},
+)
 
 // const _now = new Date()
 // if (_now.getMonth() === 11 && _now.getDate() === 31) {
@@ -50,12 +52,12 @@ watch(isLoggedIn, async val => {
 </script>
 
 <template>
-	<header v-if="isLoggedIn" class="container py-5">
+	<header v-if="state.isAuthenticated" class="container py-5">
 		<nav class="flex items-center gap-2">
 			<RouterLink to="/">Home</RouterLink>
 			<RouterLink to="/liste">Liste</RouterLink>
-			<RouterLink v-if="isLoggedIn" to="/add">Neuer Tisch</RouterLink>
-			<button v-if="isLoggedIn" type="button" class="primary-button" @click="logout">Logout</button>
+			<RouterLink to="/add">Neuer Tisch</RouterLink>
+			<button type="button" class="primary-button" @click="logout">Logout</button>
 		</nav>
 	</header>
 

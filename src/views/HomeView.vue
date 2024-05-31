@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onBeforeUnmount, defineAsyncComponent, nextTick } from 'vue'
+import { ref, computed, watch, onBeforeUnmount, defineAsyncComponent, nextTick } from 'vue'
 // import { isSafari } from '@firebase/util'
 import AppSidebar from '@/components/AppSidebar.vue'
 import TableForm from '@/components/TableForm.vue'
@@ -27,7 +27,7 @@ const {
 } = useTimeout()
 
 fetchTime()
-if (!state.subscribed) realtimeSubscribe()
+realtimeSubscribe()
 watch(
 	() => state.subscribed,
 	subscribed => {
@@ -125,6 +125,7 @@ watch(
 	},
 )
 
+// called by `onSaved`, `_onConflict` and `_clearAndUnlock`
 const _clearEditState = async () => {
 	if (!selectedItem.value) return
 
@@ -140,6 +141,7 @@ const _unlockTable = async (id: number) => {
 	await updateEntry(id, { locked_by: null, locked_at: null })
 }
 
+// called by `onTimeoutOrCancel` and 'onBeforeUnmount' hook
 const _clearAndUnlock = () => {
 	if (!selectedItem.value) return
 
@@ -152,22 +154,18 @@ const onUnlockTable = (id: number) => {
 	if (state.isAuthenticated) _unlockTable(id)
 }
 
-onMounted(() => {
-	// 🔺 especially on mobile, the `beforeunload` event is not reliably fired
-	// https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event#usage_notes
-	window.addEventListener('beforeunload', _clearAndUnlock)
-})
+// onMounted(() => {
+// 	// 🔺 the `beforeunload` event is not reliably fired
+// 	// https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event#usage_notes
+// 	window.addEventListener('beforeunload', _clearAndUnlock)
+// })
 onBeforeUnmount(() => {
 	_clearAndUnlock()
 	realtimeUnsubscribe()
 	clearReleaseInterval()
+	// window.removeEventListener('beforeunload', _clearAndUnlock)
 })
 
-// unlock table if user reloads page on mobile (see `beforeunload` section)
-const _unlockTableAfterPageReload = () => {
-	const abandonedTable = state.tables.find(item => item.locked_by === uuid.value)
-	if (abandonedTable) _unlockTable(abandonedTable.id)
-}
 // wait for supabase data to be fetched
 const _unwatchTables = watch(
 	() => state.tables,
@@ -176,12 +174,23 @@ const _unwatchTables = watch(
 		_unwatchTables() // stop watcher
 	},
 )
+// unlock table if user reloads page
+const _unlockTableAfterPageReload = () => {
+	const abandonedTable = state.tables.find(item => item.locked_by === uuid.value)
+	if (abandonedTable) _unlockTable(abandonedTable.id)
+}
 
 // On iOS (maybe also on other mobile devices) if the browser runs in the background,
 // because the user switches to another app, the edit timeout callback (closeForm) never gets called.
 // So we need to setup some auto unlock mechanism.
+// This requires an authenticated user!
 let _expiredTablesIntervalId: number
 const _unlockExpiredTables = () => {
+	if (!state.isAuthenticated) {
+		clearInterval(_expiredTablesIntervalId)
+		return
+	}
+
 	const dateNow = Date.now() + clientOffset.value
 	state.tables.map(item => {
 		if (item.locked_at && item.locked_at + EDIT_TIMEOUT + ONE_MINUTE < dateNow) {
@@ -189,16 +198,10 @@ const _unlockExpiredTables = () => {
 		}
 	})
 }
-watch(
-	() => state.isAuthenticated,
-	val => {
-		if (val) {
-			_unlockExpiredTables()
-			_expiredTablesIntervalId = window.setInterval(_unlockExpiredTables, ONE_MINUTE / 6)
-		}
-	},
-	{ immediate: true },
-)
+if (state.isAuthenticated) {
+	_expiredTablesIntervalId = window.setInterval(_unlockExpiredTables, ONE_MINUTE / 6)
+	_unlockExpiredTables()
+}
 onBeforeUnmount(() => {
 	clearInterval(_expiredTablesIntervalId)
 })
