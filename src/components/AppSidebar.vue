@@ -38,7 +38,7 @@ defineExpose({ open, close })
 </script>
 
 <template>
-	<section ref="sidebarEl" class="sidebar" :class="{ 'slide-in': slideIn }" aria-labelledby="aria-section-heading">
+	<section ref="sidebarEl" class="sidebar" :class="{ 'slide-in': slideIn }">
 		<slot />
 	</section>
 </template>
