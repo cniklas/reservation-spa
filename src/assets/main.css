@@ -5,6 +5,15 @@
 	--validation-error: theme('colors.red.600');
 }
 
+html {
+	scrollbar-gutter: stable;
+
+	/* https://www.mayank.co/notes/dialog-default-styles */
+	&:has(main[inert]) {
+		overflow: clip;
+	}
+}
+
 body {
 	color: var(--dark);
 	background-color: theme('colors.amber.50');
