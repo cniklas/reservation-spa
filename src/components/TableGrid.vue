@@ -103,7 +103,7 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 					:aria-disabled="!!table.locked_at"
 					data-test-edit-button
 					data-test-table
-					@click="onEditTable(table, $event.target as HTMLButtonElement)"
+					@click="onEditTable(table, $event.currentTarget as HTMLButtonElement)"
 				>
 					<span class="grid-table-number">
 						<span class="grid-table-number-content">
@@ -234,6 +234,36 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 
 	@starting-style {
 		opacity: 0;
+	}
+}
+
+@keyframes appear {
+	from {
+		opacity: 0;
+		scale: 0.8;
+	}
+	to {
+		opacity: unset;
+		scale: unset;
+	}
+}
+
+@supports (animation-timeline: view()) {
+	@media (prefers-reduced-motion: no-preference) {
+		.grid-table,
+		.js-search-list {
+			animation: appear linear;
+			animation-timeline: view();
+			animation-range: entry 0 cover 7rem;
+		}
+
+		.grid-table {
+			transform-origin: center right;
+		}
+
+		.js-search-list {
+			transform-origin: center left;
+		}
 	}
 }
 </style>

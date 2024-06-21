@@ -39,6 +39,7 @@ watch(searchDebounced, val => {
 					class="close-button"
 					:class="{ 'sr-only': !search.length }"
 					aria-label="Suche zurücksetzen"
+					:aria-disabled="!search.length"
 					data-test-search-button
 					@click="resetSearch"
 				>

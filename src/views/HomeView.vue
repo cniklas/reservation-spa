@@ -236,7 +236,13 @@ onBeforeUnmount(() => {
 		</div>
 	</main>
 
-	<AppSidebar v-if="state.tables.length" ref="sidebarEl" tabindex="-1" aria-labelledby="aria-section-heading" @closing="clearTimer">
+	<AppSidebar
+		v-if="state.tables.length"
+		ref="sidebarEl"
+		tabindex="-1"
+		aria-labelledby="aria-section-heading"
+		@closing="clearTimer"
+	>
 		<template v-if="selectedItem">
 			<h2 class="mb-4 text-2xl font-semibold empty:hidden" id="aria-section-heading">
 				{{ `Tisch ${selectedItem.name}` }} <span class="sr-only">bearbeiten</span>
