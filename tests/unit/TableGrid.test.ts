@@ -45,7 +45,7 @@ describe('TableGrid.vue', () => {
 		const firstTable = wrapper.vm.filteredTables.at(0)
 		const emptySeats = wrapper.vm.emptySeats(firstTable)
 		expect(wrapper.find('[data-test-table]').text()).toContain(
-			`Tisch ${firstWord(firstTable.name)}${remainingWords(firstTable.name)}${emptySeats}`,
+			`Tisch ${firstWord(firstTable.name)}${remainingWords(firstTable.name)}bearbeiten. ${emptySeats}`,
 		)
 	})
 

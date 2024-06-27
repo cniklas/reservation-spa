@@ -219,6 +219,7 @@ onBeforeUnmount(() => {
 				</svg>
 			</h1>
 			<div>{{ state.tables.length ? reservations : 'Lade Daten …' }}</div>
+			<div v-if="state.tables.length" class="sr-only">Es sind {{ state.tables.length }} Tische aufgestellt.</div>
 
 			<img
 				v-if="state.tables.length && sitePlanImage"

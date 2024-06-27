@@ -123,7 +123,10 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 						</span>
 						<TransitionGroup name="exchange">
 							<span v-if="table.locked_at" class="block text-sm/6">wird bearbeitet</span>
-							<span v-else-if="table.active" class="block">{{ emptySeats(table) }}</span>
+							<span v-else-if="table.active" class="block">
+								<span class="sr-only">bearbeiten.</span>
+								{{ emptySeats(table) }}
+							</span>
 							<span v-else class="block text-[--validation-error]">nicht verfügbar</span>
 						</TransitionGroup>
 					</span>
@@ -138,9 +141,10 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 			</div>
 
 			<ol
-				class="js-search-list dot-separated <sm:leading-1.375rem"
+				class="js-search-list dot-separated <sm:leading-1.375rem empty:invisible"
 				:class="{ 'line-through': !table.active }"
 				role="list"
+				:aria-label="`Personen an Tisch ${table.name}`"
 			>
 				<li v-for="(seat, n) in sortedSeats(table)" :key="`${table.id}-${n}`">
 					{{ seat.name }}
