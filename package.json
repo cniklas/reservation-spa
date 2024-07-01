@@ -19,7 +19,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.43.4",
+    "@supabase/supabase-js": "^2.44.2",
     "@vueuse/core": "^10.7.2",
     "string-similarity": "^4.0.4",
     "vue": "^3.3.11",
