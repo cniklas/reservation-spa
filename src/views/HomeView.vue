@@ -258,8 +258,6 @@ onBeforeUnmount(() => {
 	<AppDialog ref="dialogEl">
 		{{ dialogMessage }}
 	</AppDialog>
-
-	<!-- <Teleport to="#debug-info">Client Offset: {{ clientOffset }}</Teleport> -->
 </template>
 
 <style>
