@@ -55,7 +55,7 @@ const reservations = computed(() => {
 			}
 		})
 
-	return `${formatCount(count, ['Person', 'Personen'])} eingetragen`
+	return `${count ? formatCount(count, ['Person', 'Personen']) : 'niemand'} eingetragen`
 })
 
 const uuid = ref(sessionStorage.getItem('uuid') ?? createUuid())
