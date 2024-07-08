@@ -62,7 +62,7 @@ watch(
 	<RouterView />
 
 	<Teleport to="body">
-		<footer class="top-100vh container sticky py-5">
+		<footer class="top-100vh container sticky flex gap-x-4 py-5">
 			<details class="font-mono text-sm">
 				<summary class="inline-block cursor-help">© 2023 - {{ buildYear }} Christian Niklas</summary>
 				<div>{{ buildTime }}</div>
@@ -70,7 +70,7 @@ watch(
 			<a
 				href="https://github.com/cniklas/reservation-spa"
 				ping="https://cniklas.uber.space/backfeed-ep/cron/jobs/ncapkygazmxftqdhnmstdimn"
-				class="mt-2 inline-block h-6 w-6"
+				style="translate: 0 -0.125rem"
 				aria-label="GitHub repo"
 				rel="noopener"
 			>
