@@ -29,7 +29,7 @@
     "@rushstack/eslint-patch": "^1.10.3",
     "@tsconfig/node18": "^18.2.2",
     "@types/jsdom": "^21.1.7",
-    "@types/node": "^20.14.9",
+    "@types/node": "^20.14.10",
     "@types/string-similarity": "^4.0.2",
     "@unocss/reset": "^0.61.0",
     "@unocss/transformer-directives": "^0.61.0",
