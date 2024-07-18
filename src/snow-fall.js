@@ -34,7 +34,7 @@ class Snow extends HTMLElement {
 	position: absolute;
 	width: var(--snow-fall-size, 10px);
 	height: var(--snow-fall-size, 10px);
-	background: var(--snow-fall-color, rgba(255,255,255,.5));
+	background: var(--snow-fall-color, oklch(100% 0 0 / 50%));
 	border-radius: 50%;
 }
 `)

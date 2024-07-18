@@ -274,13 +274,13 @@ onBeforeUnmount(() => {
 		content: '';
 		display: block;
 		height: inherit;
-		background-color: theme('colors.rose.500');
+		background-color: oklch(64.5% 0.215 16.44); /* theme('colors.rose.500') */
 		transform: translateX(-100%);
 		transition: transform 240ms;
 	}
 
 	&.is-running {
-		background-color: theme('colors.rose.50');
+		background-color: oklch(96.94% 0.015 12.42); /* theme('colors.rose.50') */
 
 		&::after {
 			transform: translateX(0);

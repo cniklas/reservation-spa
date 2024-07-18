@@ -156,8 +156,15 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 
 <style lang="postcss">
 .grid-table {
-	@apply rounded-1.8125rem grid grid-cols-[3rem_1fr] items-center gap-x-2.5 border border-black bg-white p-1;
-	box-shadow: 0 4px 0 -1px theme('colors.dark.50');
+	display: grid;
+	grid-template-columns: 3rem 1fr;
+	column-gap: 0.625rem;
+	align-items: center;
+	padding: 0.25rem;
+	border: 1px solid var(--black);
+	border-radius: 1.8125rem;
+	background-color: var(--white);
+	box-shadow: 0 4px 0 -1px oklch(40.91% 0 0); /* theme('colors.dark.50') */
 
 	&.is-available {
 		box-shadow: 0 7px 0 -1px var(--lime);
@@ -165,7 +172,11 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 }
 
 .grid-table-number {
-	@apply rounded-50% grid h-12 w-12 border border-black text-xl font-semibold;
+	@apply h-12 w-12 text-xl;
+	display: grid;
+	border: 1px solid var(--black);
+	border-radius: 50%;
+	font-weight: 600;
 }
 
 .grid-table-number-content {
@@ -175,7 +186,18 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 }
 
 .grid-table-label {
-	@apply rounded-3 grid min-h-6 w-fit items-center bg-gray-200 px-2.5 text-sm empty:hidden;
+	@apply text-sm;
+	display: grid;
+	align-items: center;
+	width: fit-content;
+	min-height: 1.5rem;
+	padding-inline: 0.625rem;
+	border-radius: 0.75rem;
+	background-color: oklch(92.76% 0.006 264.53);
+
+	&:empty {
+		display: none;
+	}
 }
 
 @screen sm {

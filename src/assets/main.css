@@ -1,8 +1,10 @@
 :root {
-	--dark: theme('colors.dark.700');
-	--lime: theme('colors.lime.500');
-	--slate: theme('colors.slate.800');
-	--validation-error: theme('colors.red.600');
+	--black: oklch(0% 0 0);
+	--white: oklch(100% 0 0);
+	--dark: oklch(22.21% 0 0); /* theme('colors.dark.700') */
+	--lime: oklch(76.81% 0.204 130.85); /* theme('colors.lime.500') */
+	--slate: oklch(27.95% 0.037 260.03); /* theme('colors.slate.800') */
+	--validation-error: oklch(57.71% 0.215 27.33); /* theme('colors.red.600') */
 }
 
 html {
@@ -16,7 +18,7 @@ html {
 
 body {
 	color: var(--dark);
-	background-color: theme('colors.amber.50');
+	background-color: oklch(98.69% 0.021 95.28); /* theme('colors.amber.50') */
 	min-height: 100vh;
 	min-height: 100dvh;
 }

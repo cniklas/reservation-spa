@@ -23,7 +23,7 @@ defineExpose({ open })
 <style>
 .dialog {
 	border-radius: 0.5rem;
-	border: 1px solid hsl(0, 0%, 0%);
+	border: 1px solid var(--black);
 	width: 24rem;
 	max-width: calc(100vw - 1.5rem);
 	padding: 3.5rem 0.75rem 0.75rem;
@@ -32,18 +32,18 @@ defineExpose({ open })
 		content: '';
 		border-top-left-radius: calc(0.5rem - 1px);
 		border-top-right-radius: calc(0.5rem - 1px);
-		border-bottom: 1px solid hsl(0, 0%, 0%);
+		border-bottom: 1px solid var(--black);
 		height: 3rem;
 		width: 100%;
 		border-bottom: 0;
-		background-color: hsl(220, 13%, 91%);
+		background-color: oklch(92.78% 0.006 264.53);
 		position: absolute;
 		top: 0;
 		left: 0;
 	}
 
 	&::backdrop {
-		background-color: hsla(0, 0%, 0%, 0.3);
+		background-color: oklch(0% 0 0 / 30%);
 	}
 
 	.close-button {
