@@ -23,7 +23,7 @@
     "@vueuse/core": "^10.11.0",
     "string-similarity": "^4.0.4",
     "vue": "^3.4.35",
-    "vue-router": "^4.4.2"
+    "vue-router": "^4.4.3"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.10.4",
