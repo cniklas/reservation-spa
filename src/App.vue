@@ -69,7 +69,6 @@ watch(
 			</details>
 			<a
 				href="https://github.com/cniklas/reservation-spa"
-				ping="https://cniklas.uber.space/backfeed-ep/cron/jobs/ncapkygazmxftqdhnmstdimn"
 				style="translate: 0 -0.125rem"
 				aria-label="GitHub repo"
 				rel="noopener"
