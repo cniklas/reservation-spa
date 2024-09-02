@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.3",
-    "@vueuse/core": "^10.11.1",
+    "@vueuse/core": "^11.0.3",
     "string-similarity": "^4.0.4",
     "vue": "^3.4.38",
     "vue-router": "^4.4.3"
