@@ -6,7 +6,7 @@ const emit = defineEmits<{
 	(event: 'update', input: string): void
 }>()
 
-const inputEl = useTemplateRef<HTMLInputElement | null>('inputEl')
+const inputEl = useTemplateRef<HTMLInputElement | null>('input')
 const search = ref('')
 const resetSearch = async () => {
 	search.value = ''
@@ -33,7 +33,7 @@ watch(searchDebounced, val => {
 			<label class="mr-3" for="search">Suche</label>
 			<div class="relative max-w-56 grow">
 				<input
-					ref="inputEl"
+					ref="input"
 					v-model.trim="search"
 					type="text"
 					class="rounded-4.5 h-9 w-full pl-3 pr-9"

@@ -24,7 +24,7 @@ const onTransitionEnd = () => {
 	emit('closed')
 	_callback?.()
 }
-const sidebarEl = useTemplateRef<HTMLDivElement | null>('sidebarEl')
+const sidebarEl = useTemplateRef<HTMLDivElement | null>('sidebar')
 onMounted(() => {
 	sidebarEl.value?.addEventListener('transitionend', onTransitionEnd)
 	sidebarEl.value?.addEventListener('transitioncancel', onTransitionEnd)
@@ -38,7 +38,7 @@ defineExpose({ open, close })
 </script>
 
 <template>
-	<section ref="sidebarEl" class="sidebar" :class="{ 'slide-in': slideIn }">
+	<section ref="sidebar" class="sidebar" :class="{ 'slide-in': slideIn }">
 		<slot />
 	</section>
 </template>
