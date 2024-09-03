@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { useTemplateRef } from 'vue'
 
-const dialogEl = ref<HTMLDialogElement | null>(null)
+const dialogEl = useTemplateRef<HTMLDialogElement | null>('dialogEl')
 const open = () => {
 	dialogEl.value?.showModal()
 }

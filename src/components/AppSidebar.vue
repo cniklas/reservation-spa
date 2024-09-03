@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, useTemplateRef, onMounted, onBeforeUnmount } from 'vue'
 
 const emit = defineEmits<{
 	(event: 'closing'): void
@@ -24,7 +24,7 @@ const onTransitionEnd = () => {
 	emit('closed')
 	_callback?.()
 }
-const sidebarEl = ref<HTMLDivElement | null>(null)
+const sidebarEl = useTemplateRef<HTMLDivElement | null>('sidebarEl')
 onMounted(() => {
 	sidebarEl.value?.addEventListener('transitionend', onTransitionEnd)
 	sidebarEl.value?.addEventListener('transitioncancel', onTransitionEnd)

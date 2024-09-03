@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, watch, nextTick } from 'vue'
+import { ref, useTemplateRef, watch, nextTick } from 'vue'
 import { refDebounced } from '@vueuse/core'
 
 const emit = defineEmits<{
 	(event: 'update', input: string): void
 }>()
 
-const inputEl = ref<HTMLInputElement | null>(null)
+const inputEl = useTemplateRef<HTMLInputElement | null>('inputEl')
 const search = ref('')
 const resetSearch = async () => {
 	search.value = ''
