@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onBeforeUnmount, defineAsyncComponent, nextTick } from 'vue'
+import { ref, useTemplateRef, computed, watch, onBeforeUnmount, defineAsyncComponent, nextTick } from 'vue'
 // import { isSafari } from '@firebase/util'
 import AppSidebar from '@/components/AppSidebar.vue'
 import TableForm from '@/components/TableForm.vue'
@@ -35,8 +35,8 @@ watch(
 	},
 )
 
-const sidebarEl = ref<InstanceType<typeof AppSidebar> | null>(null)
-const dialogEl = ref<InstanceType<typeof AppDialog> | null>(null)
+const sidebarEl = useTemplateRef<InstanceType<typeof AppSidebar> | null>('sidebarEl')
+const dialogEl = useTemplateRef<InstanceType<typeof AppDialog> | null>('dialogEl')
 const dialogMessage = ref('')
 const _showDialog = (message: string) => {
 	dialogMessage.value = message
