@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useTemplateRef } from 'vue'
 
-const dialogEl = useTemplateRef<HTMLDialogElement | null>('dialog')
+const dialogEl = useTemplateRef<HTMLDialogElement | null>('dialogEl')
 const open = () => {
 	dialogEl.value?.showModal()
 }
@@ -10,7 +10,7 @@ defineExpose({ open })
 </script>
 
 <template>
-	<dialog ref="dialog" class="dialog" role="alertdialog" aria-labelledby="js-dialog-content">
+	<dialog ref="dialogEl" class="dialog" role="alertdialog" aria-labelledby="js-dialog-content">
 		<button type="button" class="close-button" aria-label="Dialog schließen" @click="dialogEl?.close()">
 			<svg class="close-icon" aria-hidden="true" width="14" height="14">
 				<use href="/app.svg#plus" />

@@ -35,8 +35,8 @@ watch(
 	},
 )
 
-const sidebarEl = useTemplateRef<InstanceType<typeof AppSidebar> | null>('sidebar')
-const dialogEl = useTemplateRef<InstanceType<typeof AppDialog> | null>('dialog')
+const sidebarEl = useTemplateRef<InstanceType<typeof AppSidebar> | null>('sidebarEl')
+const dialogEl = useTemplateRef<InstanceType<typeof AppDialog> | null>('dialogEl')
 const dialogMessage = ref('')
 const _showDialog = (message: string) => {
 	dialogMessage.value = message
@@ -239,7 +239,7 @@ onBeforeUnmount(() => {
 
 	<AppSidebar
 		v-if="state.tables.length"
-		ref="sidebar"
+		ref="sidebarEl"
 		tabindex="-1"
 		aria-labelledby="aria-section-heading"
 		@closing="clearTimer"
@@ -255,7 +255,7 @@ onBeforeUnmount(() => {
 		</template>
 	</AppSidebar>
 
-	<AppDialog ref="dialog">
+	<AppDialog ref="dialogEl">
 		{{ dialogMessage }}
 	</AppDialog>
 </template>
