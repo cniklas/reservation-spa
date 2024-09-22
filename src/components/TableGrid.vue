@@ -74,7 +74,7 @@ const sortedSeats = (table: Table) => {
 		reservations.push({
 			name: name.join(' '),
 			// sortableName: name.length > 1 ? `${name.at(-1)}, ${name.slice(0, -1).join(' ')}` : name.at(0) ?? '',
-			sortableName: name.length > 1 ? `${name[name.length - 1]}, ${name.slice(0, -1).join(' ')}` : name[0] ?? '',
+			sortableName: name.length > 1 ? `${name[name.length - 1]}, ${name.slice(0, -1).join(' ')}` : (name[0] ?? ''),
 		})
 	}
 
@@ -161,7 +161,7 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 	column-gap: 0.625rem;
 	align-items: center;
 	padding: 0.25rem;
-	border: 1px solid var(--black);
+	border: 1.5px solid var(--black);
 	border-radius: 1.8125rem;
 	background-color: var(--white);
 	box-shadow: 0 4px 0 -1px oklch(40.91% 0 0); /* theme('colors.dark.50') */

@@ -54,7 +54,7 @@ defineExpose({ open, close })
 	max-width: 24rem;
 	overflow-y: auto;
 	overscroll-behavior-y: contain;
-	border-left: 1px solid var(--black);
+	border-left: 1.5px solid var(--black);
 	background-color: var(--white);
 	padding: 1.25rem 0.75rem 3rem;
 	translate: 100%;
