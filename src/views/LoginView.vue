@@ -27,12 +27,12 @@ const onSubmit = async () => {
 		<h1 class="mb-3 text-3xl font-semibold">Login</h1>
 
 		<form novalidate @submit.prevent="onSubmit">
-			<div class="mb-4">
-				<label for="username" class="mr-3">Benutzername</label>
+			<div class="mb-2">
+				<label for="username" class="mb-1 block w-fit">Benutzername</label>
 				<input v-model.trim="email" type="email" id="username" autocomplete="username" />
 			</div>
 			<div class="mb-4">
-				<label for="password" class="mr-3">Passwort</label>
+				<label for="password" class="mb-1 block w-fit">Passwort</label>
 				<input
 					v-model.trim="password"
 					type="password"

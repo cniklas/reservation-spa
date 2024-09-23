@@ -143,7 +143,7 @@ const cancel = () => {
 				<div class="mt-1 text-[--validation-error] empty:hidden">{{ validationErrors.get('name') }}</div>
 			</div>
 			<div class="mb-4">
-				<span class="mr-3">Anzahl Sitzplätze</span>
+				<span class="mr-3">Sitzplätze</span>
 				<button
 					type="button"
 					class="secondary-button !p-unset w-9"

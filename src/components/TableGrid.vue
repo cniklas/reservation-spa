@@ -183,6 +183,7 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 	grid-area: 1 / 1 / 1 / 1;
 	display: grid;
 	place-content: center;
+	color: var(--slate);
 }
 
 .grid-table-label {

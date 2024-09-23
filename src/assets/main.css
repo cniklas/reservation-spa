@@ -5,6 +5,7 @@
 	--lime: oklch(76.81% 0.204 130.85); /* theme('colors.lime.500') */
 	--slate: oklch(27.95% 0.037 260.03); /* theme('colors.slate.800') */
 	--validation-error: oklch(57.71% 0.215 27.33); /* theme('colors.red.600') */
+	--golden: oklch(88.68% 0.182 95.33);
 }
 
 html {
@@ -96,7 +97,7 @@ input:where([type='text'], [type='email'], [type='password'], [type='number']) {
 }
 
 .primary-button {
-	@apply rounded-4.5 text-1rem inline-block h-9 bg-[--slate] px-5 text-white focus-visible:outline-[--slate];
+	@apply rounded-4.5 text-1rem inline-block h-9 bg-[--golden] px-5 text-[--slate] focus-visible:outline-[--slate];
 }
 
 .secondary-button {

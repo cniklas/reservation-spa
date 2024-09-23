@@ -84,7 +84,7 @@ const onSubmit = async () => {
 				<div class="text-[--validation-error]">{{ validationErrors.get('name') }}</div>
 			</div>
 			<div class="mb-4">
-				<label for="seats" class="mr-3">Anzahl Sitzplätze</label>
+				<label for="seats" class="mr-3">Sitzplätze</label>
 				<input
 					v-model.number="form.seats"
 					type="text"
