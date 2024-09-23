@@ -3,7 +3,7 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { describe, vi, it, expect, beforeEach } from 'vitest'
 import TableGrid from '../../src/components/TableGrid.vue'
 import type { Table } from '../../src/types/Table.type'
-import { createUuid, firstWord, remainingWords } from '../../src/use/helper'
+import { createUuid } from '../../src/use/helper'
 import { mockTables } from '../mock.data'
 
 const _uuid = createUuid()
@@ -45,7 +45,7 @@ describe('TableGrid.vue', () => {
 		const firstTable = wrapper.vm.filteredTables.at(0)
 		const emptySeats = wrapper.vm.emptySeats(firstTable)
 		expect(wrapper.find('[data-test-table]').text()).toContain(
-			`Tisch ${firstWord(firstTable.name)}${remainingWords(firstTable.name)}bearbeiten. ${emptySeats}`,
+			`Tisch ${firstTable.index}${firstTable.name}bearbeiten. ${emptySeats}`,
 		)
 	})
 

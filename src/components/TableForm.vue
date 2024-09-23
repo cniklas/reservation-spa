@@ -6,16 +6,8 @@ import { useStore } from '@/use/store'
 import { useErrorHandling } from '@/use/errorHandling'
 
 const { state, updateEntry } = useStore()
-const {
-	isSubmitLocked,
-	isEmpty,
-	beforeSubmit,
-	handleSubmitError,
-	unlockSubmit,
-	validationErrors,
-	validateName,
-	validateTableName,
-} = useErrorHandling()
+const { isSubmitLocked, beforeSubmit, handleSubmitError, unlockSubmit, validationErrors, validateName } =
+	useErrorHandling()
 
 const emit = defineEmits<{
 	(event: 'cancel'): void
@@ -87,14 +79,8 @@ const resetValue = (key: string) => {
 	resetValidation(key)
 }
 
-const _tableNames = computed(() => state.tables.map(item => item.name).filter(name => name !== props.entry.name))
-const checkTableName = ({ target }: Event) => {
-	validateTableName(form.name, _tableNames.value)
-	;(target as HTMLInputElement).setCustomValidity(validationErrors.has('name') ? 'Eingabe ungültig' : '')
-}
-
 const onSubmit = async () => {
-	if (isSubmitLocked.value || isEmpty(form.name)) return
+	if (isSubmitLocked.value) return
 
 	beforeSubmit()
 
@@ -131,16 +117,7 @@ const cancel = () => {
 		<template v-if="state.isAuthenticated">
 			<div class="mb-4">
 				<label for="name" class="mr-3">Name</label>
-				<input
-					v-model.trim="form.name"
-					type="text"
-					id="name"
-					autocomplete="off"
-					maxlength="16"
-					required
-					@input="checkTableName"
-				/>
-				<div class="mt-1 text-[--validation-error] empty:hidden">{{ validationErrors.get('name') }}</div>
+				<input v-model.trim="form.name" type="text" id="name" autocomplete="off" maxlength="16" />
 			</div>
 			<div class="mb-4">
 				<span class="mr-3">Sitzplätze</span>

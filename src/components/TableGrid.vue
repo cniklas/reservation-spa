@@ -5,7 +5,7 @@ import SkateboardSpinner from '@/components/SkateboardSpinner.vue'
 import type { SeatKey, Table } from '@/types/Table.type'
 import type { SortableReservation } from '@/types/Reservation.type'
 import { useStore } from '@/use/store'
-import { formatTime, formatCount, sortByName, firstWord, remainingWords } from '@/use/helper'
+import { formatTime, formatCount, sortByName } from '@/use/helper'
 import { useHighlight } from '@/use/highlight'
 
 const { state } = useStore()
@@ -108,7 +108,7 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 					<span class="grid-table-number">
 						<span class="grid-table-number-content">
 							<span class="sr-only">Tisch</span>
-							{{ firstWord(table.name) }}
+							{{ table.index }}
 						</span>
 						<Transition name="fade" mode="out-in">
 							<span v-if="table.locked_at" class="spinner-wrapper">
@@ -119,7 +119,7 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 
 					<span>
 						<span class="grid-table-label">
-							{{ remainingWords(table.name) }}
+							{{ table.name }}
 						</span>
 						<TransitionGroup name="exchange">
 							<span v-if="table.locked_at" class="block text-sm/6">wird bearbeitet</span>

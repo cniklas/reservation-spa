@@ -6,7 +6,7 @@ import TableForm from '@/components/TableForm.vue'
 import AppDialog from '@/components/AppDialog.vue'
 import type { SeatKey } from '@/types/Table.type'
 import { useStore } from '@/use/store'
-import { formatCount, createUuid, firstWord } from '@/use/helper'
+import { formatCount, createUuid } from '@/use/helper'
 import { ONE_MINUTE, EDIT_TIMEOUT, RELEASE_TIME, useTimeout } from '@/use/timeout'
 
 const TableGrid = defineAsyncComponent(() => import('@/components/TableGrid.vue'))
@@ -120,7 +120,7 @@ watch(
 
 		// admin user unlocked the table
 		if (!lockedBy && itemId.value !== null && !isSaving.value) {
-			_onConflict(`Tisch ${firstWord(selectedItem.value?.name)} wurde wieder freigegeben.`)
+			_onConflict(`Tisch ${selectedItem.value?.index} wurde wieder freigegeben.`)
 		}
 	},
 )
@@ -246,7 +246,9 @@ onBeforeUnmount(() => {
 	>
 		<template v-if="selectedItem">
 			<h2 class="mb-4 text-2xl font-semibold empty:hidden" id="aria-section-heading">
-				{{ `Tisch ${selectedItem.name}` }} <span class="sr-only">bearbeiten</span>
+				{{ `Tisch ${selectedItem.index}` }}
+				{{ selectedItem.name }}
+				<span class="sr-only">bearbeiten</span>
 			</h2>
 			<div class="mb-3">
 				Bearbeitungszeit: <span class="font-semibold" role="timer">{{ countdownToTime }}</span>

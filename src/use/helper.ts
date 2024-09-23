@@ -27,7 +27,4 @@ const createUuid = () => `_${Math.random().toString(36).substring(2, 10)}`
 const sortByName = (a: SortableReservation, b: SortableReservation) =>
 	a.sortableName.localeCompare(b.sortableName, 'de')
 
-const firstWord = (str: string = '') => str.split(' ')[0]
-const remainingWords = (str: string = '') => str.split(' ').slice(1).join(' ')
-
-export { formatDateTime, formatTime, formatCount, createUuid, sortByName, firstWord, remainingWords }
+export { formatDateTime, formatTime, formatCount, createUuid, sortByName }

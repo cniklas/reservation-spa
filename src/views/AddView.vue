@@ -7,8 +7,7 @@ import { useErrorHandling } from '@/use/errorHandling'
 
 const router = useRouter()
 const { state, fetchEntries, addEntry } = useStore()
-const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, validationErrors, validateTableName } =
-	useErrorHandling()
+const { isSubmitLocked, beforeSubmit, handleSubmitError, validationErrors } = useErrorHandling()
 
 fetchEntries()
 
@@ -27,15 +26,9 @@ watch(
 	},
 )
 
-const _tableNames = computed(() => state.tables.map(item => item.name))
-const checkTableName = ({ target }: Event) => {
-	validateTableName(form.name, _tableNames.value)
-	;(target as HTMLInputElement).setCustomValidity(validationErrors.has('name') ? 'Eingabe ungültig' : '')
-}
+const nextIndex = computed(() => Math.max(...state.tables.map(item => item.index)) + 1)
 
-const _getNextIndex = () => Math.max(...state.tables.map(item => item.index)) + 1
-
-const isSubmitDisabled = computed(() => isSubmitLocked.value || isEmpty(form.name) || !Number.isInteger(form.seats))
+const isSubmitDisabled = computed(() => isSubmitLocked.value || !Number.isInteger(form.seats))
 
 const onSubmit = async () => {
 	if (isSubmitDisabled.value) return
@@ -46,7 +39,7 @@ const onSubmit = async () => {
 	try {
 		const formData: CreateTable = {
 			...toRaw(form),
-			index: _getNextIndex(),
+			index: nextIndex.value,
 			seat_1: '',
 			seat_2: '',
 			seat_3: '',
@@ -71,17 +64,12 @@ const onSubmit = async () => {
 
 		<form novalidate @submit.prevent="onSubmit">
 			<div class="mb-4">
+				<div class="mr-3 inline-block">Nummer</div>
+				<div class="inline-block">{{ nextIndex }}</div>
+			</div>
+			<div class="mb-4">
 				<label for="name" class="mr-3">Name</label>
-				<input
-					v-model.trim="form.name"
-					type="text"
-					id="name"
-					autocomplete="off"
-					maxlength="16"
-					required
-					@input="checkTableName"
-				/>
-				<div class="text-[--validation-error]">{{ validationErrors.get('name') }}</div>
+				<input v-model.trim="form.name" type="text" id="name" autocomplete="off" maxlength="16" />
 			</div>
 			<div class="mb-4">
 				<label for="seats" class="mr-3">Sitzplätze</label>
