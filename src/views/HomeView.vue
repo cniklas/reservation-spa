@@ -63,14 +63,14 @@ sessionStorage.setItem('uuid', uuid.value)
 
 const itemId = ref<number | null>(null)
 // will always be in sync with the data source
-const selectedItem = computed(() => state.tables.find(item => item.id === itemId.value))
+const selectedItem = computed(() => (itemId.value ? state.tables.find(item => item.id === itemId.value) : null))
 watch(itemId, val => {
 	if (val) sidebarEl.value?.open()
 })
 
 const onTimeoutOrCancel = () => {
 	sidebarEl.value?.close(() => {
-		_clearAndUnlock()
+		_unlockAndClear()
 	})
 }
 const onSaved = () => {
@@ -125,7 +125,7 @@ watch(
 	},
 )
 
-// called by `onSaved`, `_onConflict` and `_clearAndUnlock`
+// called by `onSaved`, `_onConflict` and `_unlockAndClear`
 const _clearEditState = async () => {
 	if (!selectedItem.value) return
 
@@ -142,12 +142,11 @@ const _unlockTable = async (id: number) => {
 }
 
 // called by `onTimeoutOrCancel` and 'onBeforeUnmount' hook
-const _clearAndUnlock = () => {
+const _unlockAndClear = () => {
 	if (!selectedItem.value) return
 
-	const id = selectedItem.value.id
+	_unlockTable(selectedItem.value.id)
 	_clearEditState()
-	_unlockTable(id)
 }
 
 const onUnlockTable = (id: number) => {
@@ -157,13 +156,13 @@ const onUnlockTable = (id: number) => {
 // onMounted(() => {
 // 	// 🔺 the `beforeunload` event is not reliably fired
 // 	// https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event#usage_notes
-// 	window.addEventListener('beforeunload', _clearAndUnlock)
+// 	window.addEventListener('beforeunload', _unlockAndClear)
 // })
 onBeforeUnmount(() => {
-	_clearAndUnlock()
+	_unlockAndClear()
 	realtimeUnsubscribe()
 	clearReleaseInterval()
-	// window.removeEventListener('beforeunload', _clearAndUnlock)
+	// window.removeEventListener('beforeunload', _unlockAndClear)
 })
 
 // wait for supabase data to be fetched
