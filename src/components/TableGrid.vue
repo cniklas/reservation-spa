@@ -11,8 +11,8 @@ import { useHighlight } from '@/use/highlight'
 const { state } = useStore()
 
 const emit = defineEmits<{
-	(event: 'edit', id: number, triggerEl: HTMLElement): void
-	(event: 'unlock', id: number): void
+	edit: [id: number, triggerEl: HTMLElement]
+	unlock: [id: number]
 }>()
 defineProps<{
 	uuid: string

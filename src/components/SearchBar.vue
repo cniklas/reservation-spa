@@ -3,7 +3,7 @@ import { ref, useTemplateRef, watch, nextTick } from 'vue'
 import { refDebounced } from '@vueuse/core'
 
 const emit = defineEmits<{
-	(event: 'update', input: string): void
+	update: [input: string]
 }>()
 
 const inputEl = useTemplateRef<HTMLInputElement | null>('inputEl')

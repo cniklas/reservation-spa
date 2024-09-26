@@ -10,9 +10,9 @@ const { isSubmitLocked, beforeSubmit, handleSubmitError, unlockSubmit, validatio
 	useErrorHandling()
 
 const emit = defineEmits<{
-	(event: 'cancel'): void
-	(event: 'saving'): void
-	(event: 'saved'): void
+	cancel: []
+	saving: []
+	saved: []
 }>()
 const props = defineProps<{
 	entry: Table

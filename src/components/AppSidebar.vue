@@ -2,8 +2,8 @@
 import { ref, useTemplateRef, onMounted, onBeforeUnmount } from 'vue'
 
 const emit = defineEmits<{
-	(event: 'closing'): void
-	(event: 'closed'): void
+	closing: []
+	closed: []
 }>()
 
 const slideIn = ref(false)
