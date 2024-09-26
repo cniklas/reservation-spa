@@ -62,7 +62,7 @@ watch(
 	<RouterView />
 
 	<Teleport to="body">
-		<footer class="top-100vh container sticky flex gap-x-4 py-5">
+		<footer v-once class="top-100vh container sticky flex gap-x-4 py-5">
 			<details class="font-mono text-sm">
 				<summary class="inline-block cursor-help">© 2023 - {{ buildYear }} Christian Niklas</summary>
 				<div>{{ buildTime }}</div>
