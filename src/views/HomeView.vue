@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, useTemplateRef, computed, watch, onBeforeUnmount, defineAsyncComponent, nextTick } from 'vue'
-// import { isSafari } from '@firebase/util'
 import AppSidebar from '@/components/AppSidebar.vue'
 import TableForm from '@/components/TableForm.vue'
 import AppDialog from '@/components/AppDialog.vue'
@@ -244,7 +243,7 @@ onBeforeUnmount(() => {
 		@closing="clearTimer"
 	>
 		<template v-if="selectedItem">
-			<h2 class="mb-4 text-2xl font-semibold empty:hidden" id="aria-section-heading">
+			<h2 class="mb-4 text-2xl font-semibold" id="aria-section-heading">
 				{{ `Tisch ${selectedItem.index}` }}
 				{{ selectedItem.name }}
 				<span class="sr-only">bearbeiten</span>
