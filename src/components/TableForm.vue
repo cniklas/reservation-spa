@@ -55,7 +55,7 @@ const reservations = computed(() => {
 
 				_reservations.push({
 					name: _table[key],
-					table: _table.name,
+					table: `${_table.index}`,
 				})
 			}
 		})

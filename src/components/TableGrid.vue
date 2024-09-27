@@ -60,7 +60,7 @@ const filteredTables = computed(() => {
 })
 
 onMounted(() => {
-	useHighlight('.js-search-list', 'search-result', _search)
+	useHighlight('.searchable-list', 'search-result', _search)
 })
 
 const sortedSeats = (table: Table) => {
@@ -95,10 +95,10 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 		class="on-start-fade-in container grid grid-cols-[10.5rem_1fr] items-start gap-x-4 gap-y-6 sm:grid-cols-[12rem_minmax(auto,34.5rem)] sm:gap-6"
 	>
 		<template v-for="table in filteredTables" :key="table.id">
-			<div class="grid scroll-m-20 gap-4" :id="`table-${table.index}`">
+			<div>
 				<button
 					type="button"
-					class="grid-table z-1 relative text-left"
+					class="grid-table"
 					:class="{ 'is-available': table.seats - countTakenSeats(table) }"
 					:aria-disabled="!!table.locked_at"
 					data-test-edit-button
@@ -118,9 +118,7 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 					</span>
 
 					<span>
-						<span class="grid-table-label">
-							{{ table.name }}
-						</span>
+						<span class="grid-table-label">{{ table.name }}</span>
 						<TransitionGroup name="exchange">
 							<span v-if="table.locked_at" class="block text-sm/6">wird bearbeitet</span>
 							<span v-else-if="table.active" class="block">
@@ -132,7 +130,7 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 					</span>
 				</button>
 
-				<div v-if="state.isAuthenticated && table.locked_at && table.locked_by !== uuid" class="text-center">
+				<div v-if="state.isAuthenticated && table.locked_at && table.locked_by !== uuid" class="mt-4 text-center">
 					<div class="text-sm">seit {{ formatTime(table.locked_at) }} Uhr</div>
 					<button type="button" class="primary-button mt-1" data-test-unlock-button @click="$emit('unlock', table.id)">
 						🔑 entsperren
@@ -141,10 +139,10 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 			</div>
 
 			<ol
-				class="js-search-list dot-separated <sm:leading-1.375rem empty:invisible"
+				class="searchable-list"
 				:class="{ 'line-through': !table.active }"
 				role="list"
-				:aria-label="`Personen an Tisch ${table.name}`"
+				:aria-label="`Personen an Tisch ${table.index}`"
 			>
 				<li v-for="(seat, n) in sortedSeats(table)" :key="`${table.id}-${n}`">
 					{{ seat.name }}
@@ -165,6 +163,8 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 	border-radius: 1.8125rem;
 	background-color: var(--white);
 	box-shadow: 0 4px 0 -1px oklch(40.91% 0 0); /* theme('colors.dark.50') */
+	text-align: left;
+	width: 100%;
 
 	&.is-available {
 		box-shadow: 0 7px 0 -1px var(--lime);
@@ -201,16 +201,28 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 	}
 }
 
-@screen sm {
-	.dot-separated {
-		display: flex;
-		flex-wrap: wrap;
-
-		> :not(:last-child)::after {
-			content: '•';
-			content: '•' / '';
-			margin-inline: 0.25rem;
+.searchable-list {
+	@media not all and (min-width: 40em) {
+		& {
+			line-height: 1.375;
 		}
+	}
+
+	@media (min-width: 40em) {
+		& {
+			display: flex;
+			flex-wrap: wrap;
+
+			> :not(:last-child)::after {
+				content: '•';
+				content: '•' / '';
+				margin-inline: 0.25rem;
+			}
+		}
+	}
+
+	&:empty {
+		visibility: hidden;
 	}
 }
 
@@ -278,7 +290,7 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 @supports (animation-timeline: view()) {
 	@media (prefers-reduced-motion: no-preference) {
 		.grid-table,
-		.js-search-list {
+		.searchable-list {
 			animation: appear linear;
 			animation-timeline: view();
 			animation-range: entry 0 cover 7rem;
@@ -288,7 +300,7 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 			transform-origin: center right;
 		}
 
-		.js-search-list {
+		.searchable-list {
 			transform-origin: center left;
 		}
 	}

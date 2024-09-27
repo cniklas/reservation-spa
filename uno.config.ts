@@ -5,8 +5,6 @@ export default defineConfig({
 	// custom CSS
 	// missing in presetMini
 	rules: [
-		// ['overscroll-y-contain', { 'overscroll-behavior-y': 'contain' }],
-		['scroll-m-20', { 'scroll-margin': '5rem' }],
 		[
 			'sr-only',
 			{

@@ -217,8 +217,8 @@ onBeforeUnmount(() => {
 					<use href="/app.svg#star-doodle" />
 				</svg>
 			</h1>
-			<div>{{ state.tables.length ? reservations : 'Lade Daten …' }}</div>
 			<div v-if="state.tables.length" class="sr-only">Es sind {{ state.tables.length }} Tische aufgestellt.</div>
+			<div>{{ state.tables.length ? reservations : 'Lade Daten …' }}</div>
 
 			<img
 				v-if="state.tables.length && sitePlanImage"
