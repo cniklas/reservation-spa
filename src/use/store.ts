@@ -83,6 +83,7 @@ const setAuthState = (isAuthenticated = false) => {
 
 // Singleton State Pattern, see https://markus.oberlehner.net/blog/vue-composition-api-composables/#the-singleton-state-pattern
 export const useStore = () => ({
+	config: readonly({ minSeats: 4, maxSeats: 8 }),
 	state: readonly(state),
 	realtimeSubscribe,
 	realtimeUnsubscribe,

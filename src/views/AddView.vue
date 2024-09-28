@@ -6,23 +6,23 @@ import { useStore } from '@/use/store'
 import { useErrorHandling } from '@/use/errorHandling'
 
 const router = useRouter()
-const { state, fetchEntries, addEntry } = useStore()
-const { isSubmitLocked, beforeSubmit, handleSubmitError, validationErrors } = useErrorHandling()
+const { config, state, fetchEntries, addEntry } = useStore()
+const { isSubmitLocked, beforeSubmit, handleSubmitError } = useErrorHandling()
 
 fetchEntries()
 
 const form = reactive({
 	active: true,
 	name: '',
-	seats: 8,
+	seats: config.maxSeats,
 })
 
 watch(
 	() => form.seats,
 	val => {
 		if (typeof val !== 'number') return
-		if (val < 4) form.seats = 4
-		else if (val > 8) form.seats = 8
+		if (val < config.minSeats) form.seats = config.minSeats
+		else if (val > config.maxSeats) form.seats = config.maxSeats
 	},
 )
 
@@ -32,7 +32,6 @@ const isSubmitDisabled = computed(() => isSubmitLocked.value || !Number.isIntege
 
 const onSubmit = async () => {
 	if (isSubmitDisabled.value) return
-	if (validationErrors.size) return
 
 	beforeSubmit()
 
@@ -80,7 +79,7 @@ const onSubmit = async () => {
 					id="seats"
 					inputmode="numeric"
 					autocomplete="off"
-					pattern="[4-8]"
+					:pattern="`[${config.minSeats}-${config.maxSeats}]`"
 					required
 				/>
 			</div>

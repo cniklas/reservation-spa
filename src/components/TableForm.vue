@@ -5,7 +5,7 @@ import type { Reservation } from '@/types/Reservation.type'
 import { useStore } from '@/use/store'
 import { useErrorHandling } from '@/use/errorHandling'
 
-const { state, updateEntry } = useStore()
+const { config, state, updateEntry } = useStore()
 const { isSubmitLocked, beforeSubmit, handleSubmitError, unlockSubmit, validationErrors, validateName } =
 	useErrorHandling()
 
@@ -21,10 +21,10 @@ const props = defineProps<{
 const form = reactive({ ...props.entry })
 const touchedSeats: Set<string> = reactive(new Set())
 const decrease = () => {
-	if (form.seats > 4) form.seats--
+	if (form.seats > config.minSeats) form.seats--
 }
 const increase = () => {
-	if (form.seats < 8) form.seats++
+	if (form.seats < config.maxSeats) form.seats++
 }
 watch(
 	() => form.seats,
@@ -124,7 +124,7 @@ const cancel = () => {
 				<button
 					type="button"
 					class="secondary-button !p-unset w-9"
-					:aria-disabled="form.seats === 4"
+					:aria-disabled="form.seats === config.minSeats"
 					data-test-decrease-button
 					@click="decrease"
 				>
@@ -134,7 +134,7 @@ const cancel = () => {
 				<button
 					type="button"
 					class="secondary-button !p-unset w-9"
-					:aria-disabled="form.seats === 8"
+					:aria-disabled="form.seats === config.maxSeats"
 					data-test-increase-button
 					@click="increase"
 				>

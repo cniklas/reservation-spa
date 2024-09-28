@@ -52,7 +52,7 @@ const reservations = computed(() => {
 				</svg>
 			</h1>
 			<div>
-				{{ reservations.length > 0 ? formatCount(reservations.length, ['Person', 'Personen']) : 'keine Einträge' }}
+				{{ reservations.length > 0 ? formatCount(reservations.length, ['Person', 'Personen']) : 'niemand eingetragen' }}
 			</div>
 		</div>
 

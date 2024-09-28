@@ -5,6 +5,7 @@ import TableForm from '../../src/components/TableForm.vue'
 // import { PROVIDE_TABLES, PROVIDE_UPDATE_ENTRY } from '../../src/keys'
 import { mockTables } from '../mock.data'
 
+const CONFIG = { minSeats: 4, maxSeats: 8 }
 const state = reactive<{
 	isAuthenticated: boolean
 }>({
@@ -20,7 +21,7 @@ const state = reactive<{
 // 	}
 // })
 vi.mock('../../src/use/store', () => ({
-	useStore: () => ({ state }),
+	useStore: () => ({ config: CONFIG, state }),
 }))
 // const tables = mockTables()
 const entry = mockTables()[0]
