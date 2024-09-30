@@ -142,9 +142,9 @@ const cancel = () => {
 				</button>
 			</div>
 			<div class="mb-4">
-				<label>
+				<label for="active">
 					verfügbar
-					<input v-model="form.active" type="checkbox" />
+					<input v-model="form.active" type="checkbox" id="active" />
 				</label>
 			</div>
 		</template>
