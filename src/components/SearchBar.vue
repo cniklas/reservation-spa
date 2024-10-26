@@ -52,9 +52,7 @@ watch(searchDebounced, val => {
 					data-test-search-button
 					@click="resetSearch"
 				>
-					<svg class="close-icon" aria-hidden="true" width="14" height="14">
-						<use href="/app.svg#plus" />
-					</svg>
+					<svg class="close-icon" aria-hidden="true" width="14" height="14"><use href="/app.svg#plus" /></svg>
 				</button>
 			</div>
 		</search>

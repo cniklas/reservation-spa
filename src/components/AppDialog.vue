@@ -4,17 +4,16 @@ import { useTemplateRef } from 'vue'
 const dialogEl = useTemplateRef<HTMLDialogElement | null>('dialogEl')
 const open = () => {
 	dialogEl.value?.showModal()
+	dialogEl.value?.focus()
 }
 
 defineExpose({ open })
 </script>
 
 <template>
-	<dialog ref="dialogEl" class="dialog" role="alertdialog" aria-labelledby="js-dialog-content">
+	<dialog ref="dialogEl" class="dialog" role="alertdialog" aria-labelledby="js-dialog-content" tabindex="-1">
 		<button type="button" class="close-button" aria-label="Dialog schließen" @click="dialogEl?.close()">
-			<svg class="close-icon" aria-hidden="true" width="14" height="14">
-				<use href="/app.svg#plus" />
-			</svg>
+			<svg class="close-icon" aria-hidden="true" width="14" height="14"><use href="/app.svg#plus" /></svg>
 		</button>
 		<div class="whitespace-pre-line first-line:font-semibold" id="js-dialog-content"><slot /></div>
 	</dialog>

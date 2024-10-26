@@ -99,7 +99,6 @@ const onEditTable = async (id: number, _triggerEl: HTMLElement) => {
 
 	itemId.value = id // `selectedItem` will be set
 	/* await */ updateEntry(id, { locked_by: uuid.value, locked_at: Date.now() + clientOffset.value })
-	;(sidebarEl.value?.$el as HTMLDivElement | undefined)?.focus()
 	triggerEl = _triggerEl
 	setTimer(onTimeoutOrCancel)
 }
@@ -235,13 +234,7 @@ onBeforeUnmount(() => {
 		</div>
 	</main>
 
-	<AppSidebar
-		v-if="state.tables.length"
-		ref="sidebarEl"
-		tabindex="-1"
-		aria-labelledby="aria-section-heading"
-		@closing="clearTimer"
-	>
+	<AppSidebar v-if="state.tables.length" ref="sidebarEl" aria-labelledby="aria-section-heading" @closing="clearTimer">
 		<template v-if="selectedItem">
 			<h2 class="mb-4 text-2xl font-semibold" id="aria-section-heading">
 				{{ `Tisch ${selectedItem.index}` }}

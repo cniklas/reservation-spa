@@ -10,6 +10,7 @@ const slideIn = ref(false)
 
 const open = () => {
 	slideIn.value = true
+	sidebarEl.value?.focus()
 }
 const close = (cb?: Function) => {
 	_callback = cb
@@ -38,7 +39,7 @@ defineExpose({ open, close })
 </script>
 
 <template>
-	<section ref="sidebarEl" class="sidebar" :class="{ 'slide-in': slideIn }">
+	<section ref="sidebarEl" class="sidebar" :class="{ 'slide-in': slideIn }" tabindex="-1">
 		<slot />
 	</section>
 </template>
@@ -61,9 +62,7 @@ defineExpose({ open, close })
 	transition: translate 360ms cubic-bezier(0.4, 0, 0.2, 1);
 
 	@media (min-width: 40em) {
-		& {
-			padding-inline: 1rem;
-		}
+		padding-inline: 1rem;
 	}
 
 	&.slide-in {
