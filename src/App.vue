@@ -8,9 +8,9 @@ const route = useRoute()
 const router = useRouter()
 const { state, setAuthState } = useStore()
 
-// @ts-ignore
+// @ts-expect-error vite.config variable
 const buildYear = new Date(__BUILD_TIME__).getFullYear()
-// @ts-ignore
+// @ts-expect-error vite.config variable
 const buildTime = `${new Date(__BUILD_TIME__).toLocaleDateString('de-DE', { hour: 'numeric', minute: 'numeric' })} Uhr`
 
 const logout = async () => {

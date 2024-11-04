@@ -34,7 +34,6 @@ export const useTimeout = () => {
 	const fetchTime = async () => {
 		try {
 			// console.time('server time')
-			// @ts-ignore
 			const response = await fetch(import.meta.env.VITE_GET_TIME_URL, { priority: 'low' })
 			if (!response.ok) throw new Error('Could not retrieve server time')
 			// console.timeEnd('server time')
@@ -70,7 +69,7 @@ export const useTimeout = () => {
 		countdown.value--
 	}
 
-	const setTimer = (onTimeoutOrCancel: Function) => {
+	const setTimer = (onTimeoutOrCancel: () => void) => {
 		_editTimeoutId = window.setTimeout(onTimeoutOrCancel, EDIT_TIMEOUT)
 		isTimerRunning.value = true
 		countdown.value = EDIT_TIMEOUT / 1000

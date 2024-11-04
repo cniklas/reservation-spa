@@ -12,13 +12,13 @@ const open = () => {
 	slideIn.value = true
 	sidebarEl.value?.focus()
 }
-const close = (cb?: Function) => {
+const close = (cb?: () => void) => {
 	_callback = cb
 	slideIn.value = false
 	emit('closing')
 }
 
-let _callback: Function | undefined
+let _callback: (() => void) | undefined
 const onTransitionEnd = () => {
 	if (slideIn.value) return
 

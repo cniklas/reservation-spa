@@ -3,11 +3,9 @@ import { watch, nextTick, type Ref } from 'vue'
 export const useHighlight = (selector: string, key: string, searchRef: Ref<string>) => {
 	// https://codepen.io/jensimmons/pen/vYbvrjq
 	const highlight = async (search: string) => {
-		// @ts-ignore
 		if (!CSS.highlights) return
 
 		await nextTick()
-		// @ts-ignore
 		CSS.highlights.clear()
 		if (search.length < 3) return
 
@@ -47,11 +45,9 @@ export const useHighlight = (selector: string, key: string, searchRef: Ref<strin
 			})
 
 		// create a Highlight object for the ranges
-		// @ts-ignore
 		const searchResults = new Highlight(...ranges.flat())
 
 		// register the Highlight object in the registry
-		// @ts-ignore
 		CSS.highlights.set(key, searchResults)
 	}
 
