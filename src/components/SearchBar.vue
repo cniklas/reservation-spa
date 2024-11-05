@@ -29,8 +29,8 @@ watch(searchDebounced, val => {
 
 <template>
 	<div class="border-b-1.5 sticky top-0 z-10 border-b-black bg-white py-3">
-		<search class="search container flex items-center">
-			<label class="mr-3" for="search">Suche</label>
+		<search class="search container flex items-center gap-x-3">
+			<label for="search">Suche</label>
 			<div class="relative max-w-56 grow">
 				<input
 					ref="inputEl"

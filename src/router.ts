@@ -36,9 +36,6 @@ const router = createRouter({
 		},
 		{ path: '/:pathMatch(.*)*', redirect: { name: 'home' } },
 	],
-	scrollBehavior(_to, _from, savedPosition) {
-		return savedPosition ?? { top: 0 }
-	},
 })
 
 export default router

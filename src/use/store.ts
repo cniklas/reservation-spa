@@ -46,9 +46,8 @@ const fetchEntries = async () => {
 		if (data === null) throw new Error('Verbindung zur Datenbank fehlgeschlagen.')
 
 		state.tables = data
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	} catch (error: any) {
-		const message = error.message ?? 'Verbindung zum Server fehlgeschlagen.'
+	} catch (error) {
+		const message = (error as Error).message ?? 'Verbindung zum Server fehlgeschlagen.'
 		console.error(message) // ¯\\_(ツ)_/¯
 	}
 }
@@ -57,9 +56,8 @@ const updateEntry = async (id: number, data: Table | LockedTable) => {
 	try {
 		const { error } = await supabase.from('tables').update(data).eq('id', id) /* .select() */
 		if (error) throw error
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	} catch (error: any) {
-		const message = error.message ?? 'Verbindung zum Server fehlgeschlagen.'
+	} catch (error) {
+		const message = (error as Error).message ?? 'Verbindung zum Server fehlgeschlagen.'
 		console.error(message)
 	}
 }
@@ -70,9 +68,8 @@ const addEntry = async (data: CreateTable) => {
 	try {
 		const { error } = await supabase.from('tables').insert(data) /* .select() */
 		if (error) throw error
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	} catch (error: any) {
-		const message = error.message ?? 'Verbindung zum Server fehlgeschlagen.'
+	} catch (error) {
+		const message = (error as Error).message ?? 'Verbindung zum Server fehlgeschlagen.'
 		console.error(message)
 	}
 }
