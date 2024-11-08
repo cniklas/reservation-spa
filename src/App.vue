@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { watch } from 'vue'
+import { watch, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { supabase } from './supabase'
 import { useStore } from './use/store'
+import { usePresence } from './use/presence'
 
 const route = useRoute()
 const router = useRouter()
 const { state, setAuthState } = useStore()
+const { subscribe, unsubscribe } = usePresence()
 
 // @ts-expect-error vite.config variable
 const buildYear = new Date(__BUILD_TIME__).getFullYear()
@@ -47,6 +49,11 @@ watch(
 // if (_now.getMonth() === 11 && _now.getDate() === 31) {
 // 	router.replace('/liste')
 // }
+
+subscribe()
+onBeforeUnmount(() => {
+	unsubscribe()
+})
 </script>
 
 <template>

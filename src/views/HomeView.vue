@@ -5,6 +5,7 @@ import TableForm from '@/components/TableForm.vue'
 import AppDialog from '@/components/AppDialog.vue'
 import type { SeatKey } from '@/types/Table.type'
 import { useStore } from '@/use/store'
+import { usePresence } from '@/use/presence'
 import { formatCount, createUuid } from '@/use/helper'
 import { ONE_MINUTE, EDIT_TIMEOUT, RELEASE_TIME, useTimeout } from '@/use/timeout'
 
@@ -14,6 +15,7 @@ const title: string = import.meta.env.VITE_APP_NAME
 const sitePlanImage = import.meta.env.VITE_SITE_PLAN_IMAGE?.split(',') // url,width,height
 
 const { state, realtimeSubscribe, realtimeUnsubscribe, fetchEntries, updateEntry } = useStore()
+const { usersOnline } = usePresence()
 const {
 	clientOffset,
 	isReleased,
@@ -206,6 +208,7 @@ onBeforeUnmount(() => {
 
 <template>
 	<div class="timer-bar" :class="{ 'is-running': isTimerRunning }" :style="{ '--edit-timeout': `${EDIT_TIMEOUT}ms` }" />
+	<div v-if="state.isAuthenticated" class="online-users">{{ usersOnline }}</div>
 
 	<main class="py-5" :inert="!!selectedItem">
 		<div class="container">
@@ -280,6 +283,30 @@ onBeforeUnmount(() => {
 			transition-duration: var(--edit-timeout);
 			transition-timing-function: linear;
 		}
+	}
+}
+
+.online-users {
+	position: fixed;
+	top: 1rem;
+	right: 0.75rem;
+	z-index: 20;
+	width: 1.75rem;
+	aspect-ratio: 1;
+	border-radius: 50%;
+	align-content: center;
+	text-align: center;
+	font-weight: 500;
+	color: #fff;
+	background-color: var(--lime);
+
+	@media (min-width: 40em) {
+		right: 1rem;
+	}
+
+	@media (min-width: 64em) {
+		right: 50%;
+		translate: calc(64rem / 2 - 1rem);
 	}
 }
 
