@@ -4,7 +4,7 @@ name: Supabase Activity Scheduler
 
 on:
   schedule:
-    - cron: '0 0 * * 0,3' # runs every Sunday and Wednesday
+    - cron: '0 0 * * *' # runs every Sunday and Wednesday
   workflow_dispatch:
 
 jobs:
