@@ -72,7 +72,7 @@ const onChange = (key: string, el: HTMLInputElement) => {
 const resetValidation = (key: string) => {
 	touchedSeats.delete(key)
 	validationErrors.delete(key)
-	;(document.querySelector(`#${key}`) as HTMLInputElement).setCustomValidity('')
+	document.querySelector<HTMLInputElement>(`#${key}`)?.setCustomValidity('')
 }
 const resetValue = (key: string) => {
 	form[key as SeatKey] = ''

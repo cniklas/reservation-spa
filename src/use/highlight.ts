@@ -9,7 +9,7 @@ export const useHighlight = (selector: string, key: string, searchRef: Ref<strin
 		CSS.highlights.clear()
 		if (search.length < 3) return
 
-		const nodeList = document.querySelectorAll(selector) ?? []
+		const nodeList = document.querySelectorAll<HTMLElement>(selector) ?? []
 		const textNodes: Node[] = []
 		nodeList.forEach(el => {
 			const treeWalker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
