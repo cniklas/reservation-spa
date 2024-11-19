@@ -9,7 +9,7 @@ const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, unlockSubmit }
 const email = ref('')
 const passcode = ref('')
 
-const formEl = useTemplateRef<HTMLFormElement | null>('formEl')
+const formEl = useTemplateRef('formEl')
 const isFirstStep = ref(true)
 watch(isFirstStep, async () => {
 	await nextTick()

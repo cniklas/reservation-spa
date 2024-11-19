@@ -6,7 +6,7 @@ const emit = defineEmits<{
 	update: [input: string]
 }>()
 
-const inputEl = useTemplateRef<HTMLInputElement | null>('inputEl')
+const inputEl = useTemplateRef('inputEl')
 const search = ref('')
 const resetSearch = async () => {
 	search.value = ''
