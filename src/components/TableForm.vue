@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, computed, watch, toRaw } from 'vue'
+import { useTemplateRef, reactive, computed, watch, toRaw } from 'vue'
 import type { SeatKey, Table } from '@/types/Table.type'
 import type { Reservation } from '@/types/Reservation.type'
 import { useStore } from '@/use/store'
@@ -77,6 +77,15 @@ const resetValidation = (key: string) => {
 const resetValue = (key: string) => {
 	form[key as SeatKey] = ''
 	resetValidation(key)
+	focus(key)
+}
+
+const formEl = useTemplateRef('formEl')
+const focus = (key: string) => {
+	;(
+		formEl.value?.querySelector<HTMLInputElement>(`#${key}`) ??
+		formEl.value?.querySelector<HTMLButtonElement>('button[type=submit]')
+	)?.focus()
 }
 
 const onSubmit = async () => {
@@ -113,7 +122,7 @@ const cancel = () => {
 </script>
 
 <template>
-	<form novalidate @submit.prevent="onSubmit">
+	<form ref="formEl" novalidate @submit.prevent="onSubmit">
 		<template v-if="state.isAuthenticated">
 			<div class="mb-4">
 				<label for="name" class="mr-3">Name</label>
@@ -163,28 +172,41 @@ const cancel = () => {
 				autocomplete="off"
 				maxlength="36"
 				enterkeyhint="done"
+				:aria-describedby="`seat_${n}-error`"
 				@change="onChange(`seat_${n}`, $event.target as HTMLInputElement)"
 			/>
 
-			<div v-if="validationErrors.has(`seat_${n}`)" class="col-start-2 mt-1 text-[--validation-error]">
+			<template v-if="validationErrors.has(`seat_${n}`)">
 				<template v-if="Array.isArray(validationErrors.get(`seat_${n}`))">
-					<div class="mb-0.5">Ist diese Person identisch mit:</div>
-					<ul class="comma-separated text-[--dark]">
-						<li v-for="(hit, i) in validationErrors.get(`seat_${n}`)" v-html="hit" :key="`${n}-${i}`"></li>
-					</ul>
+					<div :id="`seat_${n}-error`" class="col-start-2 mt-1">
+						<div class="mb-0.5 text-[--validation-error]">Ist diese Person identisch mit:</div>
+						<ul class="comma-separated">
+							<li v-for="(hit, i) in validationErrors.get(`seat_${n}`)" v-html="hit" :key="`${n}-${i}`"></li>
+						</ul>
+					</div>
 
-					<div class="button-wrapper my-2">
+					<div class="button-wrapper col-start-2 my-2">
 						<button type="button" class="secondary-button" @click="resetValue(`seat_${n}`)">ja</button>
-						<button type="button" class="secondary-button" @click="resetValidation(`seat_${n}`)">nein</button>
+						<button
+							type="button"
+							class="secondary-button"
+							@click="resetValidation(`seat_${n}`), focus(`seat_${n + 1}`)"
+						>
+							nein
+						</button>
 					</div>
 				</template>
 
-				<template v-else>{{ validationErrors.get(`seat_${n}`) }}</template>
-			</div>
+				<div v-else :id="`seat_${n}-error`" class="col-start-2 mt-1 text-[--validation-error]">
+					{{ validationErrors.get(`seat_${n}`) }}
+				</div>
+			</template>
 		</div>
 
 		<div class="button-wrapper mt-5">
-			<button type="submit" class="primary-button" :aria-disabled="isSubmitLocked">Speichern</button>
+			<button type="submit" class="primary-button" :aria-disabled="isSubmitLocked || !!validationErrors.size">
+				Speichern
+			</button>
 			<button type="button" class="secondary-button" data-test-cancel-button @click="cancel">Abbrechen</button>
 		</div>
 	</form>
