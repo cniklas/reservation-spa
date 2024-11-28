@@ -114,3 +114,22 @@ input:where([type='text'], [type='email'], [type='password'], [type='number']) {
 	rotate: 45deg;
 	fill: currentColor;
 }
+
+/* https://css-tricks.com/animating-number-counters/ */
+@property --count-up {
+	syntax: '<integer>';
+	initial-value: 0;
+	inherits: false;
+}
+
+.count-up {
+	counter-reset: countUp calc(var(--count-up) * 1);
+	transition: --count-up 1.6s cubic-bezier(0.33, 1, 0.68, 1); /* easeOutCubic */
+
+	&::before {
+		content: counter(countUp);
+		margin-right: 0.4ch;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+	}
+}

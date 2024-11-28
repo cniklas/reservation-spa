@@ -5,6 +5,7 @@ import type { SeatKey } from '@/types/Table.type'
 import type { SortableReservation } from '@/types/Reservation.type'
 import { useStore } from '@/use/store'
 import { formatCount, sortByName } from '@/use/helper'
+import { COUNT_UP_THRESHOLD, useCountUp } from '@/use/countUp'
 
 const title: string = import.meta.env.VITE_APP_NAME
 
@@ -40,6 +41,8 @@ const reservations = computed(() => {
 	reservations.sort(sortByName)
 	return reservations
 })
+const count = computed(() => reservations.value.length)
+const { countUp } = useCountUp(count)
 </script>
 
 <template>
@@ -51,12 +54,12 @@ const reservations = computed(() => {
 					<use href="/app.svg#star-doodle" />
 				</svg>
 			</h1>
-			<div>
-				{{ reservations.length > 0 ? formatCount(reservations.length, ['Person', 'Personen']) : 'niemand eingetragen' }}
-			</div>
+
+			<div v-if="count >= COUNT_UP_THRESHOLD" class="count-up" :style="{ '--count-up': countUp }">Personen</div>
+			<div v-else>{{ count > 0 ? formatCount(count, ['Person', 'Personen']) : 'niemand eingetragen' }}</div>
 		</div>
 
-		<div v-if="reservations.length > 0" class="mb-10 mt-6">
+		<div v-if="count > 0" class="mb-10 mt-6">
 			<SearchBar class="mb-3" @update="onUpdateSearch" />
 
 			<div class="container">

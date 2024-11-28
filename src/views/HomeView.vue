@@ -7,6 +7,7 @@ import type { SeatKey } from '@/types/Table.type'
 import { useStore } from '@/use/store'
 import { formatCount, createUuid } from '@/use/helper'
 import { ONE_MINUTE, EDIT_TIMEOUT, RELEASE_TIME, useTimeout } from '@/use/timeout'
+import { COUNT_UP_THRESHOLD, useCountUp } from '@/use/countUp'
 
 const TableGrid = defineAsyncComponent(() => import('@/components/TableGrid.vue'))
 
@@ -42,7 +43,7 @@ const _showDialog = (message: string) => {
 	dialogEl.value?.open()
 }
 
-const reservations = computed(() => {
+const count = computed(() => {
 	let count = 0
 	state.tables
 		.filter(item => item.active)
@@ -54,8 +55,10 @@ const reservations = computed(() => {
 			}
 		})
 
-	return `${count ? formatCount(count, ['Person', 'Personen']) : 'niemand'} eingetragen`
+	// return `${count ? formatCount(count, ['Person', 'Personen']) : 'niemand'} eingetragen`
+	return count
 })
+const { countUp } = useCountUp(count)
 
 const uuid = ref(sessionStorage.getItem('uuid') ?? createUuid())
 sessionStorage.setItem('uuid', uuid.value)
@@ -216,7 +219,17 @@ onBeforeUnmount(() => {
 				</svg>
 			</h1>
 			<div v-if="state.tables.length" class="sr-only">Es sind {{ state.tables.length }} Tische aufgestellt.</div>
-			<div>{{ state.tables.length ? reservations : 'Lade Daten …' }}</div>
+
+			<div v-if="count >= COUNT_UP_THRESHOLD" class="count-up" :style="{ '--count-up': countUp }">
+				Personen eingetragen
+			</div>
+			<div v-else>
+				{{
+					state.tables.length
+						? `${count ? formatCount(count, ['Person', 'Personen']) : 'niemand'} eingetragen`
+						: 'Lade Daten …'
+				}}
+			</div>
 
 			<img
 				v-if="state.tables.length && sitePlanImage"
