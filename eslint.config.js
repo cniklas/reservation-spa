@@ -46,6 +46,7 @@ export default [
 					ol: ['list'],
 				},
 			],
+			'vuejs-accessibility/no-autofocus': 'warn',
 		},
 	},
 

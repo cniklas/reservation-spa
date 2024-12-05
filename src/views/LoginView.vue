@@ -67,7 +67,7 @@ const _onSubmitCode = async () => {
 			<div class="mb-2">
 				<template v-if="isFirstStep">
 					<label for="email" class="mb-1 block w-fit">E-Mail</label>
-					<input v-model.trim="email" type="email" id="email" autocomplete="username" enterkeyhint="go" />
+					<input v-model.trim="email" type="email" id="email" autocomplete="username" enterkeyhint="go" autofocus />
 				</template>
 
 				<template v-else>
