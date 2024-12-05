@@ -50,14 +50,12 @@ watch(
 </script>
 
 <template>
-	<header v-if="state.isAuthenticated" class="container py-5">
-		<nav class="flex items-center gap-x-3">
-			<RouterLink to="/">Home</RouterLink>
-			<RouterLink to="/liste">Liste</RouterLink>
-			<RouterLink to="/add">Neuer Tisch</RouterLink>
-			<button type="button" class="secondary-button" @click="logout">Logout</button>
-		</nav>
-	</header>
+	<nav v-if="state.isAuthenticated" class="container flex items-center gap-x-3 py-5">
+		<RouterLink to="/">Home</RouterLink>
+		<RouterLink to="/liste">Liste</RouterLink>
+		<RouterLink to="/add">Neuer Tisch</RouterLink>
+		<button type="button" class="secondary-button" @click="logout">Logout</button>
+	</nav>
 
 	<RouterView />
 
