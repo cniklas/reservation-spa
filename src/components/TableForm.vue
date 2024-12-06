@@ -190,7 +190,7 @@ const cancel = () => {
 						<button
 							type="button"
 							class="secondary-button"
-							@click="resetValidation(`seat_${n}`), focus(`seat_${n + 1}`)"
+							@click="(resetValidation(`seat_${n}`), focus(`seat_${n + 1}`))"
 						>
 							nein
 						</button>

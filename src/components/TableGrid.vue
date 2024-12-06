@@ -73,8 +73,7 @@ const sortedSeats = (table: Table) => {
 		const name = table[key].split(' ')
 		reservations.push({
 			name: name.join(' '),
-			// sortableName: name.length > 1 ? `${name.at(-1)}, ${name.slice(0, -1).join(' ')}` : name.at(0) ?? '',
-			sortableName: name.length > 1 ? `${name[name.length - 1]}, ${name.slice(0, -1).join(' ')}` : (name[0] ?? ''),
+			sortableName: name.length > 1 ? `${name.at(-1)}, ${name.slice(0, -1).join(' ')}` : (name.at(0) ?? ''),
 		})
 	}
 
