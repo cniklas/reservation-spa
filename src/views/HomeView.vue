@@ -243,7 +243,7 @@ onBeforeUnmount(() => {
 		</div>
 
 		<div v-if="state.tables.length" class="mb-10 mt-6">
-			<TableGrid :uuid @edit="onEditTable" @unlock="onUnlockTable" />
+			<TableGrid :uuid :selected-id="selectedItem?.id" @edit="onEditTable" @unlock="onUnlockTable" />
 		</div>
 	</main>
 

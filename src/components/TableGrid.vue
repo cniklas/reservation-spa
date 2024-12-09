@@ -16,6 +16,7 @@ const emit = defineEmits<{
 }>()
 defineProps<{
 	uuid: string
+	selectedId?: number
 }>()
 
 const countTakenSeats = (table: Table) => {
@@ -99,6 +100,8 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 					type="button"
 					class="grid-table"
 					:class="{ 'is-available': table.seats - countTakenSeats(table) }"
+					aria-haspopup="dialog"
+					:aria-expanded="selectedId === table.id"
 					:aria-disabled="!!table.locked_at"
 					data-test-edit-button
 					data-test-table

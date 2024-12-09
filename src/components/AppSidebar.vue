@@ -39,9 +39,9 @@ defineExpose({ open, close })
 </script>
 
 <template>
-	<section ref="sidebarEl" class="sidebar" :class="{ 'slide-in': slideIn }" tabindex="-1">
+	<div ref="sidebarEl" class="sidebar" :class="{ 'slide-in': slideIn }" role="dialog" aria-modal="true" tabindex="-1">
 		<slot />
-	</section>
+	</div>
 </template>
 
 <style>
