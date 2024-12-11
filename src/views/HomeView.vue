@@ -214,7 +214,7 @@ onBeforeUnmount(() => {
 		<div class="container">
 			<h1 class="relative mb-1 w-fit text-3xl font-semibold">
 				{{ title }}
-				<svg class="doodle -top-4.5 -right-10.5 absolute h-10 w-10" aria-hidden="true" width="40" height="40">
+				<svg class="doodle -top-4.5 -right-10.5 absolute size-10" aria-hidden="true" width="40" height="40">
 					<use href="/app.svg#star-doodle" />
 				</svg>
 			</h1>

@@ -110,7 +110,7 @@ input:where([type='text'], [type='email'], [type='password'], [type='number']) {
 }
 
 .close-icon {
-	@apply h-3.5 w-3.5;
+	@apply size-3.5;
 	rotate: 45deg;
 	fill: currentColor;
 }

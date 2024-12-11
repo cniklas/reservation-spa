@@ -195,7 +195,7 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 }
 
 .grid-table-number {
-	@apply h-12 w-12 text-xl;
+	@apply size-12 text-xl;
 	display: grid;
 	border: 1px solid var(--black);
 	border-radius: 50%;
