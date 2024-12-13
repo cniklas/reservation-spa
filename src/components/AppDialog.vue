@@ -29,8 +29,8 @@ defineExpose({ open })
 
 	&::before {
 		content: '';
-		border-top-left-radius: calc(0.5rem - 1px);
-		border-top-right-radius: calc(0.5rem - 1px);
+		border-top-left-radius: calc(0.5rem - 1.5px);
+		border-top-right-radius: calc(0.5rem - 1.5px);
 		/* border-bottom: 1px solid var(--black); */
 		height: 3rem;
 		width: 100%;
