@@ -290,12 +290,14 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 	padding: 0.625rem;
 }
 
-.on-start-fade-in {
-	opacity: unset;
-	transition: opacity 720ms;
+@media (prefers-reduced-motion: no-preference) {
+	.on-start-fade-in {
+		opacity: unset;
+		transition: opacity 720ms;
 
-	@starting-style {
-		opacity: 0;
+		@starting-style {
+			opacity: 0;
+		}
 	}
 }
 

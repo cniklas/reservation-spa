@@ -126,6 +126,10 @@ input:where([type='text'], [type='email'], [type='password'], [type='number']) {
 	counter-reset: countUp calc(var(--count-up) * 1);
 	transition: --count-up 1.6s cubic-bezier(0.33, 1, 0.68, 1); /* easeOutCubic */
 
+	@media (prefers-reduced-motion) {
+		transition-duration: 0s;
+	}
+
 	&::before {
 		content: counter(countUp);
 		margin-right: 0.4ch;
