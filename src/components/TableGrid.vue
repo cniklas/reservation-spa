@@ -164,7 +164,7 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 	border: 1.5px solid var(--black);
 	border-radius: 1.8125rem;
 	background-color: var(--white);
-	box-shadow: 0 4px 0 -1px oklch(40.91% 0 0); /* theme('colors.dark.50') */
+	box-shadow: 0 4px 0 -1px oklch(75.35% 0.139 232.66); /* theme('colors.sky.400') */
 	text-align: left;
 	width: 100%;
 
