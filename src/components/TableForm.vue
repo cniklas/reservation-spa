@@ -214,11 +214,11 @@ const cancel = () => {
 
 <style lang="postcss">
 .input-wrapper {
-	@apply mb-4 grid grid-cols-[1ch_1fr] items-center gap-x-2.5;
+	@apply mb-4 grid grid-cols-[1ch_1fr] items-center gap-x-3;
 }
 
 .button-wrapper {
-	@apply grid grid-cols-[repeat(2,min-content)] gap-x-2.5;
+	@apply grid grid-cols-[repeat(2,min-content)] gap-x-3;
 }
 </style>
 

@@ -3,7 +3,10 @@ import { vi, describe, it, expect, beforeEach } from 'vitest'
 import SearchBar from '../../src/components/SearchBar.vue'
 
 const inputValue = 'test'
-const factory = () => mount(SearchBar)
+const factory = () =>
+	mount(SearchBar, {
+		attachTo: document.body,
+	})
 
 describe('SearchBar.vue', () => {
 	let wrapper
@@ -20,13 +23,12 @@ describe('SearchBar.vue', () => {
 		const inputElement = getInputElement()
 		expect(inputElement.exists()).toBe(true)
 
-		const hiddenClass = '!hidden'
 		const button = getButton()
 		expect(button.exists()).toBe(true)
-		expect(button.attributes('class')).toContain(hiddenClass)
+		expect(button.isVisible()).toBe(false)
 
 		await inputElement.setValue(inputValue)
-		expect(button.attributes('class')).not.toContain(hiddenClass)
+		expect(button.isVisible()).toBe(true)
 	})
 
 	it('resets the input field when the reset button is clicked', async () => {

@@ -29,7 +29,7 @@ watch(searchDebounced, val => {
 
 <template>
 	<div class="border-b-1.5 sticky top-0 z-10 border-b-black bg-white py-3">
-		<search class="search container flex items-center gap-x-3">
+		<search class="search container">
 			<label for="search">Suche</label>
 			<div class="relative max-w-56 grow">
 				<input
@@ -45,9 +45,9 @@ watch(searchDebounced, val => {
 					@keydown.enter="($event.target as HTMLInputElement).blur()"
 				/>
 				<button
+					v-show="search.length"
 					type="button"
 					class="close-button"
-					:class="{ '!hidden': !search.length }"
 					aria-label="Suche zurücksetzen"
 					data-test-search-button
 					@click="resetSearch"
@@ -59,8 +59,10 @@ watch(searchDebounced, val => {
 	</div>
 </template>
 
-<style>
+<style lang="postcss">
 .search {
+	@apply flex items-center gap-x-3;
+
 	.close-button {
 		position: absolute;
 		right: 0.25rem;
