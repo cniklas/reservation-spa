@@ -39,7 +39,18 @@ defineExpose({ open, close })
 </script>
 
 <template>
-	<div ref="sidebarEl" class="sidebar" :class="{ 'slide-in': slideIn }" role="dialog" aria-modal="true" tabindex="-1">
+	<div
+		ref="sidebarEl"
+		class="sidebar"
+		:class="{ 'slide-in': slideIn }"
+		role="dialog"
+		aria-modal="true"
+		aria-labelledby="aria-section-heading"
+		tabindex="-1"
+	>
+		<h2 class="mb-4 text-2xl font-semibold" id="aria-section-heading">
+			<slot name="heading">Tisch bearbeiten</slot>
+		</h2>
 		<slot />
 	</div>
 </template>
