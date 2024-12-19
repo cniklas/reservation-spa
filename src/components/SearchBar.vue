@@ -42,7 +42,7 @@ watch(searchDebounced, val => {
 					autocomplete="off"
 					data-test-search-input
 					@keyup.esc="resetSearch"
-					@keydown.enter="($event.target as HTMLInputElement).blur()"
+					@keydown.enter="inputEl?.blur()"
 				/>
 				<button
 					v-show="search.length"
