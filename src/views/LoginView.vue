@@ -8,6 +8,9 @@ const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, unlockSubmit }
 
 const email = ref('')
 const passcode = ref('')
+watch(passcode, input => {
+	if (input.length === 6) onSubmit()
+})
 
 const formEl = useTemplateRef('formEl')
 const isFirstStep = ref(true)
@@ -67,6 +70,7 @@ const _onSubmitCode = async () => {
 			<div class="mb-2">
 				<template v-if="isFirstStep">
 					<label for="email" class="mb-1 block w-fit">E-Mail</label>
+					<!-- eslint-disable-next-line vuejs-accessibility/no-autofocus -->
 					<input v-model.trim="email" type="email" id="email" autocomplete="username" enterkeyhint="go" autofocus />
 				</template>
 
