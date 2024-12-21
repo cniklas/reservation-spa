@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter, type LocationQueryValue } from 'vue-router'
 import { supabase } from './supabase'
 import { useStore } from './use/store'
 
@@ -37,16 +37,11 @@ watch(
 		}
 
 		if (isLoggedIn && route.name === 'login') {
-			router.replace((route.query.redirectTo as string) ?? '/')
+			router.replace((route.query.redirectTo as LocationQueryValue) ?? '/')
 			return
 		}
 	},
 )
-
-// const _now = new Date()
-// if (_now.getMonth() === 11 && _now.getDate() === 31) {
-// 	router.replace('/liste')
-// }
 </script>
 
 <template>
