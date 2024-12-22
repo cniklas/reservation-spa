@@ -25,7 +25,7 @@ const onTransitionEnd = () => {
 	emit('closed')
 	_callback?.()
 }
-const sidebarEl = useTemplateRef<HTMLDivElement | null>('sidebarEl')
+const sidebarEl = useTemplateRef('sidebarEl')
 onMounted(() => {
 	sidebarEl.value?.addEventListener('transitionend', onTransitionEnd)
 	sidebarEl.value?.addEventListener('transitioncancel', onTransitionEnd)

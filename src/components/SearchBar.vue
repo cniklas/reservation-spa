@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { ref, useTemplateRef, watch, nextTick } from 'vue'
+import { ref, useTemplateRef, watch } from 'vue'
 import { refDebounced } from '@vueuse/core'
 
 const emit = defineEmits<{
 	update: [input: string]
 }>()
 
+const searchEl = useTemplateRef<HTMLDivElement>('searchEl')
 const inputEl = useTemplateRef('inputEl')
 const search = ref('')
-const resetSearch = async () => {
+const resetSearch = () => {
 	search.value = ''
-	await nextTick()
-	inputEl.value?.focus()
+	searchEl.value?.focus()
 	/**
 	 * if we'd use `@keyup.enter="…blur()"` on the input element instead of `@keydown.enter="…blur()"` it would go like this:
 	 * - reset button is triggered by the enter key and fires the 'resetSearch' method
@@ -29,7 +29,7 @@ watch(searchDebounced, val => {
 
 <template>
 	<div class="border-b-1.5 sticky top-0 z-10 border-b-black bg-white py-3">
-		<search class="search container">
+		<search ref="searchEl" class="search container" tabindex="-1">
 			<label for="search">Suche</label>
 			<div class="relative max-w-56 grow">
 				<input
@@ -40,6 +40,7 @@ watch(searchDebounced, val => {
 					id="search"
 					autocorrect="off"
 					autocomplete="off"
+					enterkeyhint="search"
 					data-test-search-input
 					@keyup.esc="resetSearch"
 					@keydown.enter="inputEl?.blur()"
@@ -61,7 +62,7 @@ watch(searchDebounced, val => {
 
 <style lang="postcss">
 .search {
-	@apply flex items-center gap-x-3;
+	@apply flex items-center gap-x-3 outline-transparent;
 
 	.close-button {
 		position: absolute;
