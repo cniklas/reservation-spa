@@ -35,7 +35,7 @@ watch(searchDebounced, val => {
 				<input
 					ref="inputEl"
 					v-model.trim="search"
-					type="text"
+					type="search"
 					class="rounded-4.5 h-9 w-full pl-3 pr-9"
 					id="search"
 					autocorrect="off"

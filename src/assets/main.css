@@ -83,7 +83,7 @@ dialog {
 	outline-offset: 2px;
 }
 
-input:where([type='text'], [type='email'], [type='password'], [type='number']) {
+input:where([type='text'], [type='email'], [type='password'], [type='number'], [type='search']) {
 	@apply focus-visible:outline-1px h-9 border border-current px-1.5 focus-visible:outline-offset-0;
 }
 
