@@ -28,7 +28,7 @@ watch(searchDebounced, val => {
 </script>
 
 <template>
-	<div class="border-b-1.5 sticky top-0 z-10 border-b-black bg-white py-3">
+	<div class="border-b-1.5 sticky top-0 z-10 border-b-black bg-[--white] py-3">
 		<search ref="searchEl" class="search container" tabindex="-1">
 			<label for="search">Suche</label>
 			<div class="relative max-w-56 grow">
