@@ -79,5 +79,14 @@ defineExpose({ open, close })
 	&.slide-in {
 		translate: unset;
 	}
+
+	@media (prefers-reduced-motion) {
+		opacity: 0;
+		transition: opacity 180ms cubic-bezier(0.4, 0, 0.2, 1);
+
+		&.slide-in {
+			opacity: unset;
+		}
+	}
 }
 </style>
