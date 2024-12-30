@@ -84,5 +84,6 @@ const { countUp } = useCountUp(count)
 <style>
 .list-table :is(th, td) {
 	padding: 0.125rem 0.5rem;
+	vertical-align: top;
 }
 </style>
