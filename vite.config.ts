@@ -20,6 +20,9 @@ export default defineConfig({
 			'@': fileURLToPath(new URL('./src', import.meta.url)),
 		},
 	},
+	build: {
+		assetsInlineLimit: filePath => (filePath.endsWith('.svg') ? false : undefined),
+	},
 	define: {
 		__BUILD_TIME__: JSON.stringify(new Date().getTime()),
 	},

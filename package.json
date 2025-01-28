@@ -1,6 +1,6 @@
 {
   "name": "reservation-spa",
-  "version": "2.29.0",
+  "version": "2.30.0",
   "type": "module",
   "repository": {
     "type": "git",
@@ -9,7 +9,7 @@
   "author": "Christian Niklas",
   "license": "MIT",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "test:unit": "vitest",
