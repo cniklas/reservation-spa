@@ -28,7 +28,7 @@
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",
     "@types/jsdom": "^21.1.7",
-    "@types/node": "^22.12.0",
+    "@types/node": "^22.13.0",
     "@types/string-similarity": "^4.0.2",
     "@unocss/reset": "^0.65.1",
     "@unocss/transformer-directives": "^0.65.1",
