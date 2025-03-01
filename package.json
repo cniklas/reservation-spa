@@ -31,7 +31,7 @@
     "@types/node": "^22.13.0",
     "@types/string-similarity": "^4.0.2",
     "@unocss/reset": "^66.0.0",
-    "@unocss/transformer-directives": "^65.4.3",
+    "@unocss/transformer-directives": "^66.0.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitest/eslint-plugin": "1.1.25",
     "@vue/eslint-config-prettier": "^10.0.0",
