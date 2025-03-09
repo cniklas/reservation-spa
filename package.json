@@ -1,6 +1,6 @@
 {
   "name": "reservation-spa",
-  "version": "2.30.0",
+  "version": "2.31.0",
   "type": "module",
   "repository": {
     "type": "git",
@@ -26,7 +26,7 @@
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@tsconfig/node20": "^20.1.4",
+    "@tsconfig/node22": "^22.0.0",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.13.8",
     "@types/string-similarity": "^4.0.2",
