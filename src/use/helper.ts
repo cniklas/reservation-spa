@@ -24,7 +24,7 @@ const formatCount = (count: number, noun: [string, string]) => `${count} ${noun[
 
 const createUuid = () => `_${Math.random().toString(36).substring(2, 10)}`
 
-const sortByName = (a: SortableReservation, b: SortableReservation) =>
-	a.sortableName.localeCompare(b.sortableName, 'de')
+const collator = new Intl.Collator('de', { sensitivity: 'base' })
+const sortByName = (a: SortableReservation, b: SortableReservation) => collator.compare(a.sortableName, b.sortableName)
 
 export { formatDateTime, formatTime, formatCount, createUuid, sortByName }
