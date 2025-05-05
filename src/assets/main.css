@@ -83,6 +83,10 @@ dialog {
 	outline-offset: 2px;
 }
 
+:where([tabindex='-1']):focus {
+	outline: none;
+}
+
 input:where([type='text'], [type='email'], [type='password'], [type='number'], [type='search']) {
 	@apply focus-visible:outline-1px h-9 border border-current bg-[--white] px-1.5 focus-visible:outline-offset-0;
 }
