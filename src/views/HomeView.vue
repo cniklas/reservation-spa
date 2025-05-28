@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, useTemplateRef, computed, watch, onBeforeUnmount, defineAsyncComponent, nextTick } from 'vue'
+import { ref, useTemplateRef, computed, watch, onBeforeUnmount, onUnmounted, defineAsyncComponent, nextTick } from 'vue'
 import AppSidebar from '@/components/AppSidebar.vue'
 import TableForm from '@/components/TableForm.vue'
 import AppDialog from '@/components/AppDialog.vue'
@@ -187,7 +187,7 @@ const _unlockTableAfterPageReload = () => {
 let _expiredTablesIntervalId: number
 const _unlockExpiredTables = () => {
 	if (!state.isAuthenticated) {
-		clearInterval(_expiredTablesIntervalId)
+		window.clearInterval(_expiredTablesIntervalId)
 		return
 	}
 
@@ -202,8 +202,8 @@ if (state.isAuthenticated) {
 	_expiredTablesIntervalId = window.setInterval(_unlockExpiredTables, ONE_MINUTE / 6)
 	_unlockExpiredTables()
 }
-onBeforeUnmount(() => {
-	clearInterval(_expiredTablesIntervalId)
+onUnmounted(() => {
+	window.clearInterval(_expiredTablesIntervalId)
 })
 </script>
 

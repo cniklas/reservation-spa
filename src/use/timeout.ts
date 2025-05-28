@@ -18,7 +18,7 @@ export const useTimeout = () => {
 
 	let _releaseIntervalId: number
 	const clearReleaseInterval = () => {
-		clearInterval(_releaseIntervalId)
+		window.clearInterval(_releaseIntervalId)
 	}
 	const _observeReleaseTime = () => {
 		isReleased.value = _isReleasedNow()
@@ -79,7 +79,7 @@ export const useTimeout = () => {
 	const clearTimer = () => {
 		clearTimeout(_editTimeoutId)
 		isTimerRunning.value = false
-		clearInterval(_countdownIntervalId)
+		window.clearInterval(_countdownIntervalId)
 	}
 
 	return {
