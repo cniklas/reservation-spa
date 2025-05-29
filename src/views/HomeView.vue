@@ -35,8 +35,8 @@ watch(
 	},
 )
 
-const sidebarEl = useTemplateRef<InstanceType<typeof AppSidebar> | null>('sidebarEl')
-const dialogEl = useTemplateRef<InstanceType<typeof AppDialog> | null>('dialogEl')
+const sidebarEl = useTemplateRef<InstanceType<typeof AppSidebar>>('sidebarEl')
+const dialogEl = useTemplateRef<InstanceType<typeof AppDialog>>('dialogEl')
 const dialogMessage = ref('')
 const _showDialog = (message: string) => {
 	dialogMessage.value = message
