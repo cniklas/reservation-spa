@@ -130,25 +130,29 @@ const cancel = () => {
 			</div>
 			<div class="mb-4">
 				<span class="mr-3">Sitzplätze</span>
-				<button
-					type="button"
-					class="secondary-button !p-unset w-9"
-					:aria-disabled="form.seats === config.minSeats"
-					data-test-decrease-button
-					@click="decrease"
-				>
-					-
-				</button>
-				<span class="w-1ch mx-2 inline-block">{{ form.seats }}</span>
-				<button
-					type="button"
-					class="secondary-button !p-unset w-9"
-					:aria-disabled="form.seats === config.maxSeats"
-					data-test-increase-button
-					@click="increase"
-				>
-					+
-				</button>
+				<div class="inline-grid grid-cols-[min-content_1ch_min-content] items-center gap-x-2">
+					<span class="order-1" aria-live="polite">{{ form.seats }}</span>
+					<button
+						type="button"
+						class="secondary-button !p-unset w-9"
+						aria-label="Anzahl verringern"
+						:aria-disabled="form.seats === config.minSeats"
+						data-test-decrease-button
+						@click="decrease"
+					>
+						-
+					</button>
+					<button
+						type="button"
+						class="secondary-button !p-unset order-2 w-9"
+						aria-label="Anzahl erhöhen"
+						:aria-disabled="form.seats === config.maxSeats"
+						data-test-increase-button
+						@click="increase"
+					>
+						+
+					</button>
+				</div>
 			</div>
 			<div class="mb-4">
 				<label for="active">
@@ -160,8 +164,7 @@ const cancel = () => {
 
 		<div class="mb-3">Bitte Vor- und Nachnamen eintragen.</div>
 		<div v-for="n in form.seats" :key="`seat-${n}`" class="input-wrapper" data-test-seat>
-			<label :for="`seat_${n}`" class="text-right text-lg font-semibold">
-				<span class="sr-only">Platz</span>
+			<label :for="`seat_${n}`" class="text-right text-lg font-semibold" :aria-label="`Platz ${n}`">
 				{{ n }}
 			</label>
 			<input
