@@ -1,22 +1,25 @@
+import { globalIgnores } from 'eslint/config'
+import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
 import pluginVue from 'eslint-plugin-vue'
-import vueTsEslintConfig from '@vue/eslint-config-typescript'
 import pluginVitest from '@vitest/eslint-plugin'
 import pluginVueA11y from 'eslint-plugin-vuejs-accessibility'
 import skipFormatting from '@vue/eslint-config-prettier/skip-formatting'
 
-export default [
+// To allow more languages other than `ts` in `.vue` files, uncomment the following lines:
+// import { configureVueProject } from '@vue/eslint-config-typescript'
+// configureVueProject({ scriptLangs: ['ts', 'tsx'] })
+// More info at https://github.com/vuejs/eslint-config-typescript/#advanced-setup
+
+export default defineConfigWithVueTs(
 	{
 		name: 'app/files-to-lint',
 		files: ['**/*.{ts,mts,tsx,vue}'],
 	},
 
-	{
-		name: 'app/files-to-ignore',
-		ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
-	},
+	globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
 
-	...pluginVue.configs['flat/strongly-recommended'],
-	...vueTsEslintConfig(),
+	pluginVue.configs['flat/strongly-recommended'],
+	vueTsConfigs.recommended,
 	{
 		rules: {
 			'arrow-body-style': 'warn',
@@ -27,7 +30,7 @@ export default [
 		},
 	},
 
-	...pluginVueA11y.configs['flat/recommended'],
+	pluginVueA11y.configs['flat/recommended'],
 	{
 		rules: {
 			'vuejs-accessibility/label-has-for': [
@@ -55,4 +58,4 @@ export default [
 		files: ['src/**/__tests__/*'],
 	},
 	skipFormatting,
-]
+)
