@@ -164,7 +164,8 @@ const cancel = () => {
 
 		<div class="mb-3">Bitte Vor- und Nachnamen eintragen.</div>
 		<div v-for="n in form.seats" :key="`seat-${n}`" class="input-wrapper" data-test-seat>
-			<label :for="`seat_${n}`" class="text-right text-lg font-semibold" :aria-label="`Platz ${n}`">
+			<label :for="`seat_${n}`" class="text-right text-lg font-semibold">
+				<span class="sr-only">Platz</span>
 				{{ n }}
 			</label>
 			<input
