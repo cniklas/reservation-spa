@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { /* vi, */ describe, it, expect, beforeEach } from 'vitest'
+import { vi, describe, it, expect, beforeEach } from 'vitest'
 import AppSidebar from '../../src/components/AppSidebar.vue'
 
 const factory = () => mount(AppSidebar)
@@ -29,12 +29,12 @@ describe('AppSidebar.vue', () => {
 		expect(wrapper.emitted('closing').length).toBe(1)
 	})
 
-	// it('emits a custom event "closed" after a certain time when the "close" method is called', async () => {
-	// 	wrapper.vm.close()
-	// 	expect(wrapper.emitted('closed')).toBeFalsy()
+	it.skip('emits a custom event "closed" after a certain time when the "close" method is called', async () => {
+		wrapper.vm.close()
+		expect(wrapper.emitted('closed')).toBeFalsy()
 
-	// 	vi.runAllTimers()
-	// 	expect(wrapper.emitted('closed')).toBeTruthy()
-	// 	expect(wrapper.emitted('closed').length).toBe(1)
-	// })
+		vi.runAllTimers()
+		expect(wrapper.emitted('closed')).toBeTruthy()
+		expect(wrapper.emitted('closed').length).toBe(1)
+	})
 })

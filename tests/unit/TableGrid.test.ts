@@ -71,7 +71,7 @@ describe('TableGrid.vue', () => {
 		expect(wrapper.emitted('edit').at(0).at(0)).toBe(state.tables[index].id)
 	})
 
-	it('has an unlock button for each locked table if user is logged in ', async () => {
+	it('has an unlock button for each locked table if user is logged in', async () => {
 		state.tables.map((table, i) => {
 			// skip first table
 			if (i === 0) return
