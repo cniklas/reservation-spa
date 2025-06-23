@@ -13,13 +13,13 @@ const state = reactive<{
 	isAuthenticated: false,
 })
 
-const _onUpdate = (payload: RealtimePostgresUpdatePayload<{ [key: string]: unknown }>) => {
-	const newEntry = payload.new
+const _onDatabaseUpdate = (payload: RealtimePostgresUpdatePayload<Table>) => {
+	const newEntry = payload.new as Table | null
 	if (!newEntry) return
 
 	const index = state.tables.findIndex(table => table.id === newEntry.id) // im Fehlerfall `-1`
 	if (index === -1) return
-	state.tables[index] = newEntry as Table
+	state.tables[index] = newEntry
 }
 
 const realtimeSubscribe = () => {
@@ -27,7 +27,7 @@ const realtimeSubscribe = () => {
 
 	supabase
 		.channel('schema-db-changes')
-		.on('postgres_changes', { event: 'UPDATE', schema: 'public' }, _onUpdate)
+		.on('postgres_changes', { event: 'UPDATE', schema: 'public' }, _onDatabaseUpdate)
 		.subscribe((status, error) => {
 			if (status === 'SUBSCRIBED') state.subscribed = true
 			if (error) throw error
