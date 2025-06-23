@@ -1,3 +1,4 @@
+import { unref, type Ref } from 'vue'
 import type { SortableReservation } from '@/types/Reservation.type'
 
 const formatDateTime = (timestamp?: number | string, options?: Intl.DateTimeFormatOptions) => {
@@ -27,4 +28,6 @@ const createUuid = () => `_${Math.random().toString(36).substring(2, 10)}`
 const collator = new Intl.Collator('de', { sensitivity: 'base' })
 const sortByName = (a: SortableReservation, b: SortableReservation) => collator.compare(a.sortableName, b.sortableName)
 
-export { formatDateTime, formatTime, formatCount, createUuid, sortByName }
+const isEmpty = (...args: (Ref<string> | string)[]) => args.some(val => !unref(val).length)
+
+export { formatDateTime, formatTime, formatCount, createUuid, sortByName, isEmpty }

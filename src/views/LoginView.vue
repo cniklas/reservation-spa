@@ -3,8 +3,9 @@ import { ref, useTemplateRef, watch, nextTick } from 'vue'
 import type { AuthError } from '@supabase/supabase-js'
 import { supabase } from '@/supabase'
 import { useErrorHandling } from '@/use/errorHandling'
+import { isEmpty } from '@/use/helper'
 
-const { isSubmitLocked, isEmpty, beforeSubmit, handleSubmitError, unlockSubmit } = useErrorHandling()
+const { isSubmitLocked, beforeSubmit, handleSubmitError, unlockSubmit } = useErrorHandling()
 
 const email = ref('')
 const passcode = ref('')
