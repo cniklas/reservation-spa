@@ -1,6 +1,7 @@
 import { reactive, readonly } from 'vue'
 import type { RealtimePostgresUpdatePayload } from '@supabase/supabase-js'
 import { supabase } from '@/supabase'
+import type { PostgrestSingleResponse } from '@supabase/supabase-js'
 import type { Table, CreateTable, LockedTable } from '@/types/Table.type'
 
 const state = reactive<{
@@ -41,7 +42,10 @@ const realtimeUnsubscribe = async () => {
 
 const fetchEntries = async () => {
 	try {
-		const { data, error /* , status */ } = await supabase.from('tables').select().order('index', { ascending: true })
+		const { data, error /* , status */ }: PostgrestSingleResponse<Table[]> = await supabase
+			.from('tables')
+			.select()
+			.order('index', { ascending: true })
 		if (error) throw error
 		if (data === null) throw new Error('Verbindung zur Datenbank fehlgeschlagen.')
 
@@ -54,7 +58,8 @@ const fetchEntries = async () => {
 
 const updateEntry = async (id: number, data: Table | LockedTable) => {
 	try {
-		const { error } = await supabase.from('tables').update(data).eq('id', id) /* .select() */
+		const { error } = await supabase.from('tables').update(data).eq('id', id)
+		// .select()
 		if (error) throw error
 	} catch (error) {
 		const message = (error as Error).message ?? 'Verbindung zum Server fehlgeschlagen.'
@@ -66,7 +71,8 @@ const addEntry = async (data: CreateTable) => {
 	if (!state.isAuthenticated) return
 
 	try {
-		const { error } = await supabase.from('tables').insert(data) /* .select() */
+		const { error } = await supabase.from('tables').insert(data)
+		// .select()
 		if (error) throw error
 	} catch (error) {
 		const message = (error as Error).message ?? 'Verbindung zum Server fehlgeschlagen.'
