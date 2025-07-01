@@ -32,7 +32,7 @@
     "@types/string-similarity": "^4.0.2",
     "@unocss/reset": "^66.0.0",
     "@unocss/transformer-directives": "^66.0.0",
-    "@vitejs/plugin-vue": "^5.2.4",
+    "@vitejs/plugin-vue": "^6.0.0",
     "@vitest/eslint-plugin": "1.1.44",
     "@vue/eslint-config-prettier": "^10.0.0",
     "@vue/eslint-config-typescript": "^14.4.0",
