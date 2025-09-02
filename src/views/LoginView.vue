@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, useTemplateRef, watch, nextTick } from 'vue'
-import type { AuthError } from '@supabase/supabase-js'
-import { supabase } from '@/supabase'
+import { instant } from '@/instant'
 import { useErrorHandling } from '@/use/errorHandling'
 import { isEmpty } from '@/use/helper'
 
@@ -32,12 +31,7 @@ const _onSubmitEmail = async () => {
 	beforeSubmit()
 
 	try {
-		const { error } = await supabase.auth.signInWithOtp({
-			email: email.value,
-			options: { shouldCreateUser: false },
-		})
-		if (error) throw error
-
+		await instant.auth.sendMagicCode({ email: email.value })
 		isFirstStep.value = false
 	} catch (error) {
 		handleSubmitError(error)
@@ -45,20 +39,19 @@ const _onSubmitEmail = async () => {
 }
 
 const _onSubmitCode = async () => {
-	if (isSubmitLocked.value || isEmpty(passcode)) return
+	if (isSubmitLocked.value || isEmpty(passcode, passcode)) return
 
 	beforeSubmit()
 
 	try {
-		const { error } = await supabase.auth.verifyOtp({ email: email.value, token: passcode.value, type: 'email' })
-		if (error) throw error
+		await instant.auth.signInWithMagicCode({ email: email.value, code: passcode.value })
 	} catch (error) {
 		handleSubmitError(error)
 
-		if ((error as AuthError).code === 'otp_expired') {
-			isFirstStep.value = true
-			passcode.value = ''
-		}
+		// if ((error as AuthError).code === 'otp_expired') {
+		// 	isFirstStep.value = true
+		// 	passcode.value = ''
+		// }
 	}
 }
 </script>
