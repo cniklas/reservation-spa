@@ -96,7 +96,7 @@ const onSubmit = async () => {
 	try {
 		const formData: Table = {
 			...toRaw(form),
-			locked_by: null,
+			locked_by: '',
 			locked_at: null,
 		}
 

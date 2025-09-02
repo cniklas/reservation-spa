@@ -14,7 +14,7 @@ const TableGrid = defineAsyncComponent(() => import('@/components/TableGrid.vue'
 const title: string = import.meta.env.VITE_APP_NAME
 const sitePlanImage = import.meta.env.VITE_SITE_PLAN_IMAGE?.split(',') // url,width,height
 
-const { state, realtimeSubscribe, realtimeUnsubscribe, fetchEntries, updateEntry } = useStore()
+const { state, fetchEntries, updateEntry } = useStore()
 const {
 	clientOffset,
 	isReleased,
@@ -27,13 +27,6 @@ const {
 } = useTimeout()
 
 fetchTime()
-realtimeSubscribe()
-watch(
-	() => state.subscribed,
-	subscribed => {
-		if (subscribed) fetchEntries()
-	},
-)
 
 const sidebarEl = useTemplateRef<InstanceType<typeof AppSidebar>>('sidebarEl')
 const dialogEl = useTemplateRef<InstanceType<typeof AppDialog>>('dialogEl')
@@ -63,7 +56,7 @@ const { countUp } = useCountUp(count)
 const uuid = ref(sessionStorage.getItem('uuid') ?? createUuid())
 sessionStorage.setItem('uuid', uuid.value)
 
-const itemId = ref<number | null>(null)
+const itemId = ref<string | null>(null)
 // will always be in sync with the data source
 const selectedItem = computed(() => (itemId.value ? state.tables.find(item => item.id === itemId.value) : null))
 watch(itemId, val => {
@@ -87,7 +80,7 @@ const _onConflict = (message: string) => {
 	_showDialog(message)
 }
 let triggerEl: HTMLElement | null = null
-const onEditTable = async (id: number, _triggerEl: HTMLElement) => {
+const onEditTable = async (id: string, _triggerEl: HTMLElement) => {
 	if (!isReleased.value && !state.isAuthenticated) {
 		_showDialog(
 			`Noch ein bisschen Geduld.\nEintragungen sind ab ${new Date(RELEASE_TIME).toLocaleDateString('de-DE', {
@@ -138,8 +131,8 @@ const _clearEditState = async () => {
 	triggerEl?.focus()
 }
 
-const _unlockTable = async (id: number) => {
-	await updateEntry(id, { locked_by: null, locked_at: null })
+const _unlockTable = async (id: string) => {
+	await updateEntry(id, { locked_by: '', locked_at: null })
 }
 
 // called by `onTimeoutOrCancel` and 'onBeforeUnmount' hook
@@ -150,7 +143,7 @@ const _unlockAndClear = () => {
 	_clearEditState()
 }
 
-const onUnlockTable = (id: number) => {
+const onUnlockTable = (id: string) => {
 	if (state.isAuthenticated) _unlockTable(id)
 }
 
@@ -161,24 +154,17 @@ const onUnlockTable = (id: number) => {
 // })
 onBeforeUnmount(() => {
 	_unlockAndClear()
-	realtimeUnsubscribe()
 	clearReleaseInterval()
 	// window.removeEventListener('beforeunload', _unlockAndClear)
 })
 
-// wait for supabase data to be fetched
-const _unwatchTables = watch(
-	() => state.tables,
-	(_, previousState) => {
-		if (!previousState.length) _unlockTableAfterPageReload()
-		_unwatchTables() // stop watcher
-	},
-)
 // unlock table if user reloads page
 const _unlockTableAfterPageReload = () => {
 	const abandonedTable = state.tables.find(item => item.locked_by === uuid.value)
 	if (abandonedTable) _unlockTable(abandonedTable.id)
 }
+
+fetchEntries(_unlockTableAfterPageReload)
 
 // On iOS (maybe also on other mobile devices) if the browser runs in the background,
 // because the user switches to another app, the edit timeout callback (closeForm) never gets called.

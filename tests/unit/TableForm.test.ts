@@ -77,7 +77,7 @@ describe('TableForm.vue', () => {
 		// decrease
 		const decreaseButton = wrapper.find('[data-test-decrease-button]')
 		await decreaseButton.trigger('click')
-		expect(wrapper.findAll(seatsSelector).length).toBe(entry.seats - 1)
+		expect(wrapper.findAll(seatsSelector).length).toBe((entry.seats as number) - 1)
 
 		for (let i = 0; i < 5; i++) {
 			await decreaseButton.trigger('click')

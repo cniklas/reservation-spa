@@ -11,12 +11,12 @@ import { useHighlight } from '@/use/highlight'
 const { state } = useStore()
 
 const emit = defineEmits<{
-	edit: [id: number, triggerEl: HTMLElement]
-	unlock: [id: number]
+	edit: [id: string, triggerEl: HTMLElement]
+	unlock: [id: string]
 }>()
 defineProps<{
 	uuid: string
-	selectedId?: number
+	selectedId?: string
 }>()
 
 const countTakenSeats = (table: Table) => {

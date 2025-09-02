@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { watch } from 'vue'
 import { useRoute, useRouter, type LocationQueryValue } from 'vue-router'
-import { supabase } from './supabase'
+import { instant } from '@/instant'
 import { useStore } from './use/store'
 
 const route = useRoute()
@@ -15,15 +15,15 @@ const buildTime = `${new Date(__BUILD_TIME__).toLocaleDateString('de-DE', { hour
 
 const logout = async () => {
 	try {
-		const { error } = await supabase.auth.signOut()
-		if (error) throw error
+		await instant.auth.signOut()
 	} catch (error) {
 		console.error(error)
 	}
 }
 
-supabase.auth.onAuthStateChange((_, session) => {
-	setAuthState(session !== null)
+instant.subscribeAuth(auth => {
+	// if (auth.error) addToast(auth.error.message, false)
+	setAuthState(!!auth.user)
 })
 
 watch(
