@@ -58,9 +58,9 @@ const _onSubmitCode = async () => {
 
 <template>
 	<main class="container py-5">
-		<h1 class="mb-3 text-3xl font-semibold">Login</h1>
+		<h1 id="aria-heading-login" class="mb-3 text-3xl font-semibold">Login</h1>
 
-		<form ref="formEl" novalidate @submit.prevent="onSubmit">
+		<form ref="formEl" novalidate aria-labelledby="aria-heading-login" @submit.prevent="onSubmit">
 			<div class="mb-2">
 				<template v-if="isFirstStep">
 					<label for="email" class="mb-1 block w-fit">E-Mail</label>
