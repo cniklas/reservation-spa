@@ -13,7 +13,7 @@ const state = reactive<{
 	isAuthenticated: false,
 })
 
-const fetchEntries = async (cb?: () => void) => {
+const fetchEntries = async () => {
 	if (state.subscribed) return
 
 	try {
@@ -29,8 +29,6 @@ const fetchEntries = async (cb?: () => void) => {
 		const message = (error as Error).message ?? 'Verbindung zum Server fehlgeschlagen.'
 		console.error(message) // ¯\\_(ツ)_/¯
 	}
-
-	cb?.()
 }
 
 const updateEntry = async (id: string, data: Table | LockedTable) => {

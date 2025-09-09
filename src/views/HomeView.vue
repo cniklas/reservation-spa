@@ -163,8 +163,16 @@ const _unlockTableAfterPageReload = () => {
 	const abandonedTable = state.tables.find(item => item.locked_by === uuid.value)
 	if (abandonedTable) _unlockTable(abandonedTable.id)
 }
+// wait for data to be fetched
+const _stopWatcher = watch(
+	() => state.subscribed,
+	subscribed => {
+		if (subscribed) _unlockTableAfterPageReload()
+		_stopWatcher()
+	},
+)
 
-fetchEntries(_unlockTableAfterPageReload)
+fetchEntries()
 
 // On iOS (maybe also on other mobile devices) if the browser runs in the background,
 // because the user switches to another app, the edit timeout callback (closeForm) never gets called.
