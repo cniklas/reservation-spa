@@ -101,6 +101,16 @@ input:where([type='text'], [type='email'], [type='password'], [type='number'], [
 	}
 }
 
+:is(.primary-button, .secondary-button, .close-button) {
+	transition-property: background-color, scale;
+	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	transition-duration: 150ms;
+}
+
+:where(.primary-button, .secondary-button, .close-button):active {
+	scale: 0.97;
+}
+
 .primary-button {
 	@apply rounded-4.5 text-1rem inline-block h-9 bg-[--yellow] px-5 text-[--slate] focus-visible:outline-[--slate];
 }
