@@ -33,7 +33,7 @@ const fetchEntries = async () => {
 
 const updateEntry = async (id: string, data: Table | LockedTable) => {
 	try {
-		instant.transact(instant.tx.tables[id].update(data))
+		instant.transact(instant.tx.tables[id]!.update(data))
 	} catch (error) {
 		const message = (error as Error).message ?? 'Verbindung zum Server fehlgeschlagen.'
 		console.error(message)
@@ -44,7 +44,7 @@ const addEntry = async (data: CreateTable) => {
 	if (!state.isAuthenticated) return
 
 	try {
-		instant.transact(instant.tx.tables[createUuid()].update(data))
+		instant.transact(instant.tx.tables[createUuid()]!.update(data))
 	} catch (error) {
 		const message = (error as Error).message ?? 'Verbindung zum Server fehlgeschlagen.'
 		console.error(message)
