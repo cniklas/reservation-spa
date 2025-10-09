@@ -92,7 +92,7 @@ describe('TableGrid.vue', () => {
 	})
 
 	it('has no unlock button for a table locked by the logged-in user', async () => {
-		const id = (state.tables.at(-1) as Table).id
+		const id = (state.tables.at(-1)).id
 		state.tables.map(table => {
 			// one table is locked by the logged-in user
 			table.locked_by = table.id === id ? _uuid : createUuid()

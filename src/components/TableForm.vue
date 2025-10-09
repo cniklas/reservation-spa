@@ -19,7 +19,7 @@ const props = defineProps<{
 }>()
 
 const form = reactive({ ...props.entry })
-const touchedSeats: Set<string> = reactive(new Set())
+const touchedSeats: Set<SeatKey> = reactive(new Set())
 const decrease = () => {
 	if (form.seats > config.minSeats) form.seats--
 }
@@ -63,19 +63,19 @@ const reservations = computed(() => {
 	return _reservations
 })
 
-const onChange = (key: string, el: HTMLInputElement) => {
+const onChange = (key: SeatKey, el: HTMLInputElement) => {
 	touchedSeats.add(key)
-	validateName(key, form[key as SeatKey], reservations.value)
+	validateName(key, form[key], reservations.value)
 	el.setCustomValidity(validationErrors.has(key) ? 'Eingabe ungültig' : '')
 }
 
-const resetValidation = (key: string) => {
+const resetValidation = (key: SeatKey) => {
 	touchedSeats.delete(key)
 	validationErrors.delete(key)
 	document.querySelector<HTMLInputElement>(`#${key}`)?.setCustomValidity('')
 }
-const resetValue = (key: string) => {
-	form[key as SeatKey] = ''
+const resetValue = (key: SeatKey) => {
+	form[key] = ''
 	resetValidation(key)
 	focus(key)
 }
@@ -102,7 +102,7 @@ const onSubmit = async () => {
 
 		// validate
 		touchedSeats.forEach(key => {
-			validateName(key, formData[key as SeatKey], reservations.value)
+			validateName(key, formData[key], reservations.value)
 		})
 		if (validationErrors.size) return
 
@@ -177,7 +177,7 @@ const cancel = () => {
 				maxlength="36"
 				enterkeyhint="done"
 				:aria-describedby="`seat_${n}-error`"
-				@change="onChange(`seat_${n}`, $event.target as HTMLInputElement)"
+				@change="onChange(`seat_${n}` as SeatKey, $event.target as HTMLInputElement)"
 			/>
 
 			<template v-if="validationErrors.has(`seat_${n}`)">
@@ -190,11 +190,11 @@ const cancel = () => {
 					</div>
 
 					<div class="button-wrapper col-start-2 my-2">
-						<button type="button" class="secondary-button" @click="resetValue(`seat_${n}`)">ja</button>
+						<button type="button" class="secondary-button" @click="resetValue(`seat_${n}` as SeatKey)">ja</button>
 						<button
 							type="button"
 							class="secondary-button"
-							@click="(resetValidation(`seat_${n}`), focus(`seat_${n + 1}`))"
+							@click="(resetValidation(`seat_${n}` as SeatKey), focus(`seat_${n + 1}`))"
 						>
 							nein
 						</button>
