@@ -11,7 +11,7 @@ const inputEl = useTemplateRef('inputEl')
 const search = ref('')
 const resetSearch = () => {
 	search.value = ''
-	searchEl.value?.focus()
+	searchEl.value!.focus()
 	/**
 	 * if we'd use `@keyup.enter="…blur()"` on the input element instead of `@keydown.enter="…blur()"` it would go like this:
 	 * - reset button is triggered by the enter key and fires the 'resetSearch' method
@@ -43,7 +43,7 @@ watch(searchDebounced, val => {
 					enterkeyhint="search"
 					data-test-search-input
 					@keyup.esc="resetSearch"
-					@keydown.enter="inputEl?.blur()"
+					@keydown.enter="inputEl!.blur()"
 				/>
 				<button
 					v-show="search.length"

@@ -10,7 +10,7 @@ const slideIn = ref(false)
 
 const open = () => {
 	slideIn.value = true
-	sidebarEl.value?.focus()
+	sidebarEl.value!.focus()
 }
 const close = (cb?: () => void) => {
 	_callback = cb
@@ -27,12 +27,12 @@ const onTransitionEnd = () => {
 }
 const sidebarEl = useTemplateRef('sidebarEl')
 onMounted(() => {
-	sidebarEl.value?.addEventListener('transitionend', onTransitionEnd)
-	sidebarEl.value?.addEventListener('transitioncancel', onTransitionEnd)
+	sidebarEl.value!.addEventListener('transitionend', onTransitionEnd)
+	sidebarEl.value!.addEventListener('transitioncancel', onTransitionEnd)
 })
 onBeforeUnmount(() => {
-	sidebarEl.value?.removeEventListener('transitionend', onTransitionEnd)
-	sidebarEl.value?.removeEventListener('transitioncancel', onTransitionEnd)
+	sidebarEl.value!.removeEventListener('transitionend', onTransitionEnd)
+	sidebarEl.value!.removeEventListener('transitioncancel', onTransitionEnd)
 })
 
 defineExpose({ open, close })

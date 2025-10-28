@@ -83,8 +83,8 @@ const resetValue = (key: SeatKey) => {
 const formEl = useTemplateRef('formEl')
 const focus = (key: string) => {
 	;(
-		formEl.value?.querySelector<HTMLInputElement>(`#${key}`) ??
-		formEl.value?.querySelector<HTMLButtonElement>('button[type=submit]')
+		formEl.value!.querySelector<HTMLInputElement>(`#${key}`) ??
+		formEl.value!.querySelector<HTMLButtonElement>('button[type=submit]')
 	)?.focus()
 }
 

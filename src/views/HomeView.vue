@@ -33,7 +33,7 @@ const dialogEl = useTemplateRef<InstanceType<typeof AppDialog>>('dialogEl')
 const dialogMessage = ref('')
 const _showDialog = (message: string) => {
 	dialogMessage.value = message
-	dialogEl.value?.open()
+	dialogEl.value!.open()
 }
 
 const count = computed(() => {
@@ -60,21 +60,21 @@ const itemId = ref<string | null>(null)
 // will always be in sync with the data source
 const selectedItem = computed(() => (itemId.value ? state.tables.find(item => item.id === itemId.value) : null))
 watch(itemId, val => {
-	if (val) sidebarEl.value?.open()
+	if (val) sidebarEl.value!.open()
 })
 
 const onTimeoutOrCancel = () => {
-	sidebarEl.value?.close(() => {
+	sidebarEl.value!.close(() => {
 		_unlockAndClear()
 	})
 }
 const onSaved = () => {
-	sidebarEl.value?.close(() => {
+	sidebarEl.value!.close(() => {
 		_clearEditState()
 	})
 }
 const _onConflict = (message: string) => {
-	sidebarEl.value?.close(() => {
+	sidebarEl.value!.close(() => {
 		_clearEditState()
 	})
 	_showDialog(message)
