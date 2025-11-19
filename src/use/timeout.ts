@@ -62,7 +62,7 @@ export const useTimeout = () => {
 	const isTimerRunning = ref(false)
 	const countdown = ref(0)
 	const countdownToTime = computed(() =>
-		new Date(countdown.value * 1000).toLocaleTimeString('de-DE', { minute: 'numeric', second: 'numeric' }),
+		new Date(countdown.value * 1000).toLocaleTimeString('de', { minute: 'numeric', second: 'numeric' }),
 	)
 
 	const _decreaseCountdown = () => {

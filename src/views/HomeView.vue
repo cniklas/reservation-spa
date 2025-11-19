@@ -83,7 +83,7 @@ let triggerEl: HTMLElement | null = null
 const onEditTable = async (id: string, _triggerEl: HTMLElement) => {
 	if (!isReleased.value && !state.isAuthenticated) {
 		_showDialog(
-			`Noch ein bisschen Geduld.\nEintragungen sind ab ${new Date(RELEASE_TIME).toLocaleDateString('de-DE', {
+			`Noch ein bisschen Geduld.\nEintragungen sind ab ${new Date(RELEASE_TIME).toLocaleString('de', {
 				hour: 'numeric',
 				minute: 'numeric',
 			})} Uhr möglich.`,

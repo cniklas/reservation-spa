@@ -74,7 +74,7 @@ const sortedSeats = (table: Table) => {
 		const name = table[key].split(' ')
 		reservations.push({
 			name: name.join(' '),
-			// @ts-expect-error can't fix Array.at error
+			// @ts-expect-error: can't fix Array.at error
 			sortableName: name.length > 1 ? `${name.at(-1)}, ${name.slice(0, -1).join(' ')}` : (name.at(0) ?? ''),
 		})
 	}

@@ -12,13 +12,13 @@ const formatDateTime = (timestamp?: number | string, options?: Intl.DateTimeForm
 		minute: 'numeric',
 		second: 'numeric',
 	}
-	return new Date(timestamp).toLocaleDateString('de-DE', format)
+	return new Date(timestamp).toLocaleString('de', format)
 }
 
 const formatTime = (timestamp?: number) => {
 	if (!timestamp) return ''
 
-	return new Date(timestamp).toLocaleTimeString('de-DE')
+	return new Date(timestamp).toLocaleTimeString('de')
 }
 
 const formatCount = (count: number, noun: [string, string]) => `${count} ${noun[count === 1 ? 0 : 1]}`
