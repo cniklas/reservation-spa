@@ -208,7 +208,7 @@ onUnmounted(() => {
 		<div class="container">
 			<h1 class="relative mb-1 w-fit text-3xl font-semibold">
 				{{ title }}
-				<svg class="doodle -top-4.5 -right-10.5 absolute size-10" aria-hidden="true" width="40" height="40">
+				<svg class="doodle absolute -top-4.5 -right-10.5 size-10" aria-hidden="true" width="40" height="40">
 					<use href="/app.svg#star-doodle" />
 				</svg>
 			</h1>
@@ -236,7 +236,7 @@ onUnmounted(() => {
 			/>
 		</div>
 
-		<div v-if="state.tables.length" class="mb-10 mt-6">
+		<div v-if="state.tables.length" class="mt-6 mb-10">
 			<TableGrid :uuid :selected-id="selectedItem?.id" @edit="onEditTable" @unlock="onUnlockTable" />
 		</div>
 	</main>

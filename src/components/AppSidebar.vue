@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, useTemplateRef, onMounted, onBeforeUnmount } from 'vue'
+import { ref, useTemplateRef } from 'vue'
 
 const emit = defineEmits<{
 	closing: []
@@ -7,6 +7,7 @@ const emit = defineEmits<{
 }>()
 
 const slideIn = ref(false)
+const sidebarEl = useTemplateRef('sidebarEl')
 
 const open = () => {
 	slideIn.value = true
@@ -25,15 +26,6 @@ const onTransitionEnd = () => {
 	emit('closed')
 	_callback?.()
 }
-const sidebarEl = useTemplateRef('sidebarEl')
-onMounted(() => {
-	sidebarEl.value!.addEventListener('transitionend', onTransitionEnd)
-	sidebarEl.value!.addEventListener('transitioncancel', onTransitionEnd)
-})
-onBeforeUnmount(() => {
-	sidebarEl.value!.removeEventListener('transitionend', onTransitionEnd)
-	sidebarEl.value!.removeEventListener('transitioncancel', onTransitionEnd)
-})
 
 defineExpose({ open, close })
 </script>
@@ -47,6 +39,8 @@ defineExpose({ open, close })
 		aria-modal="true"
 		aria-labelledby="aria-section-heading"
 		tabindex="-1"
+		@transitionend.self="onTransitionEnd"
+		@transitioncancel.self="onTransitionEnd"
 	>
 		<h2 class="mb-4 text-2xl font-semibold" id="aria-section-heading">
 			<slot name="heading">Tisch bearbeiten</slot>
@@ -73,7 +67,7 @@ defineExpose({ open, close })
 	transition: translate 360ms cubic-bezier(0.4, 0, 0.2, 1);
 
 	@media (min-width: 40em) {
-		padding-inline: 1rem;
+		padding-inline: 1.25rem;
 	}
 
 	&.slide-in {
