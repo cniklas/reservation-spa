@@ -12,7 +12,7 @@ const formatDateTime = (timestamp?: number | string, options?: Intl.DateTimeForm
 		minute: 'numeric',
 		second: 'numeric',
 	}
-	return new Date(timestamp).toLocaleString('de', format)
+	return new Date(timestamp).toLocaleDateString('de', format)
 }
 
 const formatTime = (timestamp?: number) => {

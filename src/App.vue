@@ -11,7 +11,7 @@ const { state, setAuthState } = useStore()
 // @ts-expect-error: vite.config variable
 const buildYear = new Date(__BUILD_TIME__).getFullYear()
 // @ts-expect-error: vite.config variable
-const buildTime = `${new Date(__BUILD_TIME__).toLocaleString('de', { hour: 'numeric', minute: 'numeric' })} Uhr`
+const buildTime = `${new Date(__BUILD_TIME__).toLocaleDateString('de', { hour: 'numeric', minute: 'numeric' })} Uhr`
 
 const logout = async () => {
 	try {
