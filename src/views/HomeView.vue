@@ -84,6 +84,8 @@ const onEditTable = async (id: string, _triggerEl: HTMLElement) => {
 	if (!isReleased.value && !state.isAuthenticated) {
 		_showDialog(
 			`Noch ein bisschen Geduld.\nEintragungen sind ab ${new Date(RELEASE_TIME).toLocaleDateString('de', {
+				day: '2-digit',
+				month: 'short',
 				hour: 'numeric',
 				minute: 'numeric',
 			})} Uhr möglich.`,
