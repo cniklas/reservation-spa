@@ -32,7 +32,7 @@ const reservations = computed(() => {
 					name: name.join(' '),
 					// @ts-expect-error: can't fix Array.at error
 					sortableName: name.length > 1 ? `${name.at(-1)}, ${name.slice(0, -1).join(' ')}` : (name.at(0) ?? ''),
-					table: `${table.index} ${table.name}`,
+					table: `${table.index}`,
 					hidden: _search.value.length >= 3 && table[key].toLowerCase().indexOf(_search.value.toLowerCase()) === -1,
 				})
 			}
