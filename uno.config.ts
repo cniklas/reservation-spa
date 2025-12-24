@@ -20,6 +20,7 @@ export default defineConfig({
 				'border-width': 0,
 			},
 		],
+		['tabular-nums', { 'font-variant-numeric': 'tabular-nums' }],
 	],
 
 	shortcuts: {

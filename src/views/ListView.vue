@@ -50,7 +50,7 @@ const { countUp } = useCountUp(count)
 		<div class="container">
 			<h1 class="relative mb-1 w-fit text-3xl font-semibold">
 				{{ title }}
-				<svg class="doodle -top-4.5 -right-10.5 absolute size-10" aria-hidden="true" width="40" height="40">
+				<svg class="doodle absolute -top-4.5 -right-10.5 size-10" aria-hidden="true" width="40" height="40">
 					<use href="/app.svg#star-doodle" />
 				</svg>
 			</h1>
@@ -59,11 +59,11 @@ const { countUp } = useCountUp(count)
 			<div v-else>{{ count > 0 ? formatCount(count, ['Person', 'Personen']) : 'niemand eingetragen' }}</div>
 		</div>
 
-		<div v-if="count > 0" class="mb-10 mt-6">
+		<div v-if="count > 0" class="mt-6 mb-10">
 			<SearchBar class="mb-3" @update="onUpdateSearch" />
 
 			<div class="container">
-				<table class="list-table -mx-2">
+				<table class="list-table -mx-2 tabular-nums">
 					<thead>
 						<tr>
 							<th class="text-left font-semibold">Name</th>
