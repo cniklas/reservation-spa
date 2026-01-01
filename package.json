@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@instantdb/core": "^0.22.75",
-    "@vueuse/core": "^14.0.0",
+    "@vueuse/core": "^14.1.0",
     "string-similarity": "^4.0.4",
     "vue": "^3.5.26",
     "vue-router": "^4.6.3"
