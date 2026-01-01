@@ -30,7 +30,7 @@
     "@types/jsdom": "^27.0.0",
     "@types/node": "^24.10.1",
     "@types/string-similarity": "^4.0.2",
-    "@unocss/reset": "^66.3.2",
+    "@unocss/reset": "^66.5.12",
     "@unocss/transformer-directives": "^66.3.2",
     "@vitejs/plugin-vue": "^6.0.2",
     "@vitest/eslint-plugin": "^1.6.4",
