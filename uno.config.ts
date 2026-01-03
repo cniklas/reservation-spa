@@ -1,5 +1,4 @@
-import { defineConfig, presetMini } from 'unocss'
-import transformerDirectives from '@unocss/transformer-directives'
+import { defineConfig, presetMini, transformerDirectives } from 'unocss'
 
 export default defineConfig({
 	// custom CSS
@@ -14,7 +13,6 @@ export default defineConfig({
 				padding: 0,
 				margin: '-1px',
 				overflow: 'hidden',
-				// clip: 'rect(0, 0, 0, 0)',
 				'clip-path': 'inset(50%)',
 				'white-space': 'nowrap',
 				'border-width': 0,

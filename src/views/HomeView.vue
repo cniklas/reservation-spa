@@ -12,7 +12,7 @@ import { COUNT_UP_THRESHOLD, useCountUp } from '@/use/countUp'
 const TableGrid = defineAsyncComponent(() => import('@/components/TableGrid.vue'))
 
 const title: string = import.meta.env.VITE_APP_NAME
-const sitePlanImage = import.meta.env.VITE_SITE_PLAN_IMAGE?.split(',') // url,width,height
+const sitePlanImage: string[] | undefined = import.meta.env.VITE_SITE_PLAN_IMAGE?.split(',') // url,width,height
 
 const { state, fetchEntries, updateEntry } = useStore()
 const {

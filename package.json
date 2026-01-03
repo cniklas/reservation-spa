@@ -1,6 +1,6 @@
 {
   "name": "reservation-spa",
-  "version": "3.6.0",
+  "version": "3.7.0",
   "type": "module",
   "repository": {
     "type": "git",
@@ -30,8 +30,6 @@
     "@types/jsdom": "^27.0.0",
     "@types/node": "^25.0.3",
     "@types/string-similarity": "^4.0.2",
-    "@unocss/reset": "^66.3.2",
-    "@unocss/transformer-directives": "^66.3.2",
     "@vitejs/plugin-vue": "^6.0.3",
     "@vitest/eslint-plugin": "^1.6.4",
     "@vue/eslint-config-prettier": "^10.2.0",
