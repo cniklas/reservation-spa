@@ -10,6 +10,9 @@ const _schema = i.schema({
 		$users: i.entity({
 			email: i.string().unique().indexed().optional(),
 		}),
+		allowed_users: i.entity({
+			email: i.string().unique().indexed(),
+		}),
 		tables: i.entity({
 			active: i.boolean(),
 			index: i.number().unique().indexed(),
