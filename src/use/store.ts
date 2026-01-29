@@ -1,5 +1,5 @@
 import { reactive, readonly } from 'vue'
-import { id as createUuid } from '@instantdb/core'
+import { id as createUuid, type User } from '@instantdb/core'
 import { instant } from '@/instant'
 import type { Table, CreateTable, LockedTable } from '@/types/Table.type'
 
@@ -7,10 +7,12 @@ const state = reactive<{
 	tables: Table[]
 	subscribed: boolean
 	isAuthenticated: boolean
+	isAdmin: boolean
 }>({
 	tables: [],
 	subscribed: false,
 	isAuthenticated: false,
+	isAdmin: false,
 })
 
 const fetchEntries = async () => {
@@ -51,8 +53,10 @@ const addEntry = async (data: CreateTable) => {
 	}
 }
 
-const setAuthState = (isAuthenticated = false) => {
-	state.isAuthenticated = isAuthenticated
+const setAuthState = (user: User | undefined) => {
+	state.isAuthenticated = !!user
+	// @ts-expect-error it's my own custom type
+	state.isAdmin = user?.type === 'admin'
 }
 
 // Singleton State Pattern, see https://markus.oberlehner.net/blog/vue-composition-api-composables/#the-singleton-state-pattern

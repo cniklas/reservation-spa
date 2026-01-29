@@ -15,7 +15,7 @@ defineExpose({ open })
 		<button type="button" class="close-button" aria-label="Dialog schließen" @click="dialogEl!.close()">
 			<svg class="close-icon" aria-hidden="true" width="14" height="14"><use href="/app.svg#plus" /></svg>
 		</button>
-		<div class="whitespace-pre-line first-line:font-semibold" id="js-dialog-content"><slot /></div>
+		<div class="first-line:font-600 whitespace-pre-line" id="js-dialog-content"><slot /></div>
 	</dialog>
 </template>
 

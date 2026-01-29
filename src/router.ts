@@ -27,6 +27,7 @@ const router = createRouter({
 						name: 'login',
 						query: { redirectTo: to.fullPath },
 					}
+				if (!state.isAdmin) return { name: 'home' }
 			},
 		},
 		{

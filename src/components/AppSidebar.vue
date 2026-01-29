@@ -42,7 +42,7 @@ defineExpose({ open, close })
 		@transitionend.self="onTransitionEnd"
 		@transitioncancel.self="onTransitionEnd"
 	>
-		<h2 class="mb-4 text-2xl font-semibold" id="aria-section-heading">
+		<h2 class="font-600 mb-4 text-2xl" id="aria-section-heading">
 			<slot name="heading">Tisch bearbeiten</slot>
 		</h2>
 		<slot />

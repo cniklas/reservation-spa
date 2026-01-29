@@ -48,7 +48,7 @@ const { countUp } = useCountUp(count)
 <template>
 	<main class="py-5">
 		<div class="container">
-			<h1 class="relative mb-1 w-fit text-3xl font-semibold">
+			<h1 class="font-600 relative mb-1 w-fit text-3xl">
 				{{ title }}
 				<svg class="doodle absolute -top-4.5 -right-10.5 size-10" aria-hidden="true" width="40" height="40">
 					<use href="/app.svg#star-doodle" />
@@ -66,8 +66,8 @@ const { countUp } = useCountUp(count)
 				<table class="list-table -mx-2 tabular-nums">
 					<thead>
 						<tr>
-							<th class="text-left font-semibold">Name</th>
-							<th class="text-left font-semibold">Tisch</th>
+							<th class="font-600 text-left">Name</th>
+							<th class="font-600 text-left">Tisch</th>
 						</tr>
 					</thead>
 					<tbody>

@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { ref, useTemplateRef, computed, watch, onBeforeUnmount, onUnmounted, defineAsyncComponent, nextTick } from 'vue'
-import AppSidebar from '@/components/AppSidebar.vue'
-import TableForm from '@/components/TableForm.vue'
 import AppDialog from '@/components/AppDialog.vue'
 import type { SeatKey } from '@/types/Table.type'
 import { useStore } from '@/use/store'
@@ -9,6 +7,8 @@ import { formatCount, createUuid } from '@/use/helper'
 import { ONE_MINUTE, EDIT_TIMEOUT, RELEASE_TIME, useTimeout } from '@/use/timeout'
 import { COUNT_UP_THRESHOLD, useCountUp } from '@/use/countUp'
 
+const AppSidebar = defineAsyncComponent(() => import('@/components/AppSidebar.vue'))
+const TableForm = defineAsyncComponent(() => import('@/components/TableForm.vue'))
 const TableGrid = defineAsyncComponent(() => import('@/components/TableGrid.vue'))
 
 const title: string = import.meta.env.VITE_APP_NAME
@@ -81,7 +81,7 @@ const _onConflict = (message: string) => {
 }
 let triggerEl: HTMLElement | null = null
 const onEditTable = async (id: string, _triggerEl: HTMLElement) => {
-	if (!isReleased.value && !state.isAuthenticated) {
+	if (!isReleased.value && !state.isAdmin) {
 		_showDialog(
 			`Noch ein bisschen Geduld.\nEintragungen sind ab ${new Date(RELEASE_TIME).toLocaleDateString('de', {
 				day: '2-digit',
@@ -116,7 +116,7 @@ watch(
 
 		// admin user unlocked the table
 		if (!lockedBy && itemId.value !== null && !isSaving.value) {
-			_onConflict(`Tisch ${selectedItem.value?.index} wurde wieder freigegeben.`)
+			_onConflict(`Bearbeitungszeit abgelaufen.\nTisch ${selectedItem.value?.index} wurde wieder freigegeben.`)
 		}
 	},
 )
@@ -146,7 +146,7 @@ const _unlockAndClear = () => {
 }
 
 const onUnlockTable = (id: string) => {
-	if (state.isAuthenticated) _unlockTable(id)
+	if (state.isAdmin) _unlockTable(id)
 }
 
 // onMounted(() => {
@@ -182,7 +182,7 @@ fetchEntries()
 // This requires an authenticated user!
 let _expiredTablesIntervalId: number
 const _unlockExpiredTables = () => {
-	if (!state.isAuthenticated) {
+	if (!state.isAdmin) {
 		window.clearInterval(_expiredTablesIntervalId)
 		return
 	}
@@ -194,7 +194,7 @@ const _unlockExpiredTables = () => {
 		}
 	})
 }
-if (state.isAuthenticated) {
+if (state.isAdmin) {
 	_expiredTablesIntervalId = window.setInterval(_unlockExpiredTables, ONE_MINUTE / 6)
 	_unlockExpiredTables()
 }
@@ -208,7 +208,7 @@ onUnmounted(() => {
 
 	<main class="py-5" :inert="!!selectedItem">
 		<div class="container">
-			<h1 class="relative mb-1 w-fit text-3xl font-semibold">
+			<h1 class="font-600 relative mb-1 w-fit text-3xl">
 				{{ title }}
 				<svg class="doodle absolute -top-4.5 -right-10.5 size-10" aria-hidden="true" width="40" height="40">
 					<use href="/app.svg#star-doodle" />
@@ -243,14 +243,14 @@ onUnmounted(() => {
 		</div>
 	</main>
 
-	<AppSidebar v-if="state.tables.length" ref="sidebarEl" @closing="clearTimer">
+	<AppSidebar v-if="state.isAuthenticated && state.tables.length" ref="sidebarEl" @closing="clearTimer">
 		<template v-if="selectedItem" #heading>
 			{{ `Tisch ${selectedItem.index}` }} {{ selectedItem.name }}
 			<span class="sr-only">bearbeiten</span>
 		</template>
 		<template v-if="selectedItem">
 			<div class="mb-3">
-				Bearbeitungszeit: <span class="font-semibold" role="timer">{{ countdownToTime }}</span>
+				Bearbeitungszeit: <span class="font-600" role="timer">{{ countdownToTime }}</span>
 			</div>
 			<TableForm :entry="selectedItem" @cancel="onTimeoutOrCancel" @saving="isSaving = true" @saved="onSaved" />
 		</template>

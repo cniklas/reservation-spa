@@ -10,7 +10,8 @@ const createTime = () => new Date().getTime()
 
 const state = reactive({
 	tables: [],
-	isAuthenticated: false,
+	isAuthenticated: true,
+	isAdmin: false,
 })
 vi.mock('../../src/use/store', () => ({
 	useStore: () => ({ state }),
@@ -32,7 +33,7 @@ describe('TableGrid.vue', () => {
 	beforeEach(() => {
 		wrapper = factory()
 		state.tables = mockTables()
-		state.isAuthenticated = false
+		state.isAdmin = false
 	})
 
 	it('renders correctly', async () => {
@@ -80,7 +81,7 @@ describe('TableGrid.vue', () => {
 		unlockButtons = getUnlockButtons()
 		expect(unlockButtons.length).toBe(0)
 
-		state.isAuthenticated = true
+		state.isAdmin = true
 		await flushPromises()
 
 		unlockButtons = getUnlockButtons()
@@ -94,7 +95,7 @@ describe('TableGrid.vue', () => {
 			table.locked_by = table.id === id ? _uuid : createUuid()
 			table.locked_at = createTime()
 		})
-		state.isAuthenticated = true
+		state.isAdmin = true
 		await flushPromises()
 
 		unlockButtons = getUnlockButtons()
@@ -105,7 +106,7 @@ describe('TableGrid.vue', () => {
 		const index = 1
 		state.tables[index].locked_by = createUuid()
 		state.tables[index].locked_at = createTime()
-		state.isAuthenticated = true
+		state.isAdmin = true
 		await flushPromises()
 
 		unlockButtons = getUnlockButtons()

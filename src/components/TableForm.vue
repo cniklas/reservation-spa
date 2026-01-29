@@ -123,7 +123,7 @@ const cancel = () => {
 
 <template>
 	<form ref="formEl" novalidate @submit.prevent="onSubmit">
-		<template v-if="state.isAuthenticated">
+		<template v-if="state.isAdmin">
 			<div class="mb-4">
 				<label for="name" class="mr-3">Name</label>
 				<input v-model.trim="form.name" type="text" id="name" autocomplete="off" maxlength="16" />
@@ -164,7 +164,7 @@ const cancel = () => {
 
 		<div class="mb-3">Bitte Vor- und Nachnamen eintragen.</div>
 		<div v-for="n in form.seats" :key="`seat-${n}`" class="input-wrapper" data-test-seat>
-			<label :for="`seat_${n}`" class="text-right text-lg font-semibold">
+			<label :for="`seat_${n}`" class="font-600 text-right text-lg">
 				<span class="sr-only">Platz</span>
 				{{ n }}
 			</label>
