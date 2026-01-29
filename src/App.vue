@@ -13,17 +13,17 @@ const buildYear = new Date(__BUILD_TIME__).getFullYear()
 // @ts-expect-error: vite.config variable
 const buildTime = `${new Date(__BUILD_TIME__).toLocaleDateString('de', { hour: 'numeric', minute: 'numeric' })} Uhr`
 
-const logout = async () => {
-	try {
-		await instant.auth.signOut()
-	} catch (error) {
-		console.error(error)
-	}
-}
+// const logout = async () => {
+// 	try {
+// 		await instant.auth.signOut()
+// 	} catch (error) {
+// 		console.error(error)
+// 	}
+// }
 
 instant.subscribeAuth(auth => {
 	// if (auth.error) addToast(auth.error.message, false)
-	setAuthState(!!auth.user)
+	setAuthState(auth.user)
 })
 
 watch(
@@ -31,7 +31,7 @@ watch(
 	async isLoggedIn => {
 		await router.isReady()
 
-		if (!isLoggedIn && route.name === 'add') {
+		if (!state.isAdmin && route.name === 'add') {
 			router.push('/')
 			return
 		}
@@ -45,17 +45,20 @@ watch(
 </script>
 
 <template>
-	<nav v-if="state.isAuthenticated" class="container flex items-center gap-x-3 py-5">
+	<nav class="font-500 container flex items-center gap-x-3 py-5">
 		<RouterLink to="/">Home</RouterLink>
 		<RouterLink to="/liste">Liste</RouterLink>
-		<RouterLink to="/add">Neuer Tisch</RouterLink>
-		<button type="button" class="secondary-button" @click="logout">Logout</button>
+		<RouterLink v-if="!state.isAuthenticated" to="/login">Login</RouterLink>
+		<template v-else>
+			<RouterLink v-if="state.isAdmin" to="/add">Neuer Tisch</RouterLink>
+			<!-- <button type="button" class="secondary-button" @click="logout">Logout</button> -->
+		</template>
 	</nav>
 
 	<RouterView />
 
 	<Teleport to="body">
-		<footer v-once class="top-100vh container sticky flex gap-x-4 py-5">
+		<footer v-once class="top-100vh sticky container flex gap-x-4 py-5">
 			<details class="font-mono text-sm">
 				<summary class="inline-block cursor-help">© 2023 - {{ buildYear }} Christian Niklas</summary>
 				<div>{{ buildTime }}</div>

@@ -7,7 +7,7 @@ import { mockTables } from '../mock.data'
 
 const CONFIG = { minSeats: 4, maxSeats: 8 }
 const state = reactive({
-	isAuthenticated: false,
+	isAdmin: false,
 })
 // vi.mock('../../src/use/store', async importOriginal => {
 // 	const mod = await importOriginal<typeof import('../../src/use/store')>()
@@ -34,7 +34,7 @@ const factory = (/* props?: object */) =>
 		// },
 		props: {
 			entry,
-			// isAuthenticated: false,
+			// isAdmin: false,
 			// ...props,
 		},
 	})
@@ -54,8 +54,8 @@ describe('TableForm.vue', () => {
 		const increaseButtonSelector = '[data-test-increase-button]'
 		expect(wrapper.find(increaseButtonSelector).exists()).toBe(false)
 
-		// wrapper.setProps({ isAuthenticated: true })
-		state.isAuthenticated = true
+		// wrapper.setProps({ isAdmin: true })
+		state.isAdmin = true
 		await flushPromises()
 
 		expect(wrapper.find(increaseButtonSelector).exists()).toBe(true)
@@ -69,7 +69,7 @@ describe('TableForm.vue', () => {
 		const minSeats = 4
 		const maxSeats = 8
 		const seatsSelector = '[data-test-seat]'
-		// wrapper = factory({ isAuthenticated: true })
+		// wrapper = factory({ isAdmin: true })
 		wrapper = factory()
 
 		// decrease

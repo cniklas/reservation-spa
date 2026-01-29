@@ -44,7 +44,7 @@ export const useErrorHandling = () => {
 			if (similarity >= SIMILARITY_LIMIT) {
 				validationErrors.set(key, [
 					...(validationErrors.get(key) ?? []),
-					`<span class="font-semibold">${entry.name}</span> an Tisch ${entry.table}`,
+					`<span class="font-600">${entry.name}</span> an Tisch ${entry.table}`,
 				])
 			}
 		})

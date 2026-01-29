@@ -42,7 +42,7 @@ const onUpdateSearch = (input: string) => {
 	_search.value = input
 }
 const filteredTables = computed(() => {
-	const _tables = state.tables.filter(item => item.active || state.isAuthenticated)
+	const _tables = state.tables.filter(item => item.active || state.isAdmin)
 	_tables.sort(_sortByEmptySeats)
 
 	if (_search.value.length < 3) return _tables
@@ -96,7 +96,7 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 		class="on-start-fade-in container grid grid-cols-[10.5rem_1fr] items-start gap-x-4 gap-y-6 sm:grid-cols-[12rem_minmax(auto,34.5rem)] sm:gap-6"
 	>
 		<template v-for="table in filteredTables" :key="table.id">
-			<div>
+			<div v-if="state.isAuthenticated">
 				<button
 					type="button"
 					class="grid-table"
@@ -133,11 +133,24 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 					</span>
 				</button>
 
-				<div v-if="state.isAuthenticated && table.locked_at && table.locked_by !== uuid" class="mt-4 text-center">
+				<div v-if="state.isAdmin && table.locked_at && table.locked_by !== uuid" class="mt-4 text-center">
 					<div class="text-sm">seit {{ formatTime(table.locked_at) }} Uhr</div>
 					<button type="button" class="primary-button mt-1" data-test-unlock-button @click="$emit('unlock', table.id)">
 						🔑 entsperren
 					</button>
+				</div>
+			</div>
+
+			<div v-else class="grid-table" :class="{ 'is-available': table.seats - countTakenSeats(table) }">
+				<div class="grid-table-number grid-table-number-content">
+					<span class="sr-only">Tisch</span>
+					{{ table.index }}
+				</div>
+				<div>
+					<div class="grid-table-label">{{ table.name }}</div>
+					<div :class="{ 'text-[--validation-error]': !table.active }">
+						{{ table.active ? emptySeats(table) : 'nicht verfügbar' }}
+					</div>
 				</div>
 			</div>
 

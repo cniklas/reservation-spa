@@ -59,7 +59,7 @@ const onSubmit = async () => {
 
 <template>
 	<main class="container py-5">
-		<h1 id="aria-heading-add-entry" class="mb-3 text-3xl font-semibold">Neuer Tisch</h1>
+		<h1 id="aria-heading-add-entry" class="font-600 mb-3 text-3xl">Neuer Tisch</h1>
 
 		<form novalidate aria-labelledby="aria-heading-add-entry" @submit.prevent="onSubmit">
 			<div class="mb-4">
