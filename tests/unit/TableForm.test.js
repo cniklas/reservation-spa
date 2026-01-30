@@ -6,9 +6,7 @@ import TableForm from '../../src/components/TableForm.vue'
 import { mockTables } from '../mock.data'
 
 const CONFIG = { minSeats: 4, maxSeats: 8 }
-const state = reactive<{
-	isAuthenticated: boolean
-}>({
+const state = reactive({
 	isAuthenticated: false,
 })
 // vi.mock('../../src/use/store', async importOriginal => {
@@ -77,7 +75,7 @@ describe('TableForm.vue', () => {
 		// decrease
 		const decreaseButton = wrapper.find('[data-test-decrease-button]')
 		await decreaseButton.trigger('click')
-		expect(wrapper.findAll(seatsSelector).length).toBe((entry.seats) - 1)
+		expect(wrapper.findAll(seatsSelector).length).toBe(entry.seats - 1)
 
 		for (let i = 0; i < 5; i++) {
 			await decreaseButton.trigger('click')
@@ -103,7 +101,7 @@ describe('TableForm.vue', () => {
 		cancelButton.trigger('click')
 		// check that 1 occurrence of the event has been emitted
 		expect(wrapper.emitted('cancel')).toBeTruthy()
-		expect(wrapper.emitted('cancel').length).toBe(1)
+		expect(wrapper.emitted('cancel')?.length).toBe(1)
 		// console.log(wrapper.text());
 		// console.log(wrapper.html())
 	})
