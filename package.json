@@ -19,7 +19,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@instantdb/admin": "^0.22.112",
+    "@instantdb/admin": "^0.22.119",
     "@instantdb/core": "^0.22.96",
     "@vueuse/core": "^14.1.0",
     "string-similarity": "^4.0.4",
