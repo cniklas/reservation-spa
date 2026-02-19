@@ -63,12 +63,8 @@ watch(
 				<summary class="inline-block cursor-help">© 2023 - {{ buildYear }} Christian Niklas</summary>
 				<div>{{ buildTime }}</div>
 			</details>
-			<a
-				href="https://github.com/cniklas/reservation-spa"
-				style="translate: 0 -0.125rem"
-				aria-label="GitHub repo"
-				rel="noopener"
-			>
+			<a href="https://github.com/cniklas/reservation-spa" style="translate: 0 -0.125rem" rel="noopener">
+				<span class="sr-only">GitHub repo</span>
 				<svg aria-hidden="true" class="size-6 fill-current" viewBox="0 0 16 16" width="24" height="24">
 					<path
 						fill-rule="evenodd"
