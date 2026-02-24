@@ -166,12 +166,12 @@ const _unlockTableAfterPageReload = () => {
 	if (abandonedTable) _unlockTable(abandonedTable.id)
 }
 // wait for data to be fetched
-const _stopWatcher = watch(
+watch(
 	() => state.subscribed,
 	subscribed => {
 		if (subscribed) _unlockTableAfterPageReload()
-		_stopWatcher()
 	},
+	{ once: true },
 )
 
 fetchEntries()
