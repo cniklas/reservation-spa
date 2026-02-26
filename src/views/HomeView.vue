@@ -210,7 +210,7 @@ onUnmounted(() => {
 		<div class="container">
 			<h1 class="font-600 relative mb-1 w-fit text-3xl">
 				{{ title }}
-				<svg class="doodle absolute -top-4.5 -right-10.5 size-10" aria-hidden="true" width="40" height="40">
+				<svg class="doodle absolute -top-4.5 -right-10.5" width="40" height="40" aria-hidden="true">
 					<use href="/app.svg#star-doodle" />
 				</svg>
 			</h1>
