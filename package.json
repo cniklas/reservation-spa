@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@instantdb/admin": "^0.22.119",
-    "@instantdb/core": "^0.22.96",
+    "@instantdb/core": "^0.22.148",
     "@vueuse/core": "^14.2.1",
     "string-similarity": "^4.0.4",
     "vue": "^3.5.29",
