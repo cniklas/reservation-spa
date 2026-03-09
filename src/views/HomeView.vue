@@ -4,7 +4,7 @@ import AppDialog from '@/components/AppDialog.vue'
 import type { SeatKey } from '@/types/Table.type'
 import { useStore } from '@/use/store'
 import { formatCount, createUuid } from '@/use/helper'
-import { ONE_MINUTE, EDIT_TIMEOUT, RELEASE_TIME, useTimeout } from '@/use/timeout'
+import { ONE_MINUTE, EDIT_TIMEOUT, RELEASE_DATE_FORMATTED, useTimeout } from '@/use/timeout'
 import { COUNT_UP_THRESHOLD, useCountUp } from '@/use/countUp'
 
 const AppSidebar = defineAsyncComponent(() => import('@/components/AppSidebar.vue'))
@@ -82,14 +82,7 @@ const _onConflict = (message: string) => {
 let triggerEl: HTMLElement | null = null
 const onEditTable = async (id: string, _triggerEl: HTMLElement) => {
 	if (!isReleased.value && !state.isAdmin) {
-		_showDialog(
-			`Noch ein bisschen Geduld.\nEintragungen sind ab ${new Date(RELEASE_TIME).toLocaleDateString('de', {
-				day: '2-digit',
-				month: 'short',
-				hour: 'numeric',
-				minute: 'numeric',
-			})} Uhr möglich.`,
-		)
+		_showDialog(`Noch ein bisschen Geduld.\nEintragungen sind ab ${RELEASE_DATE_FORMATTED} möglich.`)
 		return
 	}
 

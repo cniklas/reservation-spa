@@ -5,7 +5,13 @@ const isDevMode = import.meta.env.DEV
 
 export const ONE_MINUTE = 60 * 1000
 export const EDIT_TIMEOUT = 4 * ONE_MINUTE
-export const RELEASE_TIME = new Date(import.meta.env.VITE_RELEASE_DATE).getTime()
+const RELEASE_TIME = new Date(import.meta.env.VITE_RELEASE_DATE).getTime()
+export const RELEASE_DATE_FORMATTED = `${new Date(RELEASE_TIME).toLocaleDateString('de', {
+	day: '2-digit',
+	month: 'short',
+	hour: 'numeric',
+	minute: 'numeric',
+})} Uhr`
 
 export const useTimeout = () => {
 	const clientTime = ref('')

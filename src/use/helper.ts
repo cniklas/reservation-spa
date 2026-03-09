@@ -1,25 +1,17 @@
 import { unref, type Ref } from 'vue'
 import type { SortableReservation } from '@/types/Reservation.type'
 
-const formatDateTime = (timestamp?: number | string, options?: Intl.DateTimeFormatOptions) => {
-	if (!timestamp) return ''
+const dateFormatter = new Intl.DateTimeFormat('de', {
+	day: '2-digit',
+	month: '2-digit',
+	year: 'numeric',
+	hour: 'numeric',
+	minute: 'numeric',
+	second: 'numeric',
+})
+const formatDateTime = (timestamp?: number | string) => (!!timestamp ? dateFormatter.format(new Date(timestamp)) : '')
 
-	const format: Intl.DateTimeFormatOptions = options ?? {
-		year: 'numeric',
-		month: '2-digit',
-		day: '2-digit',
-		hour: 'numeric',
-		minute: 'numeric',
-		second: 'numeric',
-	}
-	return new Date(timestamp).toLocaleDateString('de', format)
-}
-
-const formatTime = (timestamp?: number) => {
-	if (!timestamp) return ''
-
-	return new Date(timestamp).toLocaleTimeString('de')
-}
+const formatTime = (timestamp?: number) => (!!timestamp ? new Date(timestamp).toLocaleTimeString('de') : '')
 
 const formatCount = (count: number, noun: [string, string]) => `${count} ${noun[count === 1 ? 0 : 1]}`
 
