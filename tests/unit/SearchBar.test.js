@@ -1,6 +1,6 @@
 import { flushPromises, mount } from '@vue/test-utils'
-import { vi, describe, it, expect, beforeEach } from 'vitest'
-import SearchBar from '../../src/components/SearchBar.vue'
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest'
+import SearchBar from '@/components/SearchBar.vue'
 
 const inputValue = 'test'
 const factory = () =>
@@ -16,6 +16,12 @@ describe('SearchBar.vue', () => {
 	beforeEach(() => {
 		wrapper = factory()
 		vi.useFakeTimers()
+	})
+
+	afterEach(() => {
+		wrapper.unmount()
+		vi.clearAllTimers()
+		vi.useRealTimers()
 	})
 
 	it('renders correctly', async () => {
@@ -34,7 +40,7 @@ describe('SearchBar.vue', () => {
 	it('resets the input field when the reset button is clicked', async () => {
 		const inputElement = getInputElement()
 		const button = getButton()
-		inputElement.setValue(inputValue)
+		await inputElement.setValue(inputValue)
 		expect(inputElement.element.value).toBe(inputValue)
 
 		await button.trigger('click')
@@ -44,8 +50,9 @@ describe('SearchBar.vue', () => {
 	it('emits a custom event "update" after a certain time when the input value changes', async () => {
 		const inputElement = getInputElement()
 		await inputElement.setValue(inputValue)
+		expect(wrapper.emitted('update')).toBeFalsy()
 
-		vi.runAllTimers()
+		vi.advanceTimersByTime(240)
 		await flushPromises()
 
 		expect(wrapper.emitted('update')).toBeTruthy()

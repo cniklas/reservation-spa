@@ -39,6 +39,7 @@ defineExpose({ open, close })
 		aria-modal="true"
 		aria-labelledby="aria-section-heading"
 		tabindex="-1"
+		data-test-sidebar
 		@transitionend.self="onTransitionEnd"
 		@transitioncancel.self="onTransitionEnd"
 	>

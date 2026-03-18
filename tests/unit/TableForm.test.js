@@ -1,16 +1,16 @@
 import { reactive } from 'vue'
 import { mount, flushPromises } from '@vue/test-utils'
-import { describe, vi, it, expect, afterEach } from 'vitest'
-import TableForm from '../../src/components/TableForm.vue'
-// import { PROVIDE_TABLES, PROVIDE_UPDATE_ENTRY } from '../../src/keys'
+import { describe, vi, it, expect, afterEach, beforeEach } from 'vitest'
+import TableForm from '@/components/TableForm.vue'
+// import { PROVIDE_TABLES, PROVIDE_UPDATE_ENTRY } from '@/keys'
 import { mockTables } from '../mock.data'
 
 const CONFIG = { minSeats: 4, maxSeats: 8 }
 const state = reactive({
 	isAdmin: false,
 })
-// vi.mock('../../src/use/store', async importOriginal => {
-// 	const mod = await importOriginal<typeof import('../../src/use/store')>()
+// vi.mock('@/use/store', async importOriginal => {
+// 	const mod = await importOriginal<typeof import('@/use/store')>()
 // 	return {
 // 		...mod,
 // 		useStore: () => ({
@@ -18,12 +18,10 @@ const state = reactive({
 // 		}),
 // 	}
 // })
-vi.mock('../../src/use/store', () => ({
+vi.mock('@/use/store', () => ({
 	useStore: () => ({ config: CONFIG, state }),
 }))
 // const tables = mockTables()
-const entry = mockTables()[0]
-
 const factory = (/* props?: object */) =>
 	mount(TableForm, {
 		// global: {
@@ -33,7 +31,7 @@ const factory = (/* props?: object */) =>
 		// 	},
 		// },
 		props: {
-			entry,
+			entry: { ...mockTables()[0] },
 			// isAdmin: false,
 			// ...props,
 		},
@@ -41,6 +39,12 @@ const factory = (/* props?: object */) =>
 
 describe('TableForm.vue', () => {
 	let wrapper
+	let entry
+
+	beforeEach(() => {
+		state.isAdmin = false
+		entry = mockTables()[0]
+	})
 
 	afterEach(() => {
 		wrapper.unmount()
@@ -70,6 +74,7 @@ describe('TableForm.vue', () => {
 		const maxSeats = 8
 		const seatsSelector = '[data-test-seat]'
 		// wrapper = factory({ isAdmin: true })
+		state.isAdmin = true
 		wrapper = factory()
 
 		// decrease
@@ -98,7 +103,7 @@ describe('TableForm.vue', () => {
 		const cancelButton = wrapper.find('[data-test-cancel-button]')
 		expect(cancelButton.exists()).toBe(true)
 
-		cancelButton.trigger('click')
+		await cancelButton.trigger('click')
 		// check that 1 occurrence of the event has been emitted
 		expect(wrapper.emitted('cancel')).toBeTruthy()
 		expect(wrapper.emitted('cancel')?.length).toBe(1)

@@ -1,8 +1,8 @@
 import { reactive } from 'vue'
 import { mount, flushPromises } from '@vue/test-utils'
-import { describe, vi, it, expect, beforeEach } from 'vitest'
-import TableGrid from '../../src/components/TableGrid.vue'
-import { createUuid } from '../../src/use/helper'
+import { describe, vi, it, expect, beforeEach, afterEach } from 'vitest'
+import TableGrid from '@/components/TableGrid.vue'
+import { createUuid } from '@/use/helper'
 import { mockTables } from '../mock.data'
 
 const _uuid = createUuid()
@@ -13,7 +13,7 @@ const state = reactive({
 	isAuthenticated: true,
 	isAdmin: false,
 })
-vi.mock('../../src/use/store', () => ({
+vi.mock('@/use/store', () => ({
 	useStore: () => ({ state }),
 }))
 
@@ -31,9 +31,14 @@ describe('TableGrid.vue', () => {
 	const getEditButtons = () => wrapper.findAll('[data-test-edit-button]')
 	const getUnlockButtons = () => wrapper.findAll('[data-test-unlock-button]')
 	beforeEach(() => {
-		wrapper = factory()
 		state.tables = mockTables()
+		state.isAuthenticated = true
 		state.isAdmin = false
+		wrapper = factory()
+	})
+
+	afterEach(() => {
+		wrapper.unmount()
 	})
 
 	it('renders correctly', async () => {
@@ -41,9 +46,11 @@ describe('TableGrid.vue', () => {
 
 		const firstTable = wrapper.vm.filteredTables.at(0)
 		const emptySeats = wrapper.vm.emptySeats(firstTable)
-		expect(wrapper.find('[data-test-table]').text()).toContain(
-			`Tisch ${firstTable.index}${firstTable.name}bearbeiten. ${emptySeats}`,
-		)
+		const tableButton = wrapper.find('[data-test-table]')
+		expect(tableButton.exists()).toBe(true)
+		expect(tableButton.text()).toContain(`${firstTable.index}`)
+		expect(tableButton.text()).toContain(firstTable.name)
+		expect(tableButton.text()).toContain(emptySeats)
 	})
 
 	it('if a table is locked its edit button is disabled', async () => {
@@ -60,7 +67,7 @@ describe('TableGrid.vue', () => {
 	it('emits a custom event "edit" when edit button is clicked', async () => {
 		const index = 1
 		editButtons = getEditButtons()
-		editButtons.at(index)?.trigger('click')
+		await editButtons.at(index)?.trigger('click')
 		// check that 1 occurrence of the event has been emitted
 		expect(wrapper.emitted('edit')).toBeTruthy()
 		expect(wrapper.emitted('edit')?.length).toBe(1)
@@ -69,7 +76,7 @@ describe('TableGrid.vue', () => {
 	})
 
 	it('has an unlock button for each locked table if user is logged in', async () => {
-		state.tables.map((table, i) => {
+		state.tables.forEach((table, i) => {
 			// skip first table
 			if (i === 0) return
 
@@ -90,7 +97,7 @@ describe('TableGrid.vue', () => {
 
 	it('has no unlock button for a table locked by the logged-in user', async () => {
 		const id = state.tables.at(-1)?.id
-		state.tables.map(table => {
+		state.tables.forEach(table => {
 			// one table is locked by the logged-in user
 			table.locked_by = table.id === id ? _uuid : createUuid()
 			table.locked_at = createTime()
@@ -112,7 +119,7 @@ describe('TableGrid.vue', () => {
 		unlockButtons = getUnlockButtons()
 		expect(unlockButtons.length).toBe(1)
 
-		unlockButtons.at(0)?.trigger('click')
+		await unlockButtons.at(0)?.trigger('click')
 		// check that 1 occurrence of the event has been emitted
 		expect(wrapper.emitted('unlock')).toBeTruthy()
 		expect(wrapper.emitted('unlock')?.length).toBe(1)

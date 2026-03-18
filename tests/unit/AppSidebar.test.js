@@ -1,11 +1,12 @@
 import { mount } from '@vue/test-utils'
-import { vi, describe, it, expect, beforeEach } from 'vitest'
-import AppSidebar from '../../src/components/AppSidebar.vue'
+import { describe, it, expect, beforeEach } from 'vitest'
+import AppSidebar from '@/components/AppSidebar.vue'
 
 const factory = () => mount(AppSidebar)
 
 describe('AppSidebar.vue', () => {
 	let wrapper
+	const getSidebar = () => wrapper.find('[data-test-sidebar]')
 
 	beforeEach(() => {
 		wrapper = factory()
@@ -14,6 +15,7 @@ describe('AppSidebar.vue', () => {
 
 	it('renders correctly', () => {
 		expect(AppSidebar).toBeTruthy()
+		expect(getSidebar().exists()).toBe(true)
 	})
 
 	it('sets ref "slideIn" to `true` when the "open" method is called', async () => {
@@ -29,11 +31,11 @@ describe('AppSidebar.vue', () => {
 		expect(wrapper.emitted('closing').length).toBe(1)
 	})
 
-	it.skip('emits a custom event "closed" after a certain time when the "close" method is called', async () => {
+	it('emits a custom event "closed" after transition end when the "close" method is called', async () => {
 		wrapper.vm.close()
 		expect(wrapper.emitted('closed')).toBeFalsy()
 
-		vi.runAllTimers()
+		await getSidebar().trigger('transitionend')
 		expect(wrapper.emitted('closed')).toBeTruthy()
 		expect(wrapper.emitted('closed').length).toBe(1)
 	})
