@@ -1,4 +1,4 @@
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { mount, flushPromises } from '@vue/test-utils'
 import { describe, vi, it, expect, afterEach, beforeEach } from 'vitest'
 import TableForm from '@/components/TableForm.vue'
@@ -6,9 +6,21 @@ import TableForm from '@/components/TableForm.vue'
 import { mockTables } from '../mock.data'
 
 const CONFIG = { minSeats: 4, maxSeats: 8 }
+const updateEntry = vi.fn()
 const state = reactive({
+	tables: [],
 	isAdmin: false,
 })
+const isSubmitLocked = ref(false)
+const validationErrors = reactive(new Map())
+const beforeSubmit = vi.fn(() => {
+	isSubmitLocked.value = true
+})
+const unlockSubmit = vi.fn(() => {
+	isSubmitLocked.value = false
+})
+const handleSubmitError = vi.fn()
+const validateName = vi.fn()
 // vi.mock('@/use/store', async importOriginal => {
 // 	const mod = await importOriginal<typeof import('@/use/store')>()
 // 	return {
@@ -19,7 +31,17 @@ const state = reactive({
 // 	}
 // })
 vi.mock('@/use/store', () => ({
-	useStore: () => ({ config: CONFIG, state }),
+	useStore: () => ({ config: CONFIG, state, updateEntry }),
+}))
+vi.mock('@/use/errorHandling', () => ({
+	useErrorHandling: () => ({
+		isSubmitLocked,
+		beforeSubmit,
+		handleSubmitError,
+		unlockSubmit,
+		validationErrors,
+		validateName,
+	}),
 }))
 // const tables = mockTables()
 const factory = (/* props?: object */) =>
@@ -43,7 +65,15 @@ describe('TableForm.vue', () => {
 
 	beforeEach(() => {
 		state.isAdmin = false
+		state.tables = mockTables()
 		entry = mockTables()[0]
+		updateEntry.mockReset()
+		beforeSubmit.mockClear()
+		unlockSubmit.mockClear()
+		handleSubmitError.mockClear()
+		validateName.mockClear()
+		validationErrors.clear()
+		isSubmitLocked.value = false
 	})
 
 	afterEach(() => {
@@ -109,5 +139,51 @@ describe('TableForm.vue', () => {
 		expect(wrapper.emitted('cancel')?.length).toBe(1)
 		// console.log(wrapper.text());
 		// console.log(wrapper.html())
+	})
+
+	it('does not submit when submit is locked', async () => {
+		isSubmitLocked.value = true
+		wrapper = factory()
+
+		await wrapper.find('form').trigger('submit')
+
+		expect(beforeSubmit).not.toHaveBeenCalled()
+		expect(updateEntry).not.toHaveBeenCalled()
+		expect(wrapper.emitted('saving')).toBeFalsy()
+		expect(wrapper.emitted('saved')).toBeFalsy()
+	})
+
+	it('does not call updateEntry if validation errors exist on submit', async () => {
+		wrapper = factory()
+		validationErrors.set('seat_1', 'ungueltig')
+
+		await wrapper.find('form').trigger('submit')
+
+		expect(beforeSubmit).toHaveBeenCalledTimes(1)
+		expect(updateEntry).not.toHaveBeenCalled()
+		expect(wrapper.emitted('saving')).toBeFalsy()
+		expect(wrapper.emitted('saved')).toBeFalsy()
+		expect(unlockSubmit).toHaveBeenCalledTimes(1)
+	})
+
+	it('emits saving/saved and calls updateEntry with unlocked fields on successful submit', async () => {
+		wrapper = factory()
+		updateEntry.mockResolvedValue(undefined)
+
+		await wrapper.find('form').trigger('submit')
+
+		expect(beforeSubmit).toHaveBeenCalledTimes(1)
+		expect(wrapper.emitted('saving')?.length).toBe(1)
+		expect(updateEntry).toHaveBeenCalledTimes(1)
+		expect(updateEntry).toHaveBeenCalledWith(
+			entry.id,
+			expect.objectContaining({
+				id: entry.id,
+				locked_by: '',
+				locked_at: null,
+			}),
+		)
+		expect(wrapper.emitted('saved')?.length).toBe(1)
+		expect(unlockSubmit).toHaveBeenCalledTimes(1)
 	})
 })

@@ -125,4 +125,17 @@ describe('TableGrid.vue', () => {
 		expect(wrapper.emitted('unlock')?.length).toBe(1)
 		expect(wrapper.emitted('unlock')?.at(0)?.at(0)).toBe(state.tables[index].id)
 	})
+
+	it('only includes inactive tables for admin users', async () => {
+		const tableId = state.tables[0].id
+		state.tables[0].active = false
+		await flushPromises()
+
+		expect(wrapper.vm.filteredTables.some(table => table.id === tableId)).toBe(false)
+
+		state.isAdmin = true
+		await flushPromises()
+
+		expect(wrapper.vm.filteredTables.some(table => table.id === tableId)).toBe(true)
+	})
 })
