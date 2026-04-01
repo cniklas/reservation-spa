@@ -91,7 +91,7 @@ const _onSubmitCode = async () => {
 						id="code"
 						inputmode="decimal"
 						maxlength="6"
-						pattern="\d{6,6}"
+						pattern="\d{6}"
 						autocomplete="one-time-code"
 						enterkeyhint="go"
 					/>
