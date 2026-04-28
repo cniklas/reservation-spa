@@ -216,7 +216,7 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 }
 
 .grid-table-number-content {
-	grid-area: 1 / 1 / 1 / 1;
+	grid-area: 1 / 1;
 	display: grid;
 	place-content: center;
 	color: var(--slate);
@@ -263,7 +263,7 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 }
 
 .spinner-wrapper {
-	grid-area: 1 / 1 / 1 / 1;
+	grid-area: 1 / 1;
 	position: relative;
 }
 
