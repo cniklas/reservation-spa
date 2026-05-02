@@ -9,14 +9,14 @@ importers:
   .:
     dependencies:
       '@instantdb/admin':
-        specifier: ^1.0.20
-        version: 1.0.20
+        specifier: ^1.0.22
+        version: 1.0.22
       '@instantdb/core':
-        specifier: ^1.0.20
-        version: 1.0.20
+        specifier: ^1.0.22
+        version: 1.0.22
       '@vueuse/core':
-        specifier: ^14.2.1
-        version: 14.2.1(vue@3.5.33(typescript@6.0.3))
+        specifier: ^14.3.0
+        version: 14.3.0(vue@3.5.33(typescript@6.0.3))
       string-similarity:
         specifier: ^4.0.4
         version: 4.0.4
@@ -188,18 +188,18 @@ packages:
   '@iconify/utils@3.1.1':
     resolution: {integrity: sha512-MwzoDtw9rO1x+qfgLTV/IVXsHDBqeYZoMIQC8SfxfYSlaSUG+oWiAcoiB1yajAda6mqblm4/1/w2E8tRu7a7Tw==}
 
-  '@instantdb/admin@1.0.20':
-    resolution: {integrity: sha512-dLnmVbqRAWKmPDk7hqbeA1FJ8z6FT12j2QtTDgv/EwEtTFiZOJYA6lvROX7RWyoQUEOqL0HsUsPlxXaEvxe8uQ==}
+  '@instantdb/admin@1.0.22':
+    resolution: {integrity: sha512-863Z4FMdxeLOp9tjjprwbl0o6vMwfZj0cnnOrroWC+h2dBY6wEiZHl731ZHFaTUgMu5KHviig/se1gvkLgQR/A==}
 
-  '@instantdb/core@1.0.20':
-    resolution: {integrity: sha512-bh/VZftslcvYQzM70Ik4HC3kyUouDO8NQknxTdhogqBYHQHv1JV/Aj08l5aaajmNQD+ZiIwHP2SRqUO1NbSgTA==}
+  '@instantdb/core@1.0.22':
+    resolution: {integrity: sha512-7oar9gF97Haz4G4XQ1M0Bp0Hf+kyqpZOdkMeskpP0LoMZUTPdf0M21gJNoX/VopZ2VZPI5jjDcBdMUEYOEIavA==}
 
   '@instantdb/eventsource@4.1.0-2':
     resolution: {integrity: sha512-k2uzhsRzdD7hzV3fv+eoCRNeluZcj4pDfUKKAhvIS6xshc7zHkaM9/m3vxBgaYoNVmvOyaGp84TcHG0/Bp7k4g==}
     engines: {node: '>=20.0.0'}
 
-  '@instantdb/version@1.0.20':
-    resolution: {integrity: sha512-WuoEBXO01Bnhnk+uCbWliugnas0ny6c9Xx+dSdC5/P9fb3TGinVltfWxu1YxwnbMz3IN2jlMOmqNCdlFfrc8/g==}
+  '@instantdb/version@1.0.22':
+    resolution: {integrity: sha512-T0qChGcgneqtld8JTxPfcqy/fqGt4E5WemMMapqKWScQb74UohMNjqZb1VV21Q5uusKa/iIC3+B/A9ioys/jTA==}
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -785,16 +785,16 @@ packages:
       vue:
         optional: true
 
-  '@vueuse/core@14.2.1':
-    resolution: {integrity: sha512-3vwDzV+GDUNpdegRY6kzpLm4Igptq+GA0QkJ3W61Iv27YWwW/ufSlOfgQIpN6FZRMG0mkaz4gglJRtq5SeJyIQ==}
+  '@vueuse/core@14.3.0':
+    resolution: {integrity: sha512-aHfz47g0ZhMtTVHmIzMVpJy8ePhhOy68GY5bv110+5DVtZ+W7BsOx+m61UNQqfrWyPztIHIanWa3E2tib3NFIw==}
     peerDependencies:
       vue: ^3.5.0
 
-  '@vueuse/metadata@14.2.1':
-    resolution: {integrity: sha512-1ButlVtj5Sb/HDtIy1HFr1VqCP4G6Ypqt5MAo0lCgjokrk2mvQKsK2uuy0vqu/Ks+sHfuHo0B9Y9jn9xKdjZsw==}
+  '@vueuse/metadata@14.3.0':
+    resolution: {integrity: sha512-BwxmbAzwAVF50+MW57GXOUEV61nFBGnlBvrTqj49PqWJu3uw7hdu72ztXeZ33RdZtDY6kO+bfCAE1PCn88Tktw==}
 
-  '@vueuse/shared@14.2.1':
-    resolution: {integrity: sha512-shTJncjV9JTI4oVNyF1FQonetYAiTBd+Qj7cY89SWbXSkx7gyhrgtEdF2ZAVWS1S3SHlaROO6F2IesJxQEkZBw==}
+  '@vueuse/shared@14.3.0':
+    resolution: {integrity: sha512-bZpge9eSXwa4ToSiqJ7j6KRwhAsneMFoSz3LMWKQDkqimm3D/tbFlrklrs/IOqC8tEcYmXQZJ6N0UrjhBirVCg==}
     peerDependencies:
       vue: ^3.5.0
 
@@ -1745,8 +1745,8 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  uuid@11.1.0:
-    resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
+  uuid@11.1.1:
+    resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
     hasBin: true
 
   vite@8.0.10:
@@ -2031,25 +2031,25 @@ snapshots:
       '@iconify/types': 2.0.0
       mlly: 1.8.2
 
-  '@instantdb/admin@1.0.20':
+  '@instantdb/admin@1.0.22':
     dependencies:
-      '@instantdb/core': 1.0.20
+      '@instantdb/core': 1.0.22
       '@instantdb/eventsource': 4.1.0-2
-      '@instantdb/version': 1.0.20
+      '@instantdb/version': 1.0.22
       cookie: 1.1.1
-      uuid: 11.1.0
+      uuid: 11.1.1
 
-  '@instantdb/core@1.0.20':
+  '@instantdb/core@1.0.22':
     dependencies:
-      '@instantdb/version': 1.0.20
+      '@instantdb/version': 1.0.22
       mutative: 1.3.0
-      uuid: 11.1.0
+      uuid: 11.1.1
 
   '@instantdb/eventsource@4.1.0-2':
     dependencies:
       eventsource-parser: 3.0.8
 
-  '@instantdb/version@1.0.20': {}
+  '@instantdb/version@1.0.22': {}
 
   '@isaacs/cliui@8.0.2':
     dependencies:
@@ -2677,16 +2677,16 @@ snapshots:
       typescript: 6.0.3
       vue: 3.5.33(typescript@6.0.3)
 
-  '@vueuse/core@14.2.1(vue@3.5.33(typescript@6.0.3))':
+  '@vueuse/core@14.3.0(vue@3.5.33(typescript@6.0.3))':
     dependencies:
       '@types/web-bluetooth': 0.0.21
-      '@vueuse/metadata': 14.2.1
-      '@vueuse/shared': 14.2.1(vue@3.5.33(typescript@6.0.3))
+      '@vueuse/metadata': 14.3.0
+      '@vueuse/shared': 14.3.0(vue@3.5.33(typescript@6.0.3))
       vue: 3.5.33(typescript@6.0.3)
 
-  '@vueuse/metadata@14.2.1': {}
+  '@vueuse/metadata@14.3.0': {}
 
-  '@vueuse/shared@14.2.1(vue@3.5.33(typescript@6.0.3))':
+  '@vueuse/shared@14.3.0(vue@3.5.33(typescript@6.0.3))':
     dependencies:
       vue: 3.5.33(typescript@6.0.3)
 
@@ -3546,7 +3546,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  uuid@11.1.0: {}
+  uuid@11.1.1: {}
 
   vite@8.0.10(@types/node@25.6.0)(jiti@2.6.1)(yaml@2.8.3):
     dependencies:
