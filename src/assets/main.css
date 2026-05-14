@@ -95,12 +95,6 @@ input:where([type='text'], [type='email'], [type='password'], [type='number'], [
 	@apply border-[--validation-error] focus-visible:outline-[--validation-error];
 }
 
-@supports not selector(:user-invalid) {
-	:is(input, select, textarea):invalid {
-		@apply border-[--validation-error] focus-visible:outline-[--validation-error];
-	}
-}
-
 :is(.primary-button, .secondary-button, .close-button) {
 	transition-property: background-color, scale;
 	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
