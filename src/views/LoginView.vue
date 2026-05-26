@@ -99,7 +99,7 @@ const _onSubmitCode = async () => {
 			</div>
 
 			<div class="mt-5">
-				<button type="submit" class="primary-button" :aria-disabled="isSubmitLocked">
+				<button type="submit" class="primary-button login-button" :aria-disabled="isSubmitLocked">
 					{{ isFirstStep ? 'Login-Code anfordern' : 'Anmelden' }}
 				</button>
 			</div>
@@ -119,6 +119,27 @@ const _onSubmitCode = async () => {
 </template>
 
 <style lang="postcss">
+@keyframes spin {
+	to {
+		transform: rotate(1turn);
+	}
+}
+
+.login-button {
+	@apply gap-x-3;
+	display: inline-flex;
+	align-items: center;
+
+	&[aria-disabled='true']::before {
+		@apply size-4;
+		content: '';
+		border-radius: 50%;
+		border-width: 2px;
+		border-color: transparent currentColor currentColor transparent;
+		animation: spin 1200ms linear infinite;
+	}
+}
+
 .toaster {
 	@apply bottom-16 max-w-sm gap-y-2.5;
 	display: grid;
