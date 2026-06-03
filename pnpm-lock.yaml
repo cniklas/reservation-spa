@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@instantdb/admin':
-        specifier: ^1.0.38
-        version: 1.0.38
+        specifier: ^1.0.42
+        version: 1.0.42
       '@instantdb/core':
         specifier: ^1.0.38
         version: 1.0.38
@@ -205,11 +205,14 @@ packages:
   '@iconify/utils@3.1.3':
     resolution: {integrity: sha512-LPKOXPn/zV+zis1oOfGWogaXVpqUybF3ZS6SCZIsz8vg0ivVp9+fVqyYB7xq0aiST/VhUQYGO1qo6uoYSiEJqw==}
 
-  '@instantdb/admin@1.0.38':
-    resolution: {integrity: sha512-G1BeWCg57ZFDZF1qT1RVHNVYtFhPE93QmZNv1HuRhLIIWMqhllJXrmFWAQhTM6h+rGHftqHaka+64yJijeM8uA==}
+  '@instantdb/admin@1.0.42':
+    resolution: {integrity: sha512-NyfuNNeHafkRcKQUl2FvYxqkgdCC+sbOtFQ6BKWmt5orMXRKzK7/z/8OimYsp0dANSOyAJtjcIAZ10991DJI2g==}
 
   '@instantdb/core@1.0.38':
     resolution: {integrity: sha512-MS5u2BwxEDud9/LpGCE427txnTNbtqh+v9HpBA70bEJTISpX1kBgmGSnADnvRcrMCFyH+zB8Atzwh/exKWPfHw==}
+
+  '@instantdb/core@1.0.42':
+    resolution: {integrity: sha512-VmXHgm9tMQuPN2af4NzDaijhnFv1iWOTY3KASKLsFtQwv2E4kEVpZg1DK5yBj8VJZBLz9dyGiSg4XoIwruYFbg==}
 
   '@instantdb/eventsource@4.1.0-2':
     resolution: {integrity: sha512-k2uzhsRzdD7hzV3fv+eoCRNeluZcj4pDfUKKAhvIS6xshc7zHkaM9/m3vxBgaYoNVmvOyaGp84TcHG0/Bp7k4g==}
@@ -218,8 +221,11 @@ packages:
   '@instantdb/version@1.0.38':
     resolution: {integrity: sha512-ry7toa9XuZ9yUwFBEaA4SDteeXZuMqqhebEsj4V+oenpmPDgaMykcbC/0k+hCIqwHSA/B1Y2klY3lWwF1qXYCA==}
 
-  '@instantdb/webhooks@1.0.38':
-    resolution: {integrity: sha512-UV/jPrSwIGS1Iox9MeIDeXvLA7sEijpqvb2lSLwbHp0gijz1RKEEB0+Zad8bxBMwHnAuM0Mam5SWJlws4KkZAg==}
+  '@instantdb/version@1.0.42':
+    resolution: {integrity: sha512-G8f4u8ACW6IhZXsJZfIw1gnr4pJB80Bq+TJrj7toQ9PAQRRkYO7iKH4xZ9R+SxXArhe8XmE9mrwBL453uYKHRA==}
+
+  '@instantdb/webhooks@1.0.42':
+    resolution: {integrity: sha512-MhMIoEZ5XsDX+D+yKD4Dc4IVUAwS9eQTJSooxWRzvsJknGcPHV07wp+mdgYva17R8zWTQKLNYuEHt+skmoOiFw==}
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -2086,12 +2092,12 @@ snapshots:
       '@iconify/types': 2.0.0
       import-meta-resolve: 4.2.0
 
-  '@instantdb/admin@1.0.38':
+  '@instantdb/admin@1.0.42':
     dependencies:
-      '@instantdb/core': 1.0.38
+      '@instantdb/core': 1.0.42
       '@instantdb/eventsource': 4.1.0-2
-      '@instantdb/version': 1.0.38
-      '@instantdb/webhooks': 1.0.38
+      '@instantdb/version': 1.0.42
+      '@instantdb/webhooks': 1.0.42
       cookie: 1.1.1
       uuid: 11.1.1
 
@@ -2101,15 +2107,23 @@ snapshots:
       mutative: 1.3.0
       uuid: 11.1.1
 
+  '@instantdb/core@1.0.42':
+    dependencies:
+      '@instantdb/version': 1.0.42
+      mutative: 1.3.0
+      uuid: 11.1.1
+
   '@instantdb/eventsource@4.1.0-2':
     dependencies:
       eventsource-parser: 3.0.8
 
   '@instantdb/version@1.0.38': {}
 
-  '@instantdb/webhooks@1.0.38':
+  '@instantdb/version@1.0.42': {}
+
+  '@instantdb/webhooks@1.0.42':
     dependencies:
-      '@instantdb/core': 1.0.38
+      '@instantdb/core': 1.0.42
 
   '@isaacs/cliui@8.0.2':
     dependencies:
