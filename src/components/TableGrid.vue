@@ -331,6 +331,7 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 		.searchable-list {
 			animation: appear linear;
 			animation-timeline: view();
+			animation-fill-mode: backwards;
 			animation-range: entry 0 cover 7rem;
 		}
 
