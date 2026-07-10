@@ -84,7 +84,7 @@ const _onSubmitCode = async () => {
 				</template>
 
 				<template v-else>
-					<label for="code" class="mb-1 block w-fit">Code</label>
+					<label for="code" class="mb-1 block w-fit">Login-Code</label>
 					<input
 						v-model.trim="passcode"
 						type="text"
@@ -94,6 +94,7 @@ const _onSubmitCode = async () => {
 						pattern="\d{6}"
 						autocomplete="one-time-code"
 						enterkeyhint="go"
+						placeholder="123456"
 					/>
 				</template>
 			</div>
