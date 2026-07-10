@@ -18,8 +18,8 @@ watch(passcode, input => {
 const formEl = useTemplateRef('formEl')
 const isFirstStep = ref(true)
 watch(isFirstStep, async () => {
+	formEl.value?.focus()
 	await nextTick()
-	formEl.value!.querySelector('input')?.focus()
 	unlockSubmit()
 })
 
@@ -75,35 +75,50 @@ const _onSubmitCode = async () => {
 	<main class="container py-5">
 		<h1 id="aria-heading-login" class="font-600 mb-3 text-3xl">Anmelden</h1>
 
-		<form ref="formEl" novalidate aria-labelledby="aria-heading-login" @submit.prevent="onSubmit">
-			<div class="mb-2">
-				<template v-if="isFirstStep">
-					<label for="email" class="mb-1 block w-fit">E-Mail</label>
-					<!-- eslint-disable-next-line vuejs-accessibility/no-autofocus -->
-					<input v-model.trim="email" type="email" id="email" autocomplete="username" enterkeyhint="go" autofocus />
-				</template>
+		<form
+			ref="formEl"
+			class="max-w-106"
+			novalidate
+			tabindex="-1"
+			aria-labelledby="aria-heading-login"
+			@submit.prevent="onSubmit"
+		>
+			<Transition name="drag" mode="out-in">
+				<div v-if="isFirstStep">
+					<div>
+						<label for="email" class="mb-1 block w-fit">E-Mail</label>
+						<!-- eslint-disable-next-line vuejs-accessibility/no-autofocus -->
+						<input v-model.trim="email" type="email" id="email" autocomplete="username" enterkeyhint="go" autofocus />
+					</div>
 
-				<template v-else>
-					<label for="code" class="mb-1 block w-fit">Login-Code</label>
-					<input
-						v-model.trim="passcode"
-						type="text"
-						id="code"
-						inputmode="decimal"
-						maxlength="6"
-						pattern="\d{6}"
-						autocomplete="one-time-code"
-						enterkeyhint="go"
-						placeholder="123456"
-					/>
-				</template>
-			</div>
+					<div class="mt-5">
+						<button type="submit" class="primary-button login-button" :aria-disabled="isSubmitLocked">
+							Login-Code anfordern
+						</button>
+					</div>
+				</div>
 
-			<div class="mt-5">
-				<button type="submit" class="primary-button login-button" :aria-disabled="isSubmitLocked">
-					{{ isFirstStep ? 'Login-Code anfordern' : 'Anmelden' }}
-				</button>
-			</div>
+				<div v-else>
+					<div>
+						<label for="code" class="mb-1 block w-fit">Login-Code</label>
+						<input
+							v-model.trim="passcode"
+							type="text"
+							id="code"
+							inputmode="decimal"
+							maxlength="6"
+							pattern="\d{6}"
+							autocomplete="one-time-code"
+							enterkeyhint="go"
+							placeholder="123456"
+						/>
+					</div>
+
+					<div class="mt-5">
+						<button type="submit" class="primary-button login-button" :aria-disabled="isSubmitLocked">Anmelden</button>
+					</div>
+				</div>
+			</Transition>
 		</form>
 	</main>
 
@@ -120,6 +135,25 @@ const _onSubmitCode = async () => {
 </template>
 
 <style lang="postcss">
+.drag-enter-active,
+.drag-leave-active {
+	transition:
+		opacity 360ms,
+		translate 400ms;
+}
+
+.drag-enter-from {
+	opacity: 0;
+	translate: -100%;
+	transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.drag-leave-to {
+	opacity: 0;
+	translate: 100%;
+	transition-timing-function: cubic-bezier(0.55, 0.06, 0.68, 0.19);
+}
+
 @keyframes spin {
 	to {
 		transform: rotate(1turn);
