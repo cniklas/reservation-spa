@@ -1,6 +1,6 @@
 {
   "name": "reservation-spa",
-  "version": "4.3.0",
+  "version": "4.4.0",
   "type": "module",
   "repository": {
     "type": "git",
@@ -19,37 +19,37 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@instantdb/admin": "^1.0.42",
-    "@instantdb/core": "^1.0.38",
+    "@instantdb/admin": "^1.0.49",
+    "@instantdb/core": "^1.0.49",
     "@vueuse/core": "^14.3.0",
     "string-similarity": "^4.0.4",
-    "vue": "^3.5.34",
-    "vue-router": "^5.0.7"
+    "vue": "^3.5.40",
+    "vue-router": "^5.2.0"
   },
   "devDependencies": {
     "@tsconfig/node24": "^24.0.4",
-    "@types/node": "^25.9.1",
+    "@types/node": "^25.9.5",
     "@types/string-similarity": "^4.0.2",
-    "@unocss/reset": "^66.7.0",
-    "@vitejs/plugin-vue": "^6.0.7",
-    "@vitest/eslint-plugin": "^1.6.19",
-    "@vue/eslint-config-typescript": "^14.7.0",
-    "@vue/test-utils": "^2.4.10",
+    "@unocss/reset": "^66.7.5",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "@vitest/eslint-plugin": "^1.6.23",
+    "@vue/eslint-config-typescript": "^14.9.0",
+    "@vue/test-utils": "^2.4.11",
     "@vue/tsconfig": "^0.9.1",
-    "eslint": "^10.4.0",
+    "eslint": "^10.7.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-vue": "~10.9.1",
+    "eslint-plugin-vue": "~10.9.2",
     "eslint-plugin-vuejs-accessibility": "^2.5.0",
-    "happy-dom": "^20.9.0",
+    "happy-dom": "^20.11.0",
     "jiti": "^2.7.0",
-    "npm-run-all2": "^8.0.4",
+    "npm-run-all2": "^9.0.2",
     "prettier": "3.8.3",
-    "prettier-plugin-tailwindcss": "^0.8.0",
+    "prettier-plugin-tailwindcss": "^0.8.1",
     "typescript": "~6.0.3",
-    "unocss": "^66.6.8",
-    "vite": "^8.0.16",
-    "vitest": "^4.1.6",
-    "vue-tsc": "^3.3.1"
+    "unocss": "^66.7.5",
+    "vite": "^8.1.5",
+    "vitest": "^4.1.10",
+    "vue-tsc": "^3.3.7"
   },
   "engines": {
     "node": ">=22.12.0"
