@@ -28,8 +28,13 @@ const onSubmit = () => {
 	else _onSubmitCode()
 }
 
+const emailInputEl = useTemplateRef('emailInputEl')
+const setValidationMessage = (message = '') => {
+	emailInputEl.value?.setCustomValidity(message)
+}
+
 const _onSubmitEmail = async () => {
-	if (isSubmitLocked.value || isEmpty(email)) return
+	if (isSubmitLocked.value || (emailInputEl.value && !emailInputEl.value.checkValidity())) return
 
 	beforeSubmit()
 
@@ -42,7 +47,10 @@ const _onSubmitEmail = async () => {
 		})
 		if (!response.ok) {
 			const data = await response.json()
-			addToast(data.error ?? 'Das hat nicht geklappt.')
+			const errorMessage = data.error ?? 'Das hat nicht geklappt.'
+			addToast(errorMessage)
+
+			if ([400, 401].includes(response.status)) setValidationMessage(errorMessage)
 			unlockSubmit()
 			return
 		}
@@ -54,7 +62,7 @@ const _onSubmitEmail = async () => {
 }
 
 const _onSubmitCode = async () => {
-	if (isSubmitLocked.value || isEmpty(passcode, passcode)) return
+	if (isSubmitLocked.value || isEmpty(passcode)) return
 
 	beforeSubmit()
 
@@ -87,8 +95,19 @@ const _onSubmitCode = async () => {
 				<div v-if="isFirstStep">
 					<div>
 						<label for="email" class="mb-1 block w-fit">E-Mail</label>
-						<!-- eslint-disable-next-line vuejs-accessibility/no-autofocus -->
-						<input v-model.trim="email" type="email" id="email" autocomplete="username" enterkeyhint="go" autofocus />
+						<!-- eslint-disable vuejs-accessibility/no-autofocus -->
+						<input
+							ref="emailInputEl"
+							v-model.trim="email"
+							type="email"
+							id="email"
+							autocomplete="username"
+							required
+							enterkeyhint="go"
+							autofocus
+							@input="setValidationMessage()"
+						/>
+						<!-- eslint-enable vuejs-accessibility/no-autofocus -->
 					</div>
 
 					<div class="mt-5">
