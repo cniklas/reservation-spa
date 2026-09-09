@@ -43,8 +43,8 @@ watch(
 </script>
 
 <template>
-	<nav class="font-500 container flex items-center gap-x-3 py-5">
-		<RouterLink to="/">Home</RouterLink>
+	<nav class="font-500 <sm:justify-center container flex items-center gap-x-4 py-5">
+		<RouterLink to="/">Plan</RouterLink>
 		<RouterLink to="/liste">Liste</RouterLink>
 		<RouterLink v-if="!state.isAuthenticated" to="/login">Login</RouterLink>
 		<template v-else>
@@ -56,7 +56,7 @@ watch(
 	<RouterView />
 
 	<Teleport to="body">
-		<footer v-once class="top-100vh sticky container flex gap-x-4 py-5">
+		<footer v-once class="top-100vh sticky container flex justify-center gap-x-4 py-5">
 			<details class="font-mono text-sm">
 				<summary class="inline-block cursor-help">© 2023 - {{ buildYear }} Christian Niklas</summary>
 				<div>{{ buildTime }}</div>

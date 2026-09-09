@@ -47,15 +47,16 @@ const { countUp } = useCountUp(count)
 <template>
 	<main class="py-5">
 		<div class="container">
-			<h1 class="font-600 relative mb-1 w-fit text-3xl">
+			<h1 class="headline relative mb-2 w-fit">
 				{{ title }}
 				<svg class="doodle absolute -top-4.5 -right-10.5" width="40" height="40" aria-hidden="true">
 					<use href="/app.svg#star-doodle" />
 				</svg>
 			</h1>
 
+			<!-- prettier-ignore -->
 			<div v-if="count >= COUNT_UP_THRESHOLD" class="count-up" :style="{ '--count-up': countUp }">Personen</div>
-			<div v-else>{{ count > 0 ? formatCount(count, ['Person', 'Personen']) : 'niemand eingetragen' }}</div>
+			<div v-else>{{ count > 0 ? formatCount(count, ['Person', 'Personen']) : 'Niemand eingetragen' }}</div>
 		</div>
 
 		<div v-if="count > 0" class="mt-6 mb-10">

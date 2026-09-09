@@ -201,7 +201,7 @@ onUnmounted(() => {
 
 	<main class="py-5" :inert="!!selectedItem">
 		<div class="container">
-			<h1 class="font-600 relative mb-1 w-fit text-3xl">
+			<h1 class="headline relative mb-2 w-fit">
 				{{ title }}
 				<svg class="doodle absolute -top-4.5 -right-10.5" width="40" height="40" aria-hidden="true">
 					<use href="/app.svg#star-doodle" />
@@ -209,20 +209,19 @@ onUnmounted(() => {
 			</h1>
 			<div v-if="state.tables.length" class="sr-only">Es sind {{ state.tables.length }} Tische aufgestellt.</div>
 
-			<div v-if="count >= COUNT_UP_THRESHOLD" class="count-up" :style="{ '--count-up': countUp }">
-				Personen eingetragen
-			</div>
+			<!-- prettier-ignore -->
+			<div v-if="count >= COUNT_UP_THRESHOLD" class="count-up" :style="{ '--count-up': countUp }">Personen eingetragen</div>
 			<div v-else>
 				{{
 					state.tables.length
-						? `${count ? formatCount(count, ['Person', 'Personen']) : 'niemand'} eingetragen`
+						? `${count ? formatCount(count, ['Person', 'Personen']) : 'Niemand'} eingetragen`
 						: 'Lade Daten …'
 				}}
 			</div>
 
 			<img
 				v-if="state.tables.length && sitePlanImage"
-				class="mt-5 w-full"
+				class="mt-9 mb-10 w-full"
 				:src="sitePlanImage[0]"
 				:width="sitePlanImage[1]"
 				:height="sitePlanImage[2]"
