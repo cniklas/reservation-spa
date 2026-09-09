@@ -20,7 +20,7 @@ html {
 
 body {
 	color: var(--dark);
-	background-color: oklch(98.69% 0.021 95.28); /* theme('colors.amber.50') */
+	background-color: oklch(0.977 0.0114 84.58);
 	min-height: 100vh;
 	min-height: 100dvh;
 }
@@ -75,7 +75,9 @@ dialog {
 }
 
 :any-link {
-	text-decoration: underline;
+	text-underline-offset: 0.3ex;
+	text-decoration-line: underline;
+	text-decoration-thickness: 0.15ex;
 }
 
 :focus-visible {
@@ -120,6 +122,12 @@ input:where([type='text'], [type='email'], [type='password'], [type='number'], [
 .close-icon {
 	rotate: 45deg;
 	fill: currentColor;
+}
+
+.headline {
+	font-size: clamp(1.875rem, 8.3333vw, 2.25rem);
+	line-height: clamp(2.25rem, 1rem + 5.5556vw, 2.5rem);
+	font-weight: 600;
 }
 
 /* https://css-tricks.com/animating-number-counters/ */

@@ -81,7 +81,7 @@ const _onSubmitCode = async () => {
 
 <template>
 	<main class="container py-5">
-		<h1 id="aria-heading-login" class="font-600 mb-3 text-3xl">Anmelden</h1>
+		<h1 id="aria-heading-login" class="headline mb-5">Anmelden</h1>
 
 		<form
 			ref="formEl"
