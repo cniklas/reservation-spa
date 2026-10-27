@@ -19,37 +19,37 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@instantdb/admin": "^1.0.66",
-    "@instantdb/core": "^1.0.66",
+    "@instantdb/admin": "^1.0.67",
+    "@instantdb/core": "^1.0.67",
     "@vueuse/core": "^15.0.0",
     "string-similarity": "^4.0.4",
-    "vue": "^3.5.43",
-    "vue-router": "^5.3.0"
+    "vue": "^3.5.44",
+    "vue-router": "^5.4.0"
   },
   "devDependencies": {
     "@tsconfig/node24": "^24.0.5",
-    "@types/node": "^26.6.3",
+    "@types/node": "^26.6.5",
     "@types/string-similarity": "^4.0.2",
-    "@unocss/reset": "^66.10.5",
-    "@vitejs/plugin-vue": "^6.0.9",
-    "@vitest/eslint-plugin": "^1.6.27",
+    "@unocss/reset": "^66.11.0",
+    "@vitejs/plugin-vue": "^6.0.10",
+    "@vitest/eslint-plugin": "^1.6.28",
     "@vue/eslint-config-typescript": "^14.9.0",
     "@vue/test-utils": "^2.5.1",
     "@vue/tsconfig": "^0.9.1",
-    "eslint": "^10.11.0",
+    "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-vue": "~10.11.1",
-    "eslint-plugin-vuejs-accessibility": "^2.6.0",
-    "happy-dom": "^20.14.5",
+    "eslint-plugin-vuejs-accessibility": "^2.6.3",
+    "happy-dom": "^20.14.6",
     "jiti": "^2.7.0",
-    "npm-run-all2": "^9.0.3",
+    "npm-run-all2": "^9.0.4",
     "prettier": "3.9.9",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "typescript": "~6.0.3",
-    "unocss": "^66.10.5",
-    "vite": "^8.3.3",
-    "vitest": "^5.0.2",
-    "vue-tsc": "^3.3.11"
+    "unocss": "^66.11.0",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5",
+    "vue-tsc": "^3.3.13"
   },
   "engines": {
     "node": ">=22.12.0"
