@@ -107,12 +107,16 @@ input:where([type='text'], [type='email'], [type='password'], [type='number'], [
 	scale: 0.97;
 }
 
+:is(.primary-button, .secondary-button) {
+	@apply rounded-4.5 text-1rem inline-block h-9 tracking-wide text-[--slate];
+}
+
 .primary-button {
-	@apply rounded-4.5 text-1rem inline-block h-9 bg-[--yellow] px-5 text-[--slate] focus-visible:outline-[--slate];
+	@apply bg-[--yellow] px-5 focus-visible:outline-[--slate];
 }
 
 .secondary-button {
-	@apply rounded-4.5 text-1rem border-1.5 inline-block h-9 border-current px-4 text-[--slate];
+	@apply border-1.5 border-current px-4;
 }
 
 .close-button {

@@ -242,7 +242,7 @@ onUnmounted(() => {
 		</template>
 		<template v-if="selectedItem">
 			<div class="mb-3">
-				Bearbeitungszeit: <span class="font-600" role="timer">{{ countdownToTime }}</span>
+				Bearbeitungszeit: <span class="font-600 tabular-nums" role="timer">{{ countdownToTime }}</span>
 			</div>
 			<TableForm :entry="selectedItem" @cancel="onTimeoutOrCancel" @saving="isSaving = true" @saved="onSaved" />
 		</template>

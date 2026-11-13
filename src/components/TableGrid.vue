@@ -224,6 +224,7 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 
 .grid-table-label {
 	@apply text-sm;
+	letter-spacing: 0.025em;
 	display: grid;
 	align-items: center;
 	width: fit-content;
