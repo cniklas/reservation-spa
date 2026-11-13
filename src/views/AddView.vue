@@ -84,7 +84,7 @@ const onSubmit = async () => {
 				/>
 			</div>
 			<div class="mb-4">
-				<label for="active">
+				<label for="active" class="flex w-fit items-center gap-x-2">
 					verfügbar
 					<input v-model="form.active" type="checkbox" id="active" />
 				</label>
