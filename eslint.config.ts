@@ -49,7 +49,6 @@ export default defineConfigWithVueTs(
 					ol: ['list'],
 				},
 			],
-			'vuejs-accessibility/no-autofocus': 'warn',
 		},
 	},
 

@@ -83,7 +83,8 @@ const _onSubmitCode = async () => {
 
 <template>
 	<main class="container py-5">
-		<h1 id="aria-heading-login" class="headline mb-5">Anmelden</h1>
+		<h1 id="aria-heading-login" class="headline mb-2">Anmelden</h1>
+		<div class="mb-5">Der Login-Code wird sofort an deine E-Mail-Adresse gesendet.</div>
 
 		<form
 			ref="formEl"
@@ -97,7 +98,6 @@ const _onSubmitCode = async () => {
 				<div v-if="isFirstStep">
 					<div>
 						<label for="email" class="mb-1 block w-fit">E-Mail</label>
-						<!-- eslint-disable vuejs-accessibility/no-autofocus -->
 						<input
 							ref="emailInputEl"
 							v-model.trim="email"
@@ -106,7 +106,6 @@ const _onSubmitCode = async () => {
 							autocomplete="username"
 							required
 							enterkeyhint="go"
-							autofocus
 							@input="setValidationMessage()"
 						/>
 						<!-- eslint-enable vuejs-accessibility/no-autofocus -->
@@ -131,7 +130,6 @@ const _onSubmitCode = async () => {
 							pattern="\d{6}"
 							autocomplete="one-time-code"
 							enterkeyhint="go"
-							placeholder="123456"
 						/>
 					</div>
 
