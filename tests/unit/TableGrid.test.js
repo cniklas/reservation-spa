@@ -75,7 +75,7 @@ describe('TableGrid.vue', () => {
 		expect(wrapper.emitted('edit')?.at(0)?.at(0)).toBe(state.tables[index].id)
 	})
 
-	it('has an unlock button for each locked table if user is logged in', async () => {
+	it('has an unlock button for each locked table if admin user is logged in', async () => {
 		state.tables.forEach((table, i) => {
 			// skip first table
 			if (i === 0) return
@@ -95,7 +95,7 @@ describe('TableGrid.vue', () => {
 		expect(unlockButtons.length).toBe(state.tables.length - 1)
 	})
 
-	it('has no unlock button for a table locked by the logged-in user', async () => {
+	it('has no unlock button for a table locked by the logged-in admin user', async () => {
 		const id = state.tables.at(-1)?.id
 		state.tables.forEach(table => {
 			// one table is locked by the logged-in user

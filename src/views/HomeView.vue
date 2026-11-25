@@ -235,7 +235,7 @@ onUnmounted(() => {
 		</div>
 	</main>
 
-	<AppSidebar v-if="state.isAuthenticated && state.tables.length" ref="sidebarEl" @closing="clearTimer">
+	<AppSidebar v-if="state.tables.length" ref="sidebarEl" @closing="clearTimer">
 		<template v-if="selectedItem" #heading>
 			{{ `Tisch ${selectedItem.index}` }} {{ selectedItem.name }}
 			<span class="sr-only">bearbeiten</span>
