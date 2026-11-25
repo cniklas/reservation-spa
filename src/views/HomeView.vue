@@ -82,7 +82,7 @@ const _onConflict = (message: string) => {
 let triggerEl: HTMLElement | null = null
 const onEditTable = async (id: string, _triggerEl: HTMLElement) => {
 	if (!isReleased.value && !state.isAdmin) {
-		_showDialog(`Noch ein bisschen Geduld.\nEintragungen sind ab ${RELEASE_DATE_FORMATTED} möglich.`)
+		_showDialog(`Noch ein bisschen Geduld.\nEintragen ist ab ${RELEASE_DATE_FORMATTED} möglich.`)
 		return
 	}
 

@@ -8,7 +8,7 @@ export const EDIT_TIMEOUT = 4 * ONE_MINUTE
 const RELEASE_TIME = new Date(import.meta.env.VITE_RELEASE_DATE).getTime()
 export const RELEASE_DATE_FORMATTED = `${new Date(RELEASE_TIME).toLocaleDateString('de', {
 	day: '2-digit',
-	month: 'short',
+	month: 'long',
 	hour: 'numeric',
 	minute: 'numeric',
 })} Uhr`
