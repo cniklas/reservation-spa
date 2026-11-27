@@ -98,9 +98,7 @@ input:where([type='text'], [type='email'], [type='password'], [type='number'], [
 }
 
 :is(.primary-button, .secondary-button, .close-button) {
-	transition-property: background-color, scale;
-	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-	transition-duration: 150ms;
+	transition: scale 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 :where(.primary-button, .secondary-button, .close-button):active {
@@ -120,7 +118,7 @@ input:where([type='text'], [type='email'], [type='password'], [type='number'], [
 }
 
 .close-button {
-	@apply rounded-50% inline-grid place-content-center bg-[--slate] text-white focus-visible:outline-[--slate];
+	@apply rounded-50% aspect-1 inline-grid place-content-center bg-[--slate] text-white focus-visible:outline-[--slate];
 }
 
 .close-icon {

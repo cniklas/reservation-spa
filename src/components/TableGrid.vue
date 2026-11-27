@@ -177,11 +177,12 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 			will-change: box-shadow, translate;
 			transition:
 				box-shadow 250ms,
+				scale 600ms cubic-bezier(0.3, 0.7, 0.4, 1),
 				translate 600ms cubic-bezier(0.3, 0.7, 0.4, 1);
 
 			/* inspired by https://www.joshwcomeau.com/animation/3d-button/ */
 			&:hover {
-				translate: 0 -2px;
+				translate: 2px;
 				transition:
 					box-shadow 250ms,
 					translate 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
@@ -189,6 +190,15 @@ const onEditTable = ({ id, locked_at }: Table, triggerEl: HTMLElement) => {
 				&.is-available {
 					box-shadow: 0 7px 0 -1px oklch(82.38% 0.2193 130.94); /* corresponds to `filter: brightness(110%)` */
 				}
+			}
+
+			&:active {
+				scale: 0.98;
+				translate: unset;
+				transition:
+					box-shadow 250ms,
+					scale 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5),
+					translate 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
 			}
 		}
 	}

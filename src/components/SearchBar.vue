@@ -69,7 +69,6 @@ watch(searchDebounced, val => {
 		right: 0.25rem;
 		top: 50%;
 		height: 1.75rem;
-		aspect-ratio: 1;
 		translate: 0 -50%;
 	}
 }
